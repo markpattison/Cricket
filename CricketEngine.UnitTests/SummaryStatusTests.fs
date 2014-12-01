@@ -13,57 +13,118 @@ module ``SummaryStatus tests`` =
     let sampleMatchRules = { FollowOnMargin = 200; }
     let summary state = SummaryStatus sampleMatchRules { TeamA = "TeamA"; TeamB = "TeamB"; State = state }
 
-    let sampleInnings runs wickets = Innings (runs, wickets, false)
-    let sampleDeclaredInnings runs wickets = Innings (runs, wickets, true)
+    let (%/) runs wickets = Innings (runs, wickets, false)
+    let (%/%) runs wickets = Innings (runs, wickets, true)
 
-    let emptyInnings = sampleInnings 0 0
+    let emptyInnings = 0 %/ 0
 
     [<Test>]
-    let ``match not started status`` ()=
+    let ``match not started`` ()=
         let state = NotStarted
         (summary state) |> should equal "Match not started"
 
     [<Test>]
-    let ``abandoned status`` ()=
+    let ``abandoned`` ()=
         let state = Abandoned
         (summary state) |> should equal "Match abandoned without a ball being bowled"
 
     [<Test>]
-    let ``A_Ongoing status`` ()=
-        let state = A_Ongoing (sampleInnings 20 3)
+    let ``A_Ongoing`` ()=
+        let state = A_Ongoing (20 %/ 3)
         (summary state) |> should equal "TeamA are 20 for 3 in their first innings"
 
     [<Test>]
-    let ``A_Completed declared status`` ()=
-        let state = A_Completed (sampleDeclaredInnings 30 4)
+    let ``A_Completed declared`` ()=
+        let state = A_Completed (30 %/% 4)
         (summary state) |> should equal "TeamA scored 30 for 4 declared in their first innings"
 
     [<Test>]
-    let ``A_Completed not declared status`` ()=
-        let state = A_Completed (sampleInnings 40 5)
+    let ``A_Completed not declared`` ()=
+        let state = A_Completed (40 %/ 5)
         (summary state) |> should equal "TeamA scored 40 all out in their first innings"
     
     [<Test>]
-    let ``A_MatchDrawn status`` ()=
+    let ``A_MatchDrawn`` ()=
         let state = A_MatchDrawn emptyInnings
         (summary state) |> should equal "Match drawn"
 
-//        | AB_Ongoing (a1, b1)
-//        | AB_CompletedNoFollowOn (a1, b1)
-//        | AB_CompletedPossibleFollowOn (a1, b1)
+    [<Test>]
+    let ``AB_Ongoing B behind`` ()=
+        let state = AB_Ongoing (100 %/ 10, 50 %/ 9)
+        (summary state) |> should equal "TeamB trail by 50 runs with 1 wicket remaining in their first innings"
 
     [<Test>]
-    let ``AB_MatchDrawn status`` ()=
+    let ``AB_Ongoing B level status`` ()=
+        let state = AB_Ongoing (100 %/ 10, 100 %/ 0)
+        (summary state) |> should equal "TeamB are level with 10 wickets remaining in their first innings"
+
+    [<Test>]
+    let ``AB_Ongoing B ahead`` ()=
+        let state = AB_Ongoing (100 %/ 10, 120 %/ 2)
+        (summary state) |> should equal "TeamB lead by 20 runs with 8 wickets remaining in their first innings"
+
+    [<Test>]
+    let ``AB_CompletedNoFollowOn B behind`` ()=
+        let state = AB_CompletedNoFollowOn (100 %/ 10, 99 %/ 10)
+        (summary state) |> should equal "TeamA lead by 1 run after the first innings"
+
+    [<Test>]
+    let ``AB_CompletedNoFollowOn B level`` ()=
+        let state = AB_CompletedNoFollowOn (100 %/ 10, 100 %/ 10)
+        (summary state) |> should equal "TeamB are level after the first innings"
+
+    [<Test>]
+    let ``AB_CompletedNoFollowOn B ahead`` ()=
+        let state = AB_CompletedNoFollowOn (100 %/ 10, 101 %/ 10)
+        (summary state) |> should equal "TeamB lead by 1 run after the first innings"
+
+    [<Test>]
+    let ``AB_CompletedPossibleFollowOn B behind`` ()=
+        let state = AB_CompletedPossibleFollowOn (100 %/ 10, 99 %/ 10)
+        (summary state) |> should equal "TeamA lead by 1 run after the first innings"
+
+    [<Test>]
+    let ``AB_CompletedPossibleFollowOn B level`` ()=
+        let state = AB_CompletedPossibleFollowOn (100 %/ 10, 100 %/ 10)
+        (summary state) |> should equal "TeamB are level after the first innings"
+
+    [<Test>]
+    let ``AB_CompletedPossibleFollowOn B ahead`` ()=
+        let state = AB_CompletedPossibleFollowOn (100 %/ 10, 101 %/ 10)
+        (summary state) |> should equal "TeamB lead by 1 run after the first innings"
+
+    [<Test>]
+    let ``AB_MatchDrawn`` ()=
         let state = AB_MatchDrawn (emptyInnings, emptyInnings)
         (summary state) |> should equal "Match drawn"
 
-//        | AB_MatchDrawn (a1, b1)
-//        | ABA_Ongoing (a1, b1, a2)
-//        | ABA_VictoryB (a1, b1, a2)
-//        | ABA_Completed (a1, b1, a2)
+    [<Test>]
+    let ``ABA_Ongoing A ahead`` ()=
+        let state = ABA_Ongoing (100 %/ 10, 100 %/ 10, 1 %/ 0)
+        (summary state) |> should equal "TeamA lead by 1 run with 10 wickets remaining in their second innings"
 
     [<Test>]
-    let ``ABA_MatchDrawn status`` ()=
+    let ``ABA_Ongoing A level`` ()=
+        let state = ABA_Ongoing (100 %/ 10, 100 %/ 10, 0 %/ 9)
+        (summary state) |> should equal "TeamA are level with 1 wicket remaining in their second innings"
+
+    [<Test>]
+    let ``ABA_Ongoing A behind`` ()=
+        let state = ABA_Ongoing (100 %/ 10, 110 %/ 10, 5 %/ 5)
+        (summary state) |> should equal "TeamA trail by 5 runs with 5 wickets remaining in their second innings"
+
+    [<Test>]
+    let ``ABA_VictoryB`` ()=
+        let state = ABA_VictoryB (100 %/ 10, 110 %/ 10, 5 %/ 10)
+        (summary state) |> should equal "TeamB won by 5 runs"
+
+    [<Test>]
+    let ``ABA_Completed`` ()=
+        let state = ABA_Completed (100 %/ 10, 110 %/ 10, 20 %/ 10)
+        (summary state) |> should equal "TeamB need 10 runs to win in their second innings"
+
+    [<Test>]
+    let ``ABA_MatchDrawn`` ()=
         let state = ABA_MatchDrawn (emptyInnings, emptyInnings, emptyInnings)
         (summary state) |> should equal "Match drawn"
 
@@ -72,7 +133,7 @@ module ``SummaryStatus tests`` =
 //        | ABB_Completed (a1, b1, b2)
 
     [<Test>]
-    let ``ABB_MatchDrawn status`` ()=
+    let ``ABB_MatchDrawn`` ()=
         let state = ABB_MatchDrawn (emptyInnings, emptyInnings, emptyInnings)
         (summary state) |> should equal "Match drawn"
 
@@ -81,7 +142,7 @@ module ``SummaryStatus tests`` =
 //        | ABAB_VictoryB (a1, b1, a2, b2)
 
     [<Test>]
-    let ``ABAB_MatchDrawn status`` ()=
+    let ``ABAB_MatchDrawn`` ()=
         let state = ABAB_MatchDrawn (emptyInnings, emptyInnings, emptyInnings, emptyInnings)
         (summary state) |> should equal "Match drawn"
 
@@ -91,7 +152,7 @@ module ``SummaryStatus tests`` =
 //        | ABBA_VictoryB (a1, b1, b2, a2)
 
     [<Test>]
-    let ``ABBA_MatchDrawn status`` ()=
+    let ``ABBA_MatchDrawn`` ()=
         let state = ABBA_MatchDrawn (emptyInnings, emptyInnings, emptyInnings, emptyInnings)
         (summary state) |> should equal "Match drawn"
 
