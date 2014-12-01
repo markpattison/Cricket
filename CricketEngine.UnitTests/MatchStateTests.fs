@@ -71,7 +71,7 @@ module ``MatchState testing helpers`` =
 
     let sampleMatchRules = { FollowOnMargin = 200; }
 
-    let createInnings score wickets = Innings (score, wickets)
+    let createInnings score wickets = Innings (score, wickets, false)
 
     let sampleOngoingInnings = createInnings 456 7
     let sampleCompletedInnings = createInnings 789 10

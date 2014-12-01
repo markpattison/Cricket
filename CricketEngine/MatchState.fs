@@ -53,7 +53,7 @@ module MatchStateFunctions =
 
     let StartMatch rules state =
         match state with
-        | NotStarted -> A_Ongoing (Innings (0, 0))
+        | NotStarted -> A_Ongoing (Innings (0, 0, false))
         | _ -> failwith "Call to StartMatch in invalid state"
 
     let AbandonMatch rules state =
@@ -73,12 +73,12 @@ module MatchStateFunctions =
 
     let EnforceFollowOn rules state =
         match state with
-        | AB_CompletedPossibleFollowOn (a1, b1) -> ABB_Ongoing (a1, b1, Innings (0,0))
+        | AB_CompletedPossibleFollowOn (a1, b1) -> ABB_Ongoing (a1, b1, Innings (0, 0, false))
         | _ -> failwith "Call to EnforceFollowOn in invalid state"
 
     let DeclineFollowOn rules state =
         match state with
-        | AB_CompletedPossibleFollowOn (a1, b1) -> ABA_Ongoing (a1, b1, Innings (0,0))
+        | AB_CompletedPossibleFollowOn (a1, b1) -> ABA_Ongoing (a1, b1, Innings (0, 0, false))
         | _ -> failwith "Call to DeclineFollowOn in invalid state"
     
     let UpdateInnings rules inningsUpdater state =
@@ -117,7 +117,6 @@ module MatchStateFunctions =
             | InningsCompleted i when (b1.GetRuns + b2.GetRuns = a1.GetRuns + i.GetRuns) -> ABBA_MatchTied (a1, b1, b2, i)
             | InningsCompleted i -> failwith "Call to UpdateInnings in inconsistent state"
         | _ -> failwith "Call to UpdateInnings in invalid state"
-
 
 
 //        | NotStarted
