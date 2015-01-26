@@ -1,7 +1,4 @@
-﻿namespace MatchState
-
-open Innings
-open MatchRules
+﻿namespace Cricket.CricketEngine
 
 type MatchState =
     | NotStarted

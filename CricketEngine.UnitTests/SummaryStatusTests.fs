@@ -1,12 +1,9 @@
-﻿namespace CricketEnging.UnitTests
+﻿namespace Cricket.CricketEngine.UnitTests
 
 open FsUnit
 open NUnit.Framework
 
-open MatchRules
-open Innings
-open MatchState
-open Match
+open Cricket.CricketEngine
 
 module ``SummaryStatus tests`` =
 

@@ -1,4 +1,4 @@
-﻿namespace Innings
+﻿namespace Cricket.CricketEngine
 
 type Innings =
     | Innings of Runs: int * Wickets: int * Declared: bool

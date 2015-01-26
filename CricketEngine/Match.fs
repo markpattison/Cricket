@@ -1,6 +1,4 @@
-﻿namespace Match
-
-open MatchState
+﻿namespace Cricket.CricketEngine
 
 type Match =
     {
