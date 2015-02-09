@@ -4,16 +4,11 @@ open FsUnit
 open NUnit.Framework
 
 open Cricket.CricketEngine
+open TestHelpers
 
 module ``SummaryStatus tests`` =
 
-    let sampleMatchRules = { FollowOnMargin = 200; }
     let summary state = SummaryStatus sampleMatchRules { TeamA = "TeamA"; TeamB = "TeamB"; State = state }
-
-    let (%/) runs wickets = Innings (runs, wickets, false)
-    let (%/%) runs wickets = Innings (runs, wickets, true)
-
-    let emptyInnings = 0 %/ 0
 
     [<Test>]
     let ``match not started`` ()=
@@ -42,7 +37,7 @@ module ``SummaryStatus tests`` =
     
     [<Test>]
     let ``A_MatchDrawn`` ()=
-        let state = A_MatchDrawn emptyInnings
+        let state = A_MatchDrawn sampleEmptyInnings
         (summary state) |> should equal "Match drawn"
 
     [<Test>]
@@ -92,7 +87,7 @@ module ``SummaryStatus tests`` =
 
     [<Test>]
     let ``AB_MatchDrawn`` ()=
-        let state = AB_MatchDrawn (emptyInnings, emptyInnings)
+        let state = AB_MatchDrawn (sampleEmptyInnings, sampleEmptyInnings)
         (summary state) |> should equal "Match drawn"
 
     [<Test>]
@@ -122,7 +117,7 @@ module ``SummaryStatus tests`` =
 
     [<Test>]
     let ``ABA_MatchDrawn`` ()=
-        let state = ABA_MatchDrawn (emptyInnings, emptyInnings, emptyInnings)
+        let state = ABA_MatchDrawn (sampleEmptyInnings, sampleEmptyInnings, sampleEmptyInnings)
         (summary state) |> should equal "Match drawn"
 
 //        | ABB_Ongoing (a1, b1, b2)
@@ -131,7 +126,7 @@ module ``SummaryStatus tests`` =
 
     [<Test>]
     let ``ABB_MatchDrawn`` ()=
-        let state = ABB_MatchDrawn (emptyInnings, emptyInnings, emptyInnings)
+        let state = ABB_MatchDrawn (sampleEmptyInnings, sampleEmptyInnings, sampleEmptyInnings)
         (summary state) |> should equal "Match drawn"
 
 //        | ABAB_Ongoing (a1, b1, a2, b2)
@@ -140,7 +135,7 @@ module ``SummaryStatus tests`` =
 
     [<Test>]
     let ``ABAB_MatchDrawn`` ()=
-        let state = ABAB_MatchDrawn (emptyInnings, emptyInnings, emptyInnings, emptyInnings)
+        let state = ABAB_MatchDrawn (sampleEmptyInnings, sampleEmptyInnings, sampleEmptyInnings, sampleEmptyInnings)
         (summary state) |> should equal "Match drawn"
 
 //        | ABAB_MatchTied (a1, b1, a2, b2)
@@ -150,7 +145,7 @@ module ``SummaryStatus tests`` =
 
     [<Test>]
     let ``ABBA_MatchDrawn`` ()=
-        let state = ABBA_MatchDrawn (emptyInnings, emptyInnings, emptyInnings, emptyInnings)
+        let state = ABBA_MatchDrawn (sampleEmptyInnings, sampleEmptyInnings, sampleEmptyInnings, sampleEmptyInnings)
         (summary state) |> should equal "Match drawn"
 
 //        | ABBA_MatchTied (a1, b1, b2, a2)

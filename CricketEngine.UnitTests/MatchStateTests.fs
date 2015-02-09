@@ -4,88 +4,9 @@ open FsUnit
 open NUnit.Framework
 
 open Cricket.CricketEngine
-
-[<AutoOpen>]
-module ``MatchState testing helpers`` =
-
-    type MatchStateCase =
-        | NotStartedCase
-        | AbandonedCase
-        | A_OngoingCase
-        | A_CompletedCase
-        | A_MatchDrawnCase
-        | AB_OngoingCase
-        | AB_CompletedNoFollowOnCase
-        | AB_CompletedPossibleFollowOnCase
-        | AB_MatchDrawnCase
-        | ABA_OngoingCase
-        | ABA_VictoryBCase
-        | ABA_CompletedCase
-        | ABA_MatchDrawnCase
-        | ABB_OngoingCase
-        | ABB_VictoryACase
-        | ABB_CompletedCase
-        | ABB_MatchDrawnCase
-        | ABAB_OngoingCase
-        | ABAB_VictoryACase
-        | ABAB_VictoryBCase
-        | ABAB_MatchDrawnCase
-        | ABAB_MatchTiedCase
-        | ABBA_OngoingCase
-        | ABBA_VictoryACase
-        | ABBA_VictoryBCase
-        | ABBA_MatchDrawnCase
-        | ABBA_MatchTiedCase
-
-    let matchStateCase state =
-        match state with
-        | NotStarted _ -> NotStartedCase
-        | Abandoned _ -> AbandonedCase
-        | A_Ongoing _ -> A_OngoingCase
-        | A_Completed _ -> A_CompletedCase
-        | A_MatchDrawn _ -> A_MatchDrawnCase
-        | AB_Ongoing _ -> AB_OngoingCase
-        | AB_CompletedNoFollowOn _ -> AB_CompletedNoFollowOnCase
-        | AB_CompletedPossibleFollowOn _ -> AB_CompletedPossibleFollowOnCase
-        | AB_MatchDrawn _ -> AB_MatchDrawnCase
-        | ABA_Ongoing _ -> ABA_OngoingCase
-        | ABA_VictoryB _ -> ABA_VictoryBCase
-        | ABA_Completed _ -> ABA_CompletedCase
-        | ABA_MatchDrawn _ -> ABA_MatchDrawnCase
-        | ABB_Ongoing _ -> ABB_OngoingCase
-        | ABB_VictoryA _ -> ABB_VictoryACase
-        | ABB_Completed _ -> ABB_CompletedCase
-        | ABB_MatchDrawn _ -> ABB_MatchDrawnCase
-        | ABAB_Ongoing _ -> ABAB_OngoingCase
-        | ABAB_VictoryA _ -> ABAB_VictoryACase
-        | ABAB_VictoryB _ -> ABAB_VictoryBCase
-        | ABAB_MatchDrawn _ -> ABAB_MatchDrawnCase
-        | ABAB_MatchTied _ -> ABAB_MatchTiedCase
-        | ABBA_Ongoing _ -> ABBA_OngoingCase
-        | ABBA_VictoryA _ -> ABBA_VictoryACase
-        | ABBA_VictoryB _ -> ABBA_VictoryBCase
-        | ABBA_MatchDrawn _ -> ABBA_MatchDrawnCase
-        | ABBA_MatchTied _ -> ABBA_MatchTiedCase
-
-    let sampleMatchRules = { FollowOnMargin = 200; }
-
-    let createInnings score wickets = Innings (score, wickets, false)
-
-    let sampleOngoingInnings = createInnings 456 7
-    let sampleCompletedInnings = createInnings 789 10
-
-    let sampleUpdaterOngoing = UpdateInnings sampleMatchRules (fun _ -> InningsOngoing sampleOngoingInnings)
-    let sampleUpdaterCompleted = UpdateInnings sampleMatchRules (fun _ -> InningsCompleted sampleCompletedInnings)
-
-    let scoreRuns runs = UpdateInnings sampleMatchRules (ScoreRuns runs)
-
-    let loseWicket = UpdateInnings sampleMatchRules LoseWicket
-
-    let declare = UpdateInnings sampleMatchRules Declare
-
+open TestHelpers
 
 // non-ongoing cases
-
 
 module ``MatchState NotStarted tests`` =
 
@@ -115,8 +36,6 @@ module ``MatchState NotStarted tests`` =
     let ``declining the follow-on throws an error`` ()=
         (fun () -> DeclineFollowOn sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
-
-
 module ``MatchState Abandoned tests`` =
 
     let state = Abandoned
@@ -144,8 +63,6 @@ module ``MatchState Abandoned tests`` =
     [<Test>]
     let ``declining the follow-on throws an error`` ()=
         (fun () -> DeclineFollowOn sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
-
-
 
 module ``MatchState A_Completed tests`` =
 
@@ -176,8 +93,6 @@ module ``MatchState A_Completed tests`` =
     let ``declining the follow-on throws an error`` ()=
         (fun () -> DeclineFollowOn sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
-
-
 module ``MatchState A_MatchDrawn tests`` =
 
     let a1 = createInnings 5 0
@@ -206,8 +121,6 @@ module ``MatchState A_MatchDrawn tests`` =
     [<Test>]
     let ``declining the follow-on throws an error`` ()=
         (fun () -> DeclineFollowOn sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
-
-
 
 module ``MatchState AB_CompletedNoFollowOn tests`` =
 
@@ -239,8 +152,6 @@ module ``MatchState AB_CompletedNoFollowOn tests`` =
     let ``declining the follow-on throws an error`` ()=
         (fun () -> DeclineFollowOn sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
-
-
 module ``MatchState AB_CompletedPossibleFollowOn tests`` =
 
     let a1 = createInnings 15 0
@@ -271,8 +182,6 @@ module ``MatchState AB_CompletedPossibleFollowOn tests`` =
     let ``declining the follow-on throws an error`` ()=
         (DeclineFollowOn sampleMatchRules state) |> matchStateCase |> should equal ABA_OngoingCase 
 
-
-
 module ``MatchState AB_MatchDrawn tests`` =
 
     let a1 = createInnings 5 0
@@ -302,8 +211,6 @@ module ``MatchState AB_MatchDrawn tests`` =
     [<Test>]
     let ``declining the follow-on throws an error`` ()=
         (fun () -> DeclineFollowOn sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
-
-
 
 module ``MatchState ABA_VictoryB tests`` =
 
@@ -336,8 +243,6 @@ module ``MatchState ABA_VictoryB tests`` =
     let ``declining the follow-on throws an error`` ()=
         (fun () -> DeclineFollowOn sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
-
-
 module ``MatchState ABA_Completed tests`` =
 
     let a1 = createInnings 5 0
@@ -368,8 +273,6 @@ module ``MatchState ABA_Completed tests`` =
     [<Test>]
     let ``declining the follow-on throws an error`` ()=
         (fun () -> DeclineFollowOn sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
-
-
 
 module ``MatchState ABA_MatchDrawn tests`` =
 
@@ -402,8 +305,6 @@ module ``MatchState ABA_MatchDrawn tests`` =
     let ``declining the follow-on throws an error`` ()=
         (fun () -> DeclineFollowOn sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
-
-
 module ``MatchState ABB_VictoryA tests`` =
 
     let a1 = createInnings 5 0
@@ -434,8 +335,6 @@ module ``MatchState ABB_VictoryA tests`` =
     [<Test>]
     let ``declining the follow-on throws an error`` ()=
         (fun () -> DeclineFollowOn sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
-
-
 
 module ``MatchState ABB_Completed tests`` =
 
@@ -468,8 +367,6 @@ module ``MatchState ABB_Completed tests`` =
     let ``declining the follow-on throws an error`` ()=
         (fun () -> DeclineFollowOn sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
-
-
 module ``MatchState ABB_MatchDrawn tests`` =
 
     let a1 = createInnings 5 0
@@ -500,8 +397,6 @@ module ``MatchState ABB_MatchDrawn tests`` =
     [<Test>]
     let ``declining the follow-on throws an error`` ()=
         (fun () -> DeclineFollowOn sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
-
-
 
 module ``MatchState ABAB_VictoryA tests`` =
 
@@ -535,8 +430,6 @@ module ``MatchState ABAB_VictoryA tests`` =
     let ``declining the follow-on throws an error`` ()=
         (fun () -> DeclineFollowOn sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
-
-
 module ``MatchState ABAB_VictoryB tests`` =
 
     let a1 = createInnings 5 0
@@ -568,8 +461,6 @@ module ``MatchState ABAB_VictoryB tests`` =
     [<Test>]
     let ``declining the follow-on throws an error`` ()=
         (fun () -> DeclineFollowOn sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
-
-
 
 module ``MatchState ABAB_MatchDrawn tests`` =
 
@@ -603,8 +494,6 @@ module ``MatchState ABAB_MatchDrawn tests`` =
     let ``declining the follow-on throws an error`` ()=
         (fun () -> DeclineFollowOn sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
-
-
 module ``MatchState ABAB_MatchTied tests`` =
 
     let a1 = createInnings 5 0
@@ -636,8 +525,6 @@ module ``MatchState ABAB_MatchTied tests`` =
     [<Test>]
     let ``declining the follow-on throws an error`` ()=
         (fun () -> DeclineFollowOn sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
-
-
 
 module ``MatchState ABBA_VictoryA tests`` =
 
@@ -671,8 +558,6 @@ module ``MatchState ABBA_VictoryA tests`` =
     let ``declining the follow-on throws an error`` ()=
         (fun () -> DeclineFollowOn sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
-
-
 module ``MatchState ABBA_VictoryB tests`` =
 
     let a1 = createInnings 15 0
@@ -704,8 +589,6 @@ module ``MatchState ABBA_VictoryB tests`` =
     [<Test>]
     let ``declining the follow-on throws an error`` ()=
         (fun () -> DeclineFollowOn sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
-
-
 
 module ``MatchState ABBA_MatchDrawn tests`` =
 
@@ -739,8 +622,6 @@ module ``MatchState ABBA_MatchDrawn tests`` =
     let ``declining the follow-on throws an error`` ()=
         (fun () -> DeclineFollowOn sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
-
-
 module ``MatchState ABBA_MatchTied tests`` =
 
     let a1 = createInnings 15 0
@@ -773,9 +654,7 @@ module ``MatchState ABBA_MatchTied tests`` =
     let ``declining the follow-on throws an error`` ()=
         (fun () -> DeclineFollowOn sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
-
 // ongoing cases
-
 
 module ``MatchState A_Ongoing tests`` =
 
@@ -817,8 +696,6 @@ module ``MatchState A_Ongoing tests`` =
     [<Test>]
     let ``updating the innings as completed should use the result of the innings update`` ()=
         (sampleUpdaterCompleted state) |> should equal (A_Completed (sampleCompletedInnings))
-
-
 
 module ``MatchState AB_Ongoing tests`` =
 
@@ -875,8 +752,6 @@ module ``MatchState AB_Ongoing tests`` =
     [<Test>]
     let ``updating the innings as completed with B behind follow-on target should use the result of the innings update`` ()=
         (sampleUpdaterCompletedPossibleFollowOn state) |> should equal (AB_CompletedPossibleFollowOn (a1, sampleCompletedInningsPossibleFollowOn))
-
-
 
 module ``MatchState ABA_Ongoing tests`` =
 
@@ -935,8 +810,6 @@ module ``MatchState ABA_Ongoing tests`` =
     let ``updating the innings as completed with A behind should use the result of the innings update`` ()=
         (sampleUpdaterCompletedVictory state) |> should equal (ABA_VictoryB (a1, b1, sampleCompletedInningsVictory))
 
-
-
 module ``MatchState ABB_Ongoing tests`` =
 
     let a1 = createInnings 10 0
@@ -993,8 +866,6 @@ module ``MatchState ABB_Ongoing tests`` =
     [<Test>]
     let ``updating the innings as completed with B behind should use the result of the innings update`` ()=
         (sampleUpdaterCompletedVictory state) |> should equal (ABB_VictoryA (a1, b1, sampleCompletedInningsVictory))
-
-
 
 module ``MatchState ABAB_Ongoing tests`` =
 
@@ -1074,7 +945,6 @@ module ``MatchState ABAB_Ongoing tests`` =
     [<Test>]
     let ``updating the innings as completed with B ahead throws an error`` ()=
         (fun () -> sampleUpdaterCompletedInconsistent state |> ignore) |> should throw typeof<System.Exception>
-
 
 module ``MatchState ABBA_Ongoing tests`` =
 

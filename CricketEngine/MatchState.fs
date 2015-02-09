@@ -48,7 +48,7 @@ module MatchStateTransitions =
     //        | _ -> Completed
     let StartMatch rules state = 
         match state with
-        | NotStarted -> A_Ongoing(Innings(0, 0, false))
+        | NotStarted -> A_Ongoing(NewInnings)
         | _ -> failwith "Call to StartMatch in invalid state"
     
     let AbandonMatch rules state = 
@@ -69,12 +69,12 @@ module MatchStateTransitions =
     
     let EnforceFollowOn rules state = 
         match state with
-        | AB_CompletedPossibleFollowOn(a1, b1) -> ABB_Ongoing(a1, b1, Innings(0, 0, false))
+        | AB_CompletedPossibleFollowOn(a1, b1) -> ABB_Ongoing(a1, b1, NewInnings)
         | _ -> failwith "Call to EnforceFollowOn in invalid state"
     
     let DeclineFollowOn rules state = 
         match state with
-        | AB_CompletedPossibleFollowOn(a1, b1) -> ABA_Ongoing(a1, b1, Innings(0, 0, false))
+        | AB_CompletedPossibleFollowOn(a1, b1) -> ABA_Ongoing(a1, b1, NewInnings)
         | _ -> failwith "Call to DeclineFollowOn in invalid state"
     
     let UpdateInnings rules inningsUpdater state = 

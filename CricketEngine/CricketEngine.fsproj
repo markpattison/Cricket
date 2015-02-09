@@ -43,6 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MatchRules.fs" />
+    <Compile Include="IndividualInnings.fs" />
     <Compile Include="Innings.fs" />
     <Compile Include="MatchState.fs" />
     <Compile Include="Match.fs" />
