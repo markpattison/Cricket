@@ -10,7 +10,7 @@ type HowOut =
     | HandledTheBall
     | HitTheBallTwice
     | HitWicket of BowledBy: Player
-    | LegBeforeWicket of BowledBy: Player
+    | LBW of BowledBy: Player
     | ObstructingTheField
     | RunOut
     | Stumped of BowledBy: Player * StumpedBy: Player

@@ -37,8 +37,12 @@ type IndividualInningsScoreTests ()=
             ScoreRuns 4, 4;
             Six, 6;
             Bowled, 0;
+            LBW, 0;
             HitWicket, 0;
             Caught (SampleData.sampleFielder, false), 0;
+            Stumped SampleData.sampleFielder, 0;
+            RunOut (0, false), 0;
+            RunOut (1, true), 1;
         |]
 
     [<TestCaseSource("TestData")>]
@@ -59,10 +63,14 @@ type IndividualInningsHowOutTests ()=
             ScoreRuns 4, None;
             Six, None;
             Bowled, Some (HowOut.Bowled SampleData.sampleBowler);
+            LBW, Some (HowOut.LBW SampleData.sampleBowler);
             HitWicket, Some (HowOut.HitWicket SampleData.sampleBowler);
             Caught (SampleData.sampleFielder, false), Some (HowOut.Caught (SampleData.sampleBowler, SampleData.sampleFielder));
             Caught (SampleData.sampleFielder, true), Some (HowOut.Caught (SampleData.sampleBowler, SampleData.sampleFielder));
-        |]
+            Stumped SampleData.sampleFielder, Some (HowOut.Stumped (SampleData.sampleBowler, SampleData.sampleFielder));
+            RunOut (0, false), Some (HowOut.RunOut);
+            RunOut (1, true), Some (HowOut.RunOut);
+       |]
 
     [<TestCaseSource("TestData")>]
     member _x.``batsman is out correctly`` (testData: BallOutcome * HowOut option) =
@@ -82,8 +90,12 @@ type IndividualInningsBallsFacedTests ()=
             ScoreRuns 4, true;
             Six, true;
             Bowled, true;
+            LBW, true;
             HitWicket, true;
             Caught (SampleData.sampleFielder, false), true;
+            Stumped SampleData.sampleFielder, true;
+            RunOut (0, true), true;
+            RunOut (1, false), true;
         |]
 
     [<TestCaseSource("TestData")>]
@@ -104,8 +116,14 @@ type IndividualInningsFoursTests ()=
             ScoreRuns 4, true;
             Six, false;
             Bowled, false;
+            LBW, false;
             HitWicket, false;
             Caught (SampleData.sampleFielder, false), false;
+            Stumped SampleData.sampleFielder, false;
+            RunOut (3, true), false;
+            RunOut (3, false), false;
+            RunOut (4, true), true;
+            RunOut (4, false), true;
         |]
 
     [<TestCaseSource("TestData")>]
@@ -126,8 +144,14 @@ type IndividualInningsSixesTests ()=
             Six, true;
             ScoreRuns 6, true;
             Bowled, false;
+            LBW, false;
             HitWicket, false;
             Caught (SampleData.sampleFielder, false), false;
+            Stumped SampleData.sampleFielder, false;
+            RunOut (5, true), false;
+            RunOut (5, false), false;
+            RunOut (6, true), true;
+            RunOut (6, false), true;
         |]
 
     [<TestCaseSource("TestData")>]

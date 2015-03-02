@@ -41,3 +41,19 @@ module ``BallOutcome tests`` =
     [<Test>]
     let ``batsmen change ends after being caught after crossing`` ()=
         (HasChangedEnds (Caught (fielder, true))) |> should be True
+
+    [<Test>]
+    let ``batsmen don't change ends after being run out after scoring two without then crossing`` ()=
+        (HasChangedEnds (RunOut (2, false))) |> should be False
+
+    [<Test>]
+    let ``batsmen change ends after being run out after scoring two then crossing`` ()=
+        (HasChangedEnds (RunOut (2, true))) |> should be True
+
+    [<Test>]
+    let ``batsmen change ends after being run out after scoring one without then crossing`` ()=
+        (HasChangedEnds (RunOut (1, false))) |> should be True
+
+    [<Test>]
+    let ``batsmen don't change ends after being run out after scoring one then crossing`` ()=
+        (HasChangedEnds (RunOut (1, true))) |> should be False
