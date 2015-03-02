@@ -5,21 +5,37 @@ open NUnit.Framework
 
 open Cricket.CricketEngine
 
-module EndChangeTests =
+[<TestFixture>]
+type InningsChangeEndsTests ()=
 
-    let sampleInnings =
-        {
-            IndividualInnings = [ NewIndividualInnings; NewIndividualInnings ];
-            IsDeclared = false;
-            IndexOfBatsmanAtEnd1 = 0;
-            IndexOfBatsmanAtEnd2 = 1;
-            EndFacingNext = End1;
-            OversCompleted = 0;
-            BallsSoFarThisOver = 0;
-        }
+    let innings, _, _ = SampleData.sampleInningsData
 
-//    [<Test>]
-//    let ``batsmen change ends if odd number of runs scored`` ()=
-//        let updated = Update sampleInnings (ScoreRuns 1)
-//        updated.I
+    static member TestData =
+        [|
+            DotBall, false;
+            ScoreRuns 1, true;
+            ScoreRuns 2, false;
+            Four, false;
+            Six, false;
+            Bowled, false;
+            LBW, false;
+            HitWicket, false;
+            Caught (SampleData.sampleFielder, false), false;
+            Caught (SampleData.sampleFielder, true), true;
+            Stumped SampleData.sampleFielder, false;
+            RunOut (2, false), false;
+            RunOut (2, true), true;
+            RunOut (1, false), true;
+            RunOut (1, true), false;
+        |]
 
+    [<TestCaseSource("TestData")>]
+    member _x.``batsmen change ends correctly`` testData =
+        let ball, shouldChangeEnds = testData
+        let updated = UpdateInningsWithBall innings ball
+        if shouldChangeEnds then
+            updated.IndexOfBatsmanAtEnd1 |> should equal innings.IndexOfBatsmanAtEnd2
+            updated.IndexOfBatsmanAtEnd2 |> should equal innings.IndexOfBatsmanAtEnd1
+        else
+            updated.IndexOfBatsmanAtEnd1 |> should equal innings.IndexOfBatsmanAtEnd1
+            updated.IndexOfBatsmanAtEnd2 |> should equal innings.IndexOfBatsmanAtEnd2

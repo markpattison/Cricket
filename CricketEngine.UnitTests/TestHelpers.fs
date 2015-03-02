@@ -2,6 +2,37 @@
 
 open Cricket.CricketEngine
 
+module SampleData =
+
+    let sampleIndividualInnings =
+        {
+            Score = 50;
+            BallsFaced = 80;
+            HowOut = None;
+            Fours = 5;
+            Sixes = 1;
+        }
+
+    let sampleInnings =
+        {
+            Individuals = [ NewIndividualInnings; NewIndividualInnings ];
+            IsDeclared = false;
+            IndexOfBatsmanAtEnd1 = 0;
+            IndexOfBatsmanAtEnd2 = 1;
+            EndFacingNext = End1;
+            OversCompleted = 0;
+            BallsSoFarThisOver = 0;
+        }
+
+    let sampleBowler =
+        Name "testBowler"
+
+    let sampleFielder =
+        Name "testFielder"
+
+    let sampleIndividualData = sampleIndividualInnings, sampleBowler, sampleFielder
+    let sampleInningsData = sampleInnings, sampleBowler, sampleFielder
+
 module TestHelpers =
 
     type MatchStateCase =
@@ -67,8 +98,8 @@ module TestHelpers =
 
     let rec createInnings score wickets =
         match wickets with
-        | 0 -> { NewInnings with IndividualInnings = [ { NewIndividualInnings with Score = score }; NewIndividualInnings] }
-        | n -> { NewInnings with IndividualInnings = { NewIndividualInnings with HowOut = Some HowOut.RunOut } :: (createInnings score (n - 1)).IndividualInnings }
+        | 0 -> { NewInnings with Individuals = [ { NewIndividualInnings with Score = score }; NewIndividualInnings] }
+        | n -> { NewInnings with Individuals = { NewIndividualInnings with HowOut = Some HowOut.RunOut } :: (createInnings score (n - 1)).Individuals }
 
     let (%/) runs wickets = createInnings runs wickets
     let (%/%) runs wickets = { (createInnings runs wickets) with IsDeclared = true }

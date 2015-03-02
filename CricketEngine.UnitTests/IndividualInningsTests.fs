@@ -5,29 +5,10 @@ open NUnit.Framework
 
 open Cricket.CricketEngine
 
-module SampleData =
-
-    let sampleInnings =
-        {
-            Score = 50;
-            BallsFaced = 80;
-            HowOut = None;
-            Fours = 5;
-            Sixes = 1;
-        }
-
-    let sampleBowler =
-        Name "testBowler"
-
-    let sampleFielder =
-        Name "testFielder"
-
-    let sampleData = sampleInnings, sampleBowler, sampleFielder
-
 [<TestFixture>]
 type IndividualInningsScoreTests ()=
 
-    let innings, bowler, _ = SampleData.sampleData
+    let innings, bowler, _ = SampleData.sampleIndividualData
 
     static member TestData =
         [|
@@ -53,7 +34,7 @@ type IndividualInningsScoreTests ()=
 [<TestFixture>]
 type IndividualInningsHowOutTests ()=
 
-    let innings, bowler, _ = SampleData.sampleData
+    let innings, bowler, _ = SampleData.sampleIndividualData
 
     static member TestData =
         [|
@@ -80,7 +61,7 @@ type IndividualInningsHowOutTests ()=
 [<TestFixture>]
 type IndividualInningsBallsFacedTests ()=
 
-    let innings, bowler, _ = SampleData.sampleData
+    let innings, bowler, _ = SampleData.sampleIndividualData
 
     static member TestData =
         [|
@@ -106,7 +87,7 @@ type IndividualInningsBallsFacedTests ()=
 [<TestFixture>]
 type IndividualInningsFoursTests ()=
 
-    let innings, bowler, _ = SampleData.sampleData
+    let innings, bowler, _ = SampleData.sampleIndividualData
 
     static member TestData =
         [|
@@ -134,7 +115,7 @@ type IndividualInningsFoursTests ()=
 [<TestFixture>]
 type IndividualInningsSixesTests ()=
 
-    let innings, bowler, _ = SampleData.sampleData
+    let innings, bowler, _ = SampleData.sampleIndividualData
 
     static member TestData =
         [|

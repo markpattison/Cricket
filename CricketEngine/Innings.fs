@@ -6,7 +6,7 @@ type End =
 
 type Innings =
     {
-        IndividualInnings: IndividualInnings list;
+        Individuals: IndividualInnings list;
         IsDeclared: bool;
         IndexOfBatsmanAtEnd1: int;
         IndexOfBatsmanAtEnd2: int;
@@ -15,9 +15,9 @@ type Innings =
         BallsSoFarThisOver: int
     }
     member _this.GetRuns =
-        _this.IndividualInnings |> List.sumBy (fun ii -> ii.Score)
+        _this.Individuals |> List.sumBy (fun ii -> ii.Score)
     member _this.GetWickets =
-        _this.IndividualInnings |> List.filter (fun ii -> ii.HowOut.IsSome) |> List.length
+        _this.Individuals |> List.filter (fun ii -> ii.HowOut.IsSome) |> List.length
 
 type InningsStatus =
     | InningsCompleted of Innings
@@ -32,7 +32,7 @@ module InningsFunctions =
 
     let NewInnings =
         {
-            IndividualInnings = [ NewIndividualInnings; NewIndividualInnings ];
+            Individuals = [ NewIndividualInnings; NewIndividualInnings ];
             IsDeclared = false;
             IndexOfBatsmanAtEnd1 = 0;
             IndexOfBatsmanAtEnd2 = 1;
@@ -45,9 +45,13 @@ module InningsFunctions =
         let updateFunction i x = if i = n then f x else x
         List.mapi updateFunction list
 
-    let Update state (ballOutcome: BallOutcome) =
-        state
-//        let swapEnds = ballOutcome.HasChangedEnds
+    let UpdateInningsWithBall (state: Innings) (ballOutcome: BallOutcome) =
+        let swapEnds = ballOutcome.HasChangedEnds
+        {
+            state with
+                IndexOfBatsmanAtEnd1 = if swapEnds then state.IndexOfBatsmanAtEnd2 else state.IndexOfBatsmanAtEnd1;
+                IndexOfBatsmanAtEnd2 = if swapEnds then state.IndexOfBatsmanAtEnd1 else state.IndexOfBatsmanAtEnd2;
+        }
 //        let completedOver = state.BallsSoFarThisOver >= 5
 //        {
 //            IndividualInnings = state.IndividualInnings |> UpdateAtN (Update (Name "test") ballOutcome) state.IndexOfBatsmanAtEnd1;
