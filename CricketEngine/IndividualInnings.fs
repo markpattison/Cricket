@@ -21,11 +21,11 @@ module IndividualInningsFunctions =
             Sixes = 0;
         }
 
-    let Update (bowler: Player) (innings: IndividualInnings) (ball: BallOutcome) =
+    let Update (bowler: Player) (ball: BallOutcome) (innings: IndividualInnings) =
         {
-            Score = innings.Score + GetRuns ball;
-            HowOut = GetHowOut bowler ball;
-            BallsFaced = innings.BallsFaced + if (CountsAsBallFaced ball) then 1 else 0;
-            Fours = innings.Fours + if (IsFour ball) then 1 else 0;
-            Sixes = innings.Sixes + if (IsSix ball) then 1 else 0;
+            Score = innings.Score + ball.GetRuns;
+            HowOut = ball.GetHowOut bowler;
+            BallsFaced = innings.BallsFaced + if (ball.CountsAsBallFaced) then 1 else 0;
+            Fours = innings.Fours + if (ball.IsAFour) then 1 else 0;
+            Sixes = innings.Sixes + if (ball.IsASix) then 1 else 0;
         }

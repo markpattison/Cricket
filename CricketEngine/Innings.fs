@@ -45,11 +45,12 @@ module InningsFunctions =
         let updateFunction i x = if i = n then f x else x
         List.mapi updateFunction list
 
-//    let ScoreRuns runs state =
-//        let swapEnds = (runs % 2) = 1
+    let Update state (ballOutcome: BallOutcome) =
+        state
+//        let swapEnds = ballOutcome.HasChangedEnds
 //        let completedOver = state.BallsSoFarThisOver >= 5
 //        {
-//            IndividualInnings = state.IndividualInnings |> UpdateAtN (IndividualInningsFunctions.ScoreRuns runs) state.IndexOfBatsmanAtEnd1;
+//            IndividualInnings = state.IndividualInnings |> UpdateAtN (Update (Name "test") ballOutcome) state.IndexOfBatsmanAtEnd1;
 //            IsDeclared = false;
 //            IndexOfBatsmanAtEnd1 = if swapEnds then state.IndexOfBatsmanAtEnd2 else state.IndexOfBatsmanAtEnd1;
 //            IndexOfBatsmanAtEnd2 = if swapEnds then state.IndexOfBatsmanAtEnd1 else state.IndexOfBatsmanAtEnd2;

@@ -12,48 +12,48 @@ module ``BallOutcome tests`` =
 
     [<Test>]
     let ``batsmen don't change ends after a dot ball`` ()=
-        (HasChangedEnds DotBall) |> should be False
+        (DotBall.HasChangedEnds) |> should be False
 
     [<Test>]
     let ``batsmen change ends after scoring one`` ()=
-        (HasChangedEnds (ScoreRuns 1)) |> should be True
+        (ScoreRuns 1).HasChangedEnds |> should be True
 
     [<Test>]
     let ``batsmen don't change ends after scoring two`` ()=
-        (HasChangedEnds (ScoreRuns 2)) |> should be False
+        (ScoreRuns 2).HasChangedEnds |> should be False
 
     [<Test>]
     let ``batsmen don't change ends after a four`` ()=
-        (HasChangedEnds Four) |> should be False
+        Four.HasChangedEnds |> should be False
 
     [<Test>]
     let ``batsmen don't change ends after a six`` ()=
-        (HasChangedEnds Six) |> should be False
+        Six.HasChangedEnds |> should be False
 
     [<Test>]
     let ``batsmen don't change ends after being bowled`` ()=
-        (HasChangedEnds Bowled) |> should be False
+        Bowled.HasChangedEnds |> should be False
 
     [<Test>]
     let ``batsmen don't change endsafter beign caught without crossing`` ()=
-        (HasChangedEnds (Caught (fielder, false))) |> should be False
+        (Caught (fielder, false)).HasChangedEnds |> should be False
 
     [<Test>]
     let ``batsmen change ends after being caught after crossing`` ()=
-        (HasChangedEnds (Caught (fielder, true))) |> should be True
+        (Caught (fielder, true)).HasChangedEnds |> should be True
 
     [<Test>]
     let ``batsmen don't change ends after being run out after scoring two without then crossing`` ()=
-        (HasChangedEnds (RunOut (2, false))) |> should be False
+        (RunOut (2, false)).HasChangedEnds |> should be False
 
     [<Test>]
     let ``batsmen change ends after being run out after scoring two then crossing`` ()=
-        (HasChangedEnds (RunOut (2, true))) |> should be True
+        (RunOut (2, true)).HasChangedEnds |> should be True
 
     [<Test>]
     let ``batsmen change ends after being run out after scoring one without then crossing`` ()=
-        (HasChangedEnds (RunOut (1, false))) |> should be True
+        (RunOut (1, false)).HasChangedEnds |> should be True
 
     [<Test>]
     let ``batsmen don't change ends after being run out after scoring one then crossing`` ()=
-        (HasChangedEnds (RunOut (1, true))) |> should be False
+        (RunOut (1, true)).HasChangedEnds |> should be False

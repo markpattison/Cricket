@@ -52,10 +52,11 @@
     <Content Include="packages.config" />
     <Content Include="app.config" />
     <Compile Include="TestHelpers.fs" />
+    <Compile Include="BallOutcomeTests.fs" />
     <Compile Include="MatchStateTests.fs" />
     <Compile Include="SummaryStatusTests.fs" />
     <Compile Include="IndividualInningsTests.fs" />
-    <Compile Include="BallOutcomeTests.fs" />
+    <Compile Include="InningsTests.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FsUnit.NUnit">
