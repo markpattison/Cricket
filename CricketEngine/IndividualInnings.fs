@@ -1,29 +1,31 @@
 ﻿namespace Cricket.CricketEngine
 
-type HowOut =
-    | Bowled
-    | TimedOut
-    | Caught
-    | HandledTheBall
-    | HitTheBallTwice
-    | HitWicket
-    | LegBeforeWicket
-    | ObstructingTheField
-    | RunOut
-    | Stumped
-
 type IndividualInnings =
-    { Score: int; HowOut: HowOut option; BallsFaced: int }
+    {
+        Score: int;
+        HowOut: HowOut option;
+        BallsFaced: int;
+        Fours: int;
+        Sixes: int;
+    }
 
 [<AutoOpen>]
-module IndividualInningsTransitions =
+module IndividualInningsFunctions =
 
-    let NewIndividualInnings = { Score = 0; HowOut = None; BallsFaced = 0 }
+    let NewIndividualInnings =
+        {
+            Score = 0;
+            HowOut = None;
+            BallsFaced = 0;
+            Fours = 0;
+            Sixes = 0;
+        }
 
-    let ScoreRuns runs innings =
-        { innings with Score = innings.Score + runs; BallsFaced = innings.BallsFaced + 1 }
-
-    let DotBall = ScoreRuns 0
-
-    let GetOut innings howOut =
-        { innings with HowOut = Some howOut }
+    let Update (bowler: Player) (innings: IndividualInnings) (ball: BallOutcome) =
+        {
+            Score = innings.Score + GetRuns ball;
+            HowOut = GetHowOut bowler ball;
+            BallsFaced = innings.BallsFaced + if (CountsAsBallFaced ball) then 1 else 0;
+            Fours = innings.Fours + if (IsFour ball) then 1 else 0;
+            Sixes = innings.Sixes + if (IsSix ball) then 1 else 0;
+        }

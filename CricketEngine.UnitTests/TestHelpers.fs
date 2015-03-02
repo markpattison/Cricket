@@ -67,8 +67,8 @@ module TestHelpers =
 
     let rec createInnings score wickets =
         match wickets with
-        | 0 -> { IndividualInnings = [ { NewIndividualInnings with Score = score }; NewIndividualInnings]; IsDeclared = false }
-        | n -> { IndividualInnings = { NewIndividualInnings with HowOut = Some Bowled } :: (createInnings score (n - 1)).IndividualInnings ; IsDeclared = false }
+        | 0 -> { NewInnings with IndividualInnings = [ { NewIndividualInnings with Score = score }; NewIndividualInnings] }
+        | n -> { NewInnings with IndividualInnings = { NewIndividualInnings with HowOut = Some RunOut } :: (createInnings score (n - 1)).IndividualInnings }
 
     let (%/) runs wickets = createInnings runs wickets
     let (%/%) runs wickets = { (createInnings runs wickets) with IsDeclared = true }

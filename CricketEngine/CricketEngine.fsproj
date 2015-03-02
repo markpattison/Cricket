@@ -42,7 +42,9 @@
     <Reference Include="System.Numerics" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Types.fs" />
     <Compile Include="MatchRules.fs" />
+    <Compile Include="BallOutcome.fs" />
     <Compile Include="IndividualInnings.fs" />
     <Compile Include="Innings.fs" />
     <Compile Include="MatchState.fs" />
