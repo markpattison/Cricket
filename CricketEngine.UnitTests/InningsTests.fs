@@ -65,6 +65,7 @@ type InningsBallsIncrementedTests ()=
         |]
 
     static member BallsFaced = [| 0; 1; 2; 3; 4 |]
+    static member Ends = [| End1; End2 |]
 
     [<Test>]
     member _x.``balls faced this over should increment correctly before end of over`` ([<ValueSource("TestData")>] testData) ([<ValueSource("BallsFaced")>] ballsFaced) =
@@ -95,3 +96,17 @@ type InningsBallsIncrementedTests ()=
             updated.OversCompleted |> should equal 11
         else
             updated.OversCompleted |> should equal 10 
+
+    [<Test>]
+    member _x.``end facing next should not change before end of over`` ([<ValueSource("TestData")>] testData) ([<ValueSource("BallsFaced")>] ballsFaced) ([<ValueSource("Ends")>] currentEnd) =
+        let ball, (_: bool) = testData
+        let testInnings = { innings with BallsSoFarThisOver = ballsFaced; EndFacingNext = currentEnd }
+        let updated = UpdateInningsWithBall testInnings ball
+        updated.EndFacingNext |> should equal currentEnd
+
+    [<Test>]
+    member _x.``end facing next should change at the end of an over`` ([<ValueSource("TestData")>] testData) ([<ValueSource("Ends")>] currentEnd) =
+        let ball, (_: bool) = testData
+        let testInnings = { innings with BallsSoFarThisOver = 5; EndFacingNext = currentEnd }
+        let updated = UpdateInningsWithBall testInnings ball
+        updated.EndFacingNext |> should not' (equal currentEnd)

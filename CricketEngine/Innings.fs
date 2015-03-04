@@ -3,6 +3,7 @@
 type End =
     | End1
     | End2
+    member _this.OtherEnd = if _this = End1 then End2 else End1
 
 type Innings =
     {
@@ -48,15 +49,16 @@ module InningsFunctions =
     let UpdateInningsWithBall state (ballOutcome: BallOutcome) =
         let swapEnds = ballOutcome.HasChangedEnds
         let countsAsBallFaced = ballOutcome.CountsAsBallFaced
-        let (overs, balls) =
+        let (overs, balls, endFacing) =
             match countsAsBallFaced, state.BallsSoFarThisOver with
-            | false, _ -> state.OversCompleted, state.BallsSoFarThisOver
-            | true, 5 -> state.OversCompleted + 1, 0
-            | true, n -> state.OversCompleted, n + 1
+            | false, _ -> state.OversCompleted, state.BallsSoFarThisOver, state.EndFacingNext
+            | true, 5 -> state.OversCompleted + 1, 0, state.EndFacingNext.OtherEnd
+            | true, n -> state.OversCompleted, n + 1, state.EndFacingNext
         {
             state with
                 IndexOfBatsmanAtEnd1 = if swapEnds then state.IndexOfBatsmanAtEnd2 else state.IndexOfBatsmanAtEnd1;
                 IndexOfBatsmanAtEnd2 = if swapEnds then state.IndexOfBatsmanAtEnd1 else state.IndexOfBatsmanAtEnd2;
+                EndFacingNext = endFacing;
                 OversCompleted = overs;
                 BallsSoFarThisOver = balls;
         }
