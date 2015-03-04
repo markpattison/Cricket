@@ -45,20 +45,19 @@ module InningsFunctions =
         let updateFunction i x = if i = n then f x else x
         List.mapi updateFunction list
 
-    let UpdateInningsWithBall (state: Innings) (ballOutcome: BallOutcome) =
+    let UpdateInningsWithBall state (ballOutcome: BallOutcome) =
         let swapEnds = ballOutcome.HasChangedEnds
+        let countsAsBallFaced = ballOutcome.CountsAsBallFaced
+        let (overs, balls) =
+            match countsAsBallFaced, state.BallsSoFarThisOver with
+            | false, _ -> state.OversCompleted, state.BallsSoFarThisOver
+            | true, 5 -> state.OversCompleted + 1, 0
+            | true, n -> state.OversCompleted, n + 1
         {
             state with
                 IndexOfBatsmanAtEnd1 = if swapEnds then state.IndexOfBatsmanAtEnd2 else state.IndexOfBatsmanAtEnd1;
                 IndexOfBatsmanAtEnd2 = if swapEnds then state.IndexOfBatsmanAtEnd1 else state.IndexOfBatsmanAtEnd2;
+                OversCompleted = overs;
+                BallsSoFarThisOver = balls;
         }
-//        let completedOver = state.BallsSoFarThisOver >= 5
-//        {
-//            IndividualInnings = state.IndividualInnings |> UpdateAtN (Update (Name "test") ballOutcome) state.IndexOfBatsmanAtEnd1;
-//            IsDeclared = false;
-//            IndexOfBatsmanAtEnd1 = if swapEnds then state.IndexOfBatsmanAtEnd2 else state.IndexOfBatsmanAtEnd1;
-//            IndexOfBatsmanAtEnd2 = if swapEnds then state.IndexOfBatsmanAtEnd1 else state.IndexOfBatsmanAtEnd2;
-//            EndFacingNext = state.EndFacingNext;
-//            OversCompleted = state.OversCompleted + if completedOver then 1 else 0;
-//            BallsSoFarThisOver = if completedOver then 0 else state.BallsSoFarThisOver + 1;
-//        }
+
