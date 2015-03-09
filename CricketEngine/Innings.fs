@@ -58,7 +58,7 @@ module InningsFunctions =
     let swap (a, b) = (b, a)
     let tempBowler = Name "tempBowler" // TODO
 
-    let UpdateInningsWithBall state (ballOutcome: BallOutcome) =
+    let UpdateInningsWithBall (ballOutcome: BallOutcome) state =
         let swapEnds = ballOutcome.HasChangedEnds
         let countsAsBallFaced = ballOutcome.CountsAsBallFaced
         let (overs, balls, endFacing) =

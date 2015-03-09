@@ -147,6 +147,21 @@ module MatchStateTransitions =
 
 [<AutoOpen>]
 module MatchStateFunctions = 
+
+    let CurrentInnings state =
+        match state with
+        | NotStarted | Abandoned | A_Completed _ | A_MatchDrawn _ | AB_CompletedNoFollowOn _ -> failwith "no current innings"
+        | AB_CompletedPossibleFollowOn _ | AB_MatchDrawn _ | ABA_VictoryB _ -> failwith "no current innings"
+        | ABA_Completed _ | ABA_MatchDrawn _ | ABB_VictoryA _ -> failwith "no current innings"
+        | ABB_Completed _ | ABB_MatchDrawn _ | ABAB_VictoryA _ -> failwith "no current innings"
+        | ABAB_VictoryB _ | ABAB_MatchDrawn _ | ABAB_MatchTied _ -> failwith "no current innings"
+        | ABBA_VictoryA _ | ABBA_VictoryB _ | ABBA_MatchDrawn _ -> failwith "no current innings"
+        | ABBA_MatchTied _ -> failwith "no current innings"
+        | A_Ongoing a1 -> a1
+        | AB_Ongoing (_, b1) -> b1
+        | ABA_Ongoing (_, _, a2) | ABBA_Ongoing (_, _, _, a2) -> a2
+        | ABB_Ongoing (_, _, b2) | ABAB_Ongoing (_, _, _, b2) -> b2
+
     let TotalRunsA state = 
         match state with
         | NotStarted | Abandoned -> 0
