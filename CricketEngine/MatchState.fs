@@ -77,7 +77,7 @@ module MatchStateTransitions =
         | AB_CompletedPossibleFollowOn(a1, b1) -> ABA_Ongoing(a1, b1, NewInnings)
         | _ -> failwith "Call to DeclineFollowOn in invalid state"
     
-    let UpdateInnings rules inningsUpdater state = 
+    let UpdateInnings inningsUpdater rules state = 
         match state with
         | A_Ongoing(a1) -> 
             match inningsUpdater a1 with

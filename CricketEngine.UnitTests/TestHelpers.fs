@@ -111,5 +111,5 @@ module TestHelpers =
     let sampleCompletedInnings = 789 %/ 10
     let sampleEmptyInnings = 0 %/ 0
 
-    let sampleUpdaterOngoing = UpdateInnings sampleMatchRules (fun _ -> InningsOngoing sampleOngoingInnings)
-    let sampleUpdaterCompleted = UpdateInnings sampleMatchRules (fun _ -> InningsCompleted sampleCompletedInnings)
+    let sampleUpdaterOngoing = UpdateInnings (fun _ -> InningsOngoing sampleOngoingInnings) sampleMatchRules
+    let sampleUpdaterCompleted = UpdateInnings (fun _ -> InningsCompleted sampleCompletedInnings) sampleMatchRules

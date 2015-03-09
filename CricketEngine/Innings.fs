@@ -32,8 +32,8 @@ type Innings =
 type InningsStatus =
     | InningsCompleted of Innings
     | InningsOngoing of Innings
-    member x.GetInnings =
-        match x with
+    member _x.GetInnings =
+        match _x with
         | InningsCompleted innings -> innings
         | InningsOngoing innings -> innings
 
@@ -78,36 +78,39 @@ module InningsFunctions =
             match state.EndFacingNext, swapEnds with
             | End1, false | End2, true -> unswappedAssumingEnd1
             | End1, true | End2, false -> swap unswappedAssumingEnd1
-        {
-            state with
-                IndexOfBatsmanAtEnd1 = batsmanAtEnd1;
-                IndexOfBatsmanAtEnd2 = batsmanAtEnd2;
-                EndFacingNext = endFacing;
-                OversCompleted = overs;
-                BallsSoFarThisOver = balls;
-        }
+        InningsOngoing
+            {
+                state with
+                    IndexOfBatsmanAtEnd1 = batsmanAtEnd1;
+                    IndexOfBatsmanAtEnd2 = batsmanAtEnd2;
+                    EndFacingNext = endFacing;
+                    OversCompleted = overs;
+                    BallsSoFarThisOver = balls;
+            }
 
-    let SendInNewBatsman state (nextBatsman: Player) =
+    let SendInNewBatsman (nextBatsman: Player) state =
         let nextIndex = List.length state.Individuals
-        match state.IndexOfBatsmanAtEnd1, state.IndexOfBatsmanAtEnd2 with
-        | None, None ->
-            if nextIndex = 0 then
+        let updatedState =
+            match state.IndexOfBatsmanAtEnd1, state.IndexOfBatsmanAtEnd2 with
+            | None, None ->
+                if nextIndex = 0 then
+                    {
+                        state with
+                            Individuals = List.append state.Individuals [(nextBatsman, NewIndividualInnings)];
+                            IndexOfBatsmanAtEnd1 = Some nextIndex;
+                    }
+                else failwith "cannot have two batsmen out at the same time"
+            | Some _, Some _ -> failwith "cannot send in new batsman unless one is out"
+            | None, Some _ ->
                 {
                     state with
                         Individuals = List.append state.Individuals [(nextBatsman, NewIndividualInnings)];
                         IndexOfBatsmanAtEnd1 = Some nextIndex;
                 }
-            else failwith "cannot have two batsmen out at the same time"
-        | Some _, Some _ -> failwith "cannot send in new batsman unless one is out"
-        | None, Some _ ->
-            {
-                state with
-                    Individuals = List.append state.Individuals [(nextBatsman, NewIndividualInnings)];
-                    IndexOfBatsmanAtEnd1 = Some nextIndex;
-            }
-        | Some _, None ->
-            {
-                state with
-                    Individuals = List.append state.Individuals [(nextBatsman, NewIndividualInnings)];
-                    IndexOfBatsmanAtEnd2 = Some nextIndex;
-            }
+            | Some _, None ->
+                {
+                    state with
+                        Individuals = List.append state.Individuals [(nextBatsman, NewIndividualInnings)];
+                        IndexOfBatsmanAtEnd2 = Some nextIndex;
+                }
+        InningsOngoing updatedState

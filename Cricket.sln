@@ -7,6 +7,8 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "CricketEngine", "CricketEng
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "CricketEngine.UnitTests", "CricketEngine.UnitTests\CricketEngine.UnitTests.fsproj", "{5D4C0263-4763-4E27-87E2-BA094E733EF9}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "CricketEngine.AcceptanceTests", "CricketEngine.AcceptanceTests\CricketEngine.AcceptanceTests.fsproj", "{9D9510F4-F123-40C8-AC18-CAD105CF6953}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{5D4C0263-4763-4E27-87E2-BA094E733EF9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5D4C0263-4763-4E27-87E2-BA094E733EF9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5D4C0263-4763-4E27-87E2-BA094E733EF9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9D9510F4-F123-40C8-AC18-CAD105CF6953}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9D9510F4-F123-40C8-AC18-CAD105CF6953}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9D9510F4-F123-40C8-AC18-CAD105CF6953}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9D9510F4-F123-40C8-AC18-CAD105CF6953}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

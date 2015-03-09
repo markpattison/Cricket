@@ -4,13 +4,19 @@ type Match =
     {
         TeamA: string;
         TeamB: string;
-        State: MatchState
+        State: MatchState;
+        Rules: MatchRules;
     }
-    member x.UpdateState (update: MatchState -> MatchState) = { x with State = (update x.State) }
 
 [<AutoOpen>]
 module MatchFunctions =
     
+    let UpdateMatchState update match' = { match' with State = (update match'.Rules match'.State) }
+    let UpdateCurrentInnings update = UpdateMatchState (UpdateInnings update)
+
+    let NewMatch rules teamA teamB =
+        { TeamA = teamA; TeamB = teamB; State = NotStarted; Rules = rules }
+
     let formatRuns runs =
         match runs with
         | 1 -> "1 run"
@@ -26,7 +32,7 @@ module MatchFunctions =
     let formatWicketsLeft wickets =
         formatWickets (10 - wickets)
 
-    let SummaryStatus rules _match =
+    let SummaryStatus _match =
         let state = _match.State
         match state with
         | NotStarted -> "Match not started"
