@@ -19,6 +19,15 @@ type Innings =
         _this.Individuals |> List.sumBy (fun (_, ii) -> ii.Score)
     member _this.GetWickets =
         _this.Individuals |> List.filter (fun (_, ii) -> ii.HowOut.IsSome) |> List.length
+//    member _this.GetFacingBatsman =
+//        let indexOfFacingBatsman =
+//            match _this.IsDeclared, _this.GetWickets, _this.EndFacingNext with
+//            | true, _, _ | _, 10, _ -> failwith "innings over"
+//            | _, _, End1 -> _this.IndexOfBatsmanAtEnd1
+//            | _, _, End2 -> _this.IndexOfBatsmanAtEnd2
+//        match indexOfFacingBatsman with
+//        | None -> failwith "facing batsman not found"
+//        | Some n -> _this.Individuals.Item n
 
 type InningsStatus =
     | InningsCompleted of Innings
@@ -31,12 +40,12 @@ type InningsStatus =
 [<AutoOpen>]
 module InningsFunctions =
 
-    let NewInnings batsman1 batsman2 =
+    let NewInnings =
         {
-            Individuals = [ (batsman1, NewIndividualInnings); (batsman2, NewIndividualInnings) ];
+            Individuals = [];
             IsDeclared = false;
-            IndexOfBatsmanAtEnd1 = Some 0;
-            IndexOfBatsmanAtEnd2 = Some 1;
+            IndexOfBatsmanAtEnd1 = None;
+            IndexOfBatsmanAtEnd2 = None;
             EndFacingNext = End1;
             OversCompleted = 0;
             BallsSoFarThisOver = 0;
@@ -81,7 +90,14 @@ module InningsFunctions =
     let SendInNewBatsman state (nextBatsman: Player) =
         let nextIndex = List.length state.Individuals
         match state.IndexOfBatsmanAtEnd1, state.IndexOfBatsmanAtEnd2 with
-        | None, None -> failwith "cannot have two batsmen out at the same time"
+        | None, None ->
+            if nextIndex = 0 then
+                {
+                    state with
+                        Individuals = List.append state.Individuals [(nextBatsman, NewIndividualInnings)];
+                        IndexOfBatsmanAtEnd1 = Some nextIndex;
+                }
+            else failwith "cannot have two batsmen out at the same time"
         | Some _, Some _ -> failwith "cannot send in new batsman unless one is out"
         | None, Some _ ->
             {

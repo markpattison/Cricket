@@ -200,10 +200,26 @@ type SendInNewBatsmanTests ()=
     let inningsWithNoBatsmen = { innings with IndexOfBatsmanAtEnd1 = None; IndexOfBatsmanAtEnd2 = None }
 
     let testBatsman = Name "sentInBatsman"
+    let testBatsman2 = Name "sentInBatsman2"
 
     [<Test>]
-    member _x.``cannot send in a new batsman to an innings with no batsmen`` ()=
+    member _x.``cannot send in a new batsman to an already-started innings with no batsmen`` ()=
         (fun () -> (SendInNewBatsman inningsWithNoBatsmen testBatsman) |> ignore) |> should throw typeof<System.Exception>
+
+    [<Test>]
+    member _x.``first opener in is added correctly to innings`` ()=
+        let updated = SendInNewBatsman NewInnings testBatsman
+        updated.IndexOfBatsmanAtEnd1 |> should equal (Some 0)
+        updated.Individuals |> should haveLength 1
+        (updated.Individuals.Item 0) |> should equal (testBatsman, NewIndividualInnings)
+
+    [<Test>]
+    member _x.``second opener in is added correctly to innings`` ()=
+        let updated1 = SendInNewBatsman NewInnings testBatsman
+        let updated2 = SendInNewBatsman updated1 testBatsman2
+        updated2.IndexOfBatsmanAtEnd2 |> should equal (Some 1)
+        updated2.Individuals |> should haveLength 2
+        (updated2.Individuals.Item 1) |> should equal (testBatsman2, NewIndividualInnings)
 
     [<Test>]
     member _x.``cannot send in a new batsman to an innings with two batsmen`` ()=
@@ -212,11 +228,11 @@ type SendInNewBatsmanTests ()=
     [<Test>]
     member _x.``new batsman added correctly to innings at end 1`` ()=
         let updated = SendInNewBatsman inningsWithNoBatsmanAtEnd1 testBatsman
-        (updated.IndexOfBatsmanAtEnd1) |> should equal (Some 2)
+        updated.IndexOfBatsmanAtEnd1 |> should equal (Some 2)
         updated.Individuals.Item(2) |> should equal (testBatsman, NewIndividualInnings)
 
     [<Test>]
     member _x.``new batsman added correctly to innings at end 2`` ()=
         let updated = SendInNewBatsman inningsWithNoBatsmanAtEnd2 testBatsman
-        (updated.IndexOfBatsmanAtEnd2) |> should equal (Some 2)
+        updated.IndexOfBatsmanAtEnd2 |> should equal (Some 2)
         updated.Individuals.Item(2) |> should equal (testBatsman, NewIndividualInnings)

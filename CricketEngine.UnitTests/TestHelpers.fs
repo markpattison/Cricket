@@ -101,8 +101,8 @@ module TestHelpers =
 
     let rec createInnings score wickets =
         match wickets with
-        | 0 -> { NewInnings SampleData.sampleBatsman1 SampleData.sampleBatsman2 with Individuals = [ (SampleData.sampleBatsman1, {NewIndividualInnings with Score = score}); (SampleData.sampleBatsman2, NewIndividualInnings) ] }
-        | n -> { NewInnings SampleData.sampleBatsman1 SampleData.sampleBatsman2 with Individuals = (SampleData.sampleBatsman1, { NewIndividualInnings with HowOut = Some HowOut.RunOut }) :: (createInnings score (n - 1)).Individuals }
+        | 0 -> { SampleData.sampleInnings with Individuals = [ (SampleData.sampleBatsman1, {NewIndividualInnings with Score = score}); (SampleData.sampleBatsman2, NewIndividualInnings) ] }
+        | n -> { SampleData.sampleInnings with Individuals = (SampleData.sampleBatsman1, { NewIndividualInnings with HowOut = Some HowOut.RunOut }) :: (createInnings score (n - 1)).Individuals }
 
     let (%/) runs wickets = createInnings runs wickets
     let (%/%) runs wickets = { (createInnings runs wickets) with IsDeclared = true }
