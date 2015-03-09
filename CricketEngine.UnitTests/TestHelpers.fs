@@ -13,12 +13,15 @@ module SampleData =
             Sixes = 1;
         }
 
+    let sampleBatsman1 = Name "testBatsman 1"
+    let sampleBatsman2 = Name "testBatsman 2"
+
     let sampleInnings =
         {
-            Individuals = [ NewIndividualInnings; NewIndividualInnings ];
+            Individuals = [ (sampleBatsman1, NewIndividualInnings); (sampleBatsman2, NewIndividualInnings) ];
             IsDeclared = false;
-            IndexOfBatsmanAtEnd1 = 0;
-            IndexOfBatsmanAtEnd2 = 1;
+            IndexOfBatsmanAtEnd1 = Some 0;
+            IndexOfBatsmanAtEnd2 = Some 1;
             EndFacingNext = End1;
             OversCompleted = 0;
             BallsSoFarThisOver = 0;
@@ -98,8 +101,8 @@ module TestHelpers =
 
     let rec createInnings score wickets =
         match wickets with
-        | 0 -> { NewInnings with Individuals = [ { NewIndividualInnings with Score = score }; NewIndividualInnings] }
-        | n -> { NewInnings with Individuals = { NewIndividualInnings with HowOut = Some HowOut.RunOut } :: (createInnings score (n - 1)).Individuals }
+        | 0 -> { NewInnings SampleData.sampleBatsman1 SampleData.sampleBatsman2 with Individuals = [ (SampleData.sampleBatsman1, {NewIndividualInnings with Score = score}); (SampleData.sampleBatsman2, NewIndividualInnings) ] }
+        | n -> { NewInnings SampleData.sampleBatsman1 SampleData.sampleBatsman2 with Individuals = (SampleData.sampleBatsman1, { NewIndividualInnings with HowOut = Some HowOut.RunOut }) :: (createInnings score (n - 1)).Individuals }
 
     let (%/) runs wickets = createInnings runs wickets
     let (%/%) runs wickets = { (createInnings runs wickets) with IsDeclared = true }

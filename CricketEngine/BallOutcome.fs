@@ -10,7 +10,8 @@ type BallOutcome =
     | LBW
     | Caught of CaughtBy: Player * Crossed: bool
     | Stumped of StumpedBy: Player
-    | RunOut of Runs: int * AlsoCrossed: bool
+    | RunOutStriker of Runs: int * AlsoCrossed: bool
+    | RunOutNonStriker of Runs: int * AlsoCrossed: bool
 
     member _this.GetRuns =
         match _this with
@@ -18,7 +19,8 @@ type BallOutcome =
         | ScoreRuns runs -> runs
         | Four -> 4
         | Six -> 6
-        | RunOut (runs, _) -> runs
+        | RunOutStriker (runs, _) -> runs
+        | RunOutNonStriker (runs, _) -> runs
         | Bowled | HitWicket | Caught _ | LBW | Stumped _ -> 0
 
     member _this.HasChangedEnds =
@@ -27,17 +29,25 @@ type BallOutcome =
         | ScoreRuns runs when (runs % 2 = 1) -> true
         | ScoreRuns _ -> false
         | Caught (_, crossed) -> crossed
-        | RunOut (runs, alsoCrossed) when (runs % 2 = 1) -> not alsoCrossed
-        | RunOut (_, alsoCrossed) -> alsoCrossed
+        | RunOutStriker (runs, alsoCrossed) when (runs % 2 = 1) -> not alsoCrossed
+        | RunOutNonStriker (runs, alsoCrossed) when (runs % 2 = 1) -> not alsoCrossed
+        | RunOutStriker (_, alsoCrossed) -> alsoCrossed
+        | RunOutNonStriker (_, alsoCrossed) -> alsoCrossed
 
-    member _this.GetHowOut bowler =
+    member _this.GetHowStrikerOut bowler =
         match _this with
         | Bowled -> Some (HowOut.Bowled bowler)
         | LBW -> Some (HowOut.LBW bowler)
         | HitWicket -> Some (HowOut.HitWicket bowler)
         | Caught (caughtBy, _) -> Some (HowOut.Caught (bowler, caughtBy))
         | Stumped (stumpedBy) -> Some (HowOut.Stumped (bowler, stumpedBy))
-        | RunOut (_, _) -> Some (HowOut.RunOut)
+        | RunOutStriker (_, _) -> Some (HowOut.RunOut)
+        | RunOutNonStriker (_, _) -> None
+        | DotBall | ScoreRuns _ | Four | Six -> None
+
+    member _this.GetHowNonStrikerOut =
+        match _this with
+        | RunOutNonStriker (_, _) -> Some (HowOut.RunOut)
         | _ -> None
 
     member _this.CountsAsBallFaced =
@@ -46,10 +56,10 @@ type BallOutcome =
 
     member _this.IsAFour =
         match _this with
-        | Four | ScoreRuns 4 | RunOut (4, _) -> true
+        | Four | ScoreRuns 4 | RunOutStriker (4, _) | RunOutNonStriker (4, _) -> true
         | _ -> false
 
     member _this.IsASix =
         match _this with
-        | Six | ScoreRuns 6 | RunOut (6, _) -> true
+        | Six | ScoreRuns 6 | RunOutStriker (6, _) | RunOutNonStriker (6, _) -> true
         | _ -> false

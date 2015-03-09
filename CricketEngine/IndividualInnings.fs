@@ -24,8 +24,11 @@ module IndividualInningsFunctions =
     let Update (bowler: Player) (ball: BallOutcome) (innings: IndividualInnings) =
         {
             Score = innings.Score + ball.GetRuns;
-            HowOut = ball.GetHowOut bowler;
+            HowOut = ball.GetHowStrikerOut bowler;
             BallsFaced = innings.BallsFaced + if (ball.CountsAsBallFaced) then 1 else 0;
             Fours = innings.Fours + if (ball.IsAFour) then 1 else 0;
             Sixes = innings.Sixes + if (ball.IsASix) then 1 else 0;
         }
+
+    let UpdateRunOutNonStriker (innings: IndividualInnings) =
+        { innings with HowOut = Some HowOut.RunOut }

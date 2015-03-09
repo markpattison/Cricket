@@ -22,9 +22,10 @@ type IndividualInningsScoreTests ()=
             HitWicket, 0;
             Caught (SampleData.sampleFielder, false), 0;
             Stumped SampleData.sampleFielder, 0;
-            RunOut (0, false), 0;
-            RunOut (1, true), 1;
-        |]
+            RunOutStriker (0, false), 0;
+            RunOutStriker (1, true), 1;
+            RunOutNonStriker (0, false), 0;
+            RunOutNonStriker (1, true), 1;        |]
 
     [<TestCaseSource("TestData")>]
     member _x.``batsman's score increases correctly`` testData =
@@ -49,9 +50,10 @@ type IndividualInningsHowOutTests ()=
             Caught (SampleData.sampleFielder, false), Some (HowOut.Caught (SampleData.sampleBowler, SampleData.sampleFielder));
             Caught (SampleData.sampleFielder, true), Some (HowOut.Caught (SampleData.sampleBowler, SampleData.sampleFielder));
             Stumped SampleData.sampleFielder, Some (HowOut.Stumped (SampleData.sampleBowler, SampleData.sampleFielder));
-            RunOut (0, false), Some (HowOut.RunOut);
-            RunOut (1, true), Some (HowOut.RunOut);
-       |]
+            RunOutStriker (0, false), Some (HowOut.RunOut);
+            RunOutStriker (1, true), Some (HowOut.RunOut);
+            RunOutNonStriker (0, false), None;
+            RunOutNonStriker (1, true), None;       |]
 
     [<TestCaseSource("TestData")>]
     member _x.``batsman is out correctly`` (testData: BallOutcome * HowOut option) =
@@ -75,9 +77,10 @@ type IndividualInningsBallsFacedTests ()=
             HitWicket, true;
             Caught (SampleData.sampleFielder, false), true;
             Stumped SampleData.sampleFielder, true;
-            RunOut (0, true), true;
-            RunOut (1, false), true;
-        |]
+            RunOutStriker (0, true), true;
+            RunOutStriker (1, false), true;
+            RunOutNonStriker (0, true), true;
+            RunOutNonStriker (1, false), true;        |]
 
     [<TestCaseSource("TestData")>]
     member _x.``batsman's balls faced update correctly`` testData =
@@ -101,11 +104,14 @@ type IndividualInningsFoursTests ()=
             HitWicket, false;
             Caught (SampleData.sampleFielder, false), false;
             Stumped SampleData.sampleFielder, false;
-            RunOut (3, true), false;
-            RunOut (3, false), false;
-            RunOut (4, true), true;
-            RunOut (4, false), true;
-        |]
+            RunOutStriker (3, true), false;
+            RunOutStriker (3, false), false;
+            RunOutStriker (4, true), true;
+            RunOutStriker (4, false), true;
+            RunOutNonStriker (3, true), false;
+            RunOutNonStriker (3, false), false;
+            RunOutNonStriker (4, true), true;
+            RunOutNonStriker (4, false), true;        |]
 
     [<TestCaseSource("TestData")>]
     member _x.``batsman's fours update correctly`` testData =
@@ -129,10 +135,14 @@ type IndividualInningsSixesTests ()=
             HitWicket, false;
             Caught (SampleData.sampleFielder, false), false;
             Stumped SampleData.sampleFielder, false;
-            RunOut (5, true), false;
-            RunOut (5, false), false;
-            RunOut (6, true), true;
-            RunOut (6, false), true;
+            RunOutStriker (5, true), false;
+            RunOutStriker (5, false), false;
+            RunOutStriker (6, true), true;
+            RunOutStriker (6, false), true;
+            RunOutNonStriker (5, true), false;
+            RunOutNonStriker (5, false), false;
+            RunOutNonStriker (6, true), true;
+            RunOutNonStriker (6, false), true;
         |]
 
     [<TestCaseSource("TestData")>]

@@ -46,9 +46,9 @@ module MatchStateTransitions =
     //        | MatchNotStarted -> NotStarted
     //        | MatchOngoing -> Ongoing
     //        | _ -> Completed
-    let StartMatch rules state = 
+    let StartMatch firstInnings rules state = 
         match state with
-        | NotStarted -> A_Ongoing(NewInnings)
+        | NotStarted -> A_Ongoing(firstInnings)
         | _ -> failwith "Call to StartMatch in invalid state"
     
     let AbandonMatch rules state = 
@@ -67,14 +67,14 @@ module MatchStateTransitions =
         | ABBA_Ongoing(a1, b1, b2, a2) -> ABBA_MatchDrawn(a1, b1, b2, a2)
         | _ -> failwith "Call to DrawMatch in invalid state"
     
-    let EnforceFollowOn rules state = 
+    let EnforceFollowOn nextInnings rules state = 
         match state with
-        | AB_CompletedPossibleFollowOn(a1, b1) -> ABB_Ongoing(a1, b1, NewInnings)
+        | AB_CompletedPossibleFollowOn(a1, b1) -> ABB_Ongoing(a1, b1, nextInnings)
         | _ -> failwith "Call to EnforceFollowOn in invalid state"
     
-    let DeclineFollowOn rules state = 
+    let DeclineFollowOn nextInnings rules state = 
         match state with
-        | AB_CompletedPossibleFollowOn(a1, b1) -> ABA_Ongoing(a1, b1, NewInnings)
+        | AB_CompletedPossibleFollowOn(a1, b1) -> ABA_Ongoing(a1, b1, nextInnings)
         | _ -> failwith "Call to DeclineFollowOn in invalid state"
     
     let UpdateInnings rules inningsUpdater state = 

@@ -11,10 +11,11 @@ open TestHelpers
 module ``MatchState NotStarted tests`` =
 
     let state = NotStarted
+    let sampleInnings = TestHelpers.sampleEmptyInnings
 
     [<Test>]
     let ``starting the match creates a new ongoing match`` ()=
-        (StartMatch sampleMatchRules state) |> matchStateCase |> should equal A_OngoingCase
+        (StartMatch sampleInnings sampleMatchRules state) |> matchStateCase |> should equal A_OngoingCase
 
     [<Test>]
     let ``abandoning the match creates an abandoned match`` ()=
@@ -30,19 +31,20 @@ module ``MatchState NotStarted tests`` =
 
     [<Test>]
     let ``enforcing the follow-on throws an error`` ()=
-        (fun () -> EnforceFollowOn sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> EnforceFollowOn sampleInnings sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
     [<Test>]
     let ``declining the follow-on throws an error`` ()=
-        (fun () -> DeclineFollowOn sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> DeclineFollowOn sampleInnings sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
 module ``MatchState Abandoned tests`` =
 
     let state = Abandoned
+    let sampleInnings = TestHelpers.sampleEmptyInnings
 
     [<Test>]
     let ``starting the match throws an error`` ()=
-        (fun () -> StartMatch sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> StartMatch sampleInnings sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
     [<Test>]
     let ``abandoning the match throws an error`` ()=
@@ -58,20 +60,21 @@ module ``MatchState Abandoned tests`` =
 
     [<Test>]
     let ``enforcing the follow-on throws an error`` ()=
-        (fun () -> EnforceFollowOn sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> EnforceFollowOn sampleInnings sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
     [<Test>]
     let ``declining the follow-on throws an error`` ()=
-        (fun () -> DeclineFollowOn sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> DeclineFollowOn sampleInnings sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
 module ``MatchState A_Completed tests`` =
 
     let a1 = createInnings 5 0
     let state = A_Completed (a1)
+    let sampleInnings = TestHelpers.sampleEmptyInnings
 
     [<Test>]
     let ``starting the match throws an error`` ()=
-        (fun () -> StartMatch sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> StartMatch sampleInnings sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
     [<Test>]
     let ``abandoning the match throws an error`` ()=
@@ -87,20 +90,21 @@ module ``MatchState A_Completed tests`` =
 
     [<Test>]
     let ``enforcing the follow-on throws an error`` ()=
-        (fun () -> EnforceFollowOn sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> EnforceFollowOn sampleInnings sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
     [<Test>]
     let ``declining the follow-on throws an error`` ()=
-        (fun () -> DeclineFollowOn sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> DeclineFollowOn sampleInnings sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
 module ``MatchState A_MatchDrawn tests`` =
 
     let a1 = createInnings 5 0
     let state = A_MatchDrawn (a1)
+    let sampleInnings = TestHelpers.sampleEmptyInnings
 
     [<Test>]
     let ``starting the match throws an error`` ()=
-        (fun () -> StartMatch sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> StartMatch sampleInnings sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
     [<Test>]
     let ``abandoning the match throws an error`` ()=
@@ -116,21 +120,22 @@ module ``MatchState A_MatchDrawn tests`` =
 
     [<Test>]
     let ``enforcing the follow-on throws an error`` ()=
-        (fun () -> EnforceFollowOn sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> EnforceFollowOn sampleInnings sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
     [<Test>]
     let ``declining the follow-on throws an error`` ()=
-        (fun () -> DeclineFollowOn sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> DeclineFollowOn sampleInnings sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
 module ``MatchState AB_CompletedNoFollowOn tests`` =
 
     let a1 = createInnings 5 0
     let b1 = createInnings 10 0
     let state = AB_CompletedNoFollowOn (a1, b1)
+    let sampleInnings = TestHelpers.sampleEmptyInnings
 
     [<Test>]
     let ``starting the match throws an error`` ()=
-        (fun () -> StartMatch sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> StartMatch sampleInnings sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
     [<Test>]
     let ``abandoning the match throws an error`` ()=
@@ -146,21 +151,22 @@ module ``MatchState AB_CompletedNoFollowOn tests`` =
 
     [<Test>]
     let ``enforcing the follow-on throws an error`` ()=
-        (fun () -> EnforceFollowOn sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> EnforceFollowOn sampleInnings sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
     [<Test>]
     let ``declining the follow-on throws an error`` ()=
-        (fun () -> DeclineFollowOn sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> DeclineFollowOn sampleInnings sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
 module ``MatchState AB_CompletedPossibleFollowOn tests`` =
 
     let a1 = createInnings 15 0
     let b1 = createInnings 10 0
     let state = AB_CompletedPossibleFollowOn (a1, b1)
+    let sampleInnings = TestHelpers.sampleEmptyInnings
 
     [<Test>]
     let ``starting the match throws an error`` ()=
-        (fun () -> StartMatch sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> StartMatch sampleInnings sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
     [<Test>]
     let ``abandoning the match throws an error`` ()=
@@ -176,21 +182,22 @@ module ``MatchState AB_CompletedPossibleFollowOn tests`` =
 
     [<Test>]
     let ``enforcing the follow-on leaves the state as ABB_Ongoing`` ()=
-        (EnforceFollowOn sampleMatchRules state) |> matchStateCase |> should equal ABB_OngoingCase 
+        (EnforceFollowOn sampleInnings sampleMatchRules state) |> matchStateCase |> should equal ABB_OngoingCase 
 
     [<Test>]
     let ``declining the follow-on throws an error`` ()=
-        (DeclineFollowOn sampleMatchRules state) |> matchStateCase |> should equal ABA_OngoingCase 
+        (DeclineFollowOn sampleInnings sampleMatchRules state) |> matchStateCase |> should equal ABA_OngoingCase 
 
 module ``MatchState AB_MatchDrawn tests`` =
 
     let a1 = createInnings 5 0
     let b1 = createInnings 10 0
     let state = AB_MatchDrawn (a1, b1)
+    let sampleInnings = TestHelpers.sampleEmptyInnings
 
     [<Test>]
     let ``starting the match throws an error`` ()=
-        (fun () -> StartMatch sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> StartMatch sampleInnings sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
     [<Test>]
     let ``abandoning the match throws an error`` ()=
@@ -206,11 +213,11 @@ module ``MatchState AB_MatchDrawn tests`` =
 
     [<Test>]
     let ``enforcing the follow-on throws an error`` ()=
-        (fun () -> EnforceFollowOn sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> EnforceFollowOn sampleInnings sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
     [<Test>]
     let ``declining the follow-on throws an error`` ()=
-        (fun () -> DeclineFollowOn sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> DeclineFollowOn sampleInnings sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
 module ``MatchState ABA_VictoryB tests`` =
 
@@ -218,10 +225,11 @@ module ``MatchState ABA_VictoryB tests`` =
     let b1 = createInnings 10 0
     let a2 = createInnings 3 10
     let state = ABA_VictoryB (a1, b1, a2)
+    let sampleInnings = TestHelpers.sampleEmptyInnings
 
     [<Test>]
     let ``starting the match throws an error`` ()=
-        (fun () -> StartMatch sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> StartMatch sampleInnings sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
     [<Test>]
     let ``abandoning the match throws an error`` ()=
@@ -237,11 +245,11 @@ module ``MatchState ABA_VictoryB tests`` =
 
     [<Test>]
     let ``enforcing the follow-on throws an error`` ()=
-        (fun () -> EnforceFollowOn sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> EnforceFollowOn sampleInnings sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
     [<Test>]
     let ``declining the follow-on throws an error`` ()=
-        (fun () -> DeclineFollowOn sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> DeclineFollowOn sampleInnings sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
 module ``MatchState ABA_Completed tests`` =
 
@@ -249,10 +257,11 @@ module ``MatchState ABA_Completed tests`` =
     let b1 = createInnings 10 0
     let a2 = createInnings 3 0
     let state = ABA_Completed (a1, b1, a2)
+    let sampleInnings = TestHelpers.sampleEmptyInnings
 
     [<Test>]
     let ``starting the match throws an error`` ()=
-        (fun () -> StartMatch sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> StartMatch sampleInnings sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
     [<Test>]
     let ``abandoning the match throws an error`` ()=
@@ -268,11 +277,11 @@ module ``MatchState ABA_Completed tests`` =
 
     [<Test>]
     let ``enforcing the follow-on throws an error`` ()=
-        (fun () -> EnforceFollowOn sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> EnforceFollowOn sampleInnings sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
     [<Test>]
     let ``declining the follow-on throws an error`` ()=
-        (fun () -> DeclineFollowOn sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> DeclineFollowOn sampleInnings sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
 module ``MatchState ABA_MatchDrawn tests`` =
 
@@ -280,10 +289,11 @@ module ``MatchState ABA_MatchDrawn tests`` =
     let b1 = createInnings 10 0
     let a2 = createInnings 3 0
     let state = ABA_MatchDrawn (a1, b1, a2)
+    let sampleInnings = TestHelpers.sampleEmptyInnings
 
     [<Test>]
     let ``starting the match throws an error`` ()=
-        (fun () -> StartMatch sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> StartMatch sampleInnings sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
     [<Test>]
     let ``abandoning the match throws an error`` ()=
@@ -299,11 +309,11 @@ module ``MatchState ABA_MatchDrawn tests`` =
 
     [<Test>]
     let ``enforcing the follow-on throws an error`` ()=
-        (fun () -> EnforceFollowOn sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> EnforceFollowOn sampleInnings sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
     [<Test>]
     let ``declining the follow-on throws an error`` ()=
-        (fun () -> DeclineFollowOn sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> DeclineFollowOn sampleInnings sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
 module ``MatchState ABB_VictoryA tests`` =
 
@@ -311,10 +321,11 @@ module ``MatchState ABB_VictoryA tests`` =
     let b1 = createInnings 10 0
     let b2 = createInnings 3 10
     let state = ABB_VictoryA (a1, b1, b2)
+    let sampleInnings = TestHelpers.sampleEmptyInnings
 
     [<Test>]
     let ``starting the match throws an error`` ()=
-        (fun () -> StartMatch sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> StartMatch sampleInnings sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
     [<Test>]
     let ``abandoning the match throws an error`` ()=
@@ -330,11 +341,11 @@ module ``MatchState ABB_VictoryA tests`` =
 
     [<Test>]
     let ``enforcing the follow-on throws an error`` ()=
-        (fun () -> EnforceFollowOn sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> EnforceFollowOn sampleInnings sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
     [<Test>]
     let ``declining the follow-on throws an error`` ()=
-        (fun () -> DeclineFollowOn sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> DeclineFollowOn sampleInnings sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
 module ``MatchState ABB_Completed tests`` =
 
@@ -342,10 +353,11 @@ module ``MatchState ABB_Completed tests`` =
     let b1 = createInnings 10 0
     let b2 = createInnings 3 0
     let state = ABB_Completed (a1, b1, b2)
+    let sampleInnings = TestHelpers.sampleEmptyInnings
 
     [<Test>]
     let ``starting the match throws an error`` ()=
-        (fun () -> StartMatch sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> StartMatch sampleInnings sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
     [<Test>]
     let ``abandoning the match throws an error`` ()=
@@ -361,11 +373,11 @@ module ``MatchState ABB_Completed tests`` =
 
     [<Test>]
     let ``enforcing the follow-on throws an error`` ()=
-        (fun () -> EnforceFollowOn sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> EnforceFollowOn sampleInnings sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
     [<Test>]
     let ``declining the follow-on throws an error`` ()=
-        (fun () -> DeclineFollowOn sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> DeclineFollowOn sampleInnings sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
 module ``MatchState ABB_MatchDrawn tests`` =
 
@@ -373,10 +385,11 @@ module ``MatchState ABB_MatchDrawn tests`` =
     let b1 = createInnings 10 0
     let a2 = createInnings 3 0
     let state = ABB_MatchDrawn (a1, b1, a2)
+    let sampleInnings = TestHelpers.sampleEmptyInnings
 
     [<Test>]
     let ``starting the match throws an error`` ()=
-        (fun () -> StartMatch sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> StartMatch sampleInnings sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
     [<Test>]
     let ``abandoning the match throws an error`` ()=
@@ -392,11 +405,11 @@ module ``MatchState ABB_MatchDrawn tests`` =
 
     [<Test>]
     let ``enforcing the follow-on throws an error`` ()=
-        (fun () -> EnforceFollowOn sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> EnforceFollowOn sampleInnings sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
     [<Test>]
     let ``declining the follow-on throws an error`` ()=
-        (fun () -> DeclineFollowOn sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> DeclineFollowOn sampleInnings sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
 module ``MatchState ABAB_VictoryA tests`` =
 
@@ -405,10 +418,11 @@ module ``MatchState ABAB_VictoryA tests`` =
     let a2 = createInnings 8 0
     let b2 = createInnings 2 10
     let state = ABAB_VictoryA (a1, b1, a2, b2)
+    let sampleInnings = TestHelpers.sampleEmptyInnings
 
     [<Test>]
     let ``starting the match throws an error`` ()=
-        (fun () -> StartMatch sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> StartMatch sampleInnings sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
     [<Test>]
     let ``abandoning the match throws an error`` ()=
@@ -424,11 +438,11 @@ module ``MatchState ABAB_VictoryA tests`` =
 
     [<Test>]
     let ``enforcing the follow-on throws an error`` ()=
-        (fun () -> EnforceFollowOn sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> EnforceFollowOn sampleInnings sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
     [<Test>]
     let ``declining the follow-on throws an error`` ()=
-        (fun () -> DeclineFollowOn sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> DeclineFollowOn sampleInnings sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
 module ``MatchState ABAB_VictoryB tests`` =
 
@@ -437,10 +451,11 @@ module ``MatchState ABAB_VictoryB tests`` =
     let a2 = createInnings 8 0
     let b2 = createInnings 4 0
     let state = ABAB_VictoryB (a1, b1, a2, b2)
+    let sampleInnings = TestHelpers.sampleEmptyInnings
 
     [<Test>]
     let ``starting the match throws an error`` ()=
-        (fun () -> StartMatch sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> StartMatch sampleInnings sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
     [<Test>]
     let ``abandoning the match throws an error`` ()=
@@ -456,11 +471,11 @@ module ``MatchState ABAB_VictoryB tests`` =
 
     [<Test>]
     let ``enforcing the follow-on throws an error`` ()=
-        (fun () -> EnforceFollowOn sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> EnforceFollowOn sampleInnings sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
     [<Test>]
     let ``declining the follow-on throws an error`` ()=
-        (fun () -> DeclineFollowOn sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> DeclineFollowOn sampleInnings sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
 module ``MatchState ABAB_MatchDrawn tests`` =
 
@@ -469,10 +484,11 @@ module ``MatchState ABAB_MatchDrawn tests`` =
     let a2 = createInnings 8 0
     let b2 = createInnings 2 0
     let state = ABAB_MatchDrawn (a1, b1, a2, b2)
+    let sampleInnings = TestHelpers.sampleEmptyInnings
 
     [<Test>]
     let ``starting the match throws an error`` ()=
-        (fun () -> StartMatch sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> StartMatch sampleInnings sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
     [<Test>]
     let ``abandoning the match throws an error`` ()=
@@ -488,11 +504,11 @@ module ``MatchState ABAB_MatchDrawn tests`` =
 
     [<Test>]
     let ``enforcing the follow-on throws an error`` ()=
-        (fun () -> EnforceFollowOn sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> EnforceFollowOn sampleInnings sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
     [<Test>]
     let ``declining the follow-on throws an error`` ()=
-        (fun () -> DeclineFollowOn sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> DeclineFollowOn sampleInnings sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
 module ``MatchState ABAB_MatchTied tests`` =
 
@@ -501,10 +517,11 @@ module ``MatchState ABAB_MatchTied tests`` =
     let a2 = createInnings 8 0
     let b2 = createInnings 3 10
     let state = ABAB_MatchTied (a1, b1, a2, b2)
+    let sampleInnings = TestHelpers.sampleEmptyInnings
 
     [<Test>]
     let ``starting the match throws an error`` ()=
-        (fun () -> StartMatch sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> StartMatch sampleInnings sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
     [<Test>]
     let ``abandoning the match throws an error`` ()=
@@ -520,11 +537,11 @@ module ``MatchState ABAB_MatchTied tests`` =
 
     [<Test>]
     let ``enforcing the follow-on throws an error`` ()=
-        (fun () -> EnforceFollowOn sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> EnforceFollowOn sampleInnings sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
     [<Test>]
     let ``declining the follow-on throws an error`` ()=
-        (fun () -> DeclineFollowOn sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> DeclineFollowOn sampleInnings sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
 module ``MatchState ABBA_VictoryA tests`` =
 
@@ -533,10 +550,11 @@ module ``MatchState ABBA_VictoryA tests`` =
     let b2 = createInnings 7 0
     let a2 = createInnings 3 0
     let state = ABBA_VictoryA (a1, b1, b2, a2)
+    let sampleInnings = TestHelpers.sampleEmptyInnings
 
     [<Test>]
     let ``starting the match throws an error`` ()=
-        (fun () -> StartMatch sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> StartMatch sampleInnings sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
     [<Test>]
     let ``abandoning the match throws an error`` ()=
@@ -552,11 +570,11 @@ module ``MatchState ABBA_VictoryA tests`` =
 
     [<Test>]
     let ``enforcing the follow-on throws an error`` ()=
-        (fun () -> EnforceFollowOn sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> EnforceFollowOn sampleInnings sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
     [<Test>]
     let ``declining the follow-on throws an error`` ()=
-        (fun () -> DeclineFollowOn sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> DeclineFollowOn sampleInnings sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
 module ``MatchState ABBA_VictoryB tests`` =
 
@@ -565,10 +583,11 @@ module ``MatchState ABBA_VictoryB tests`` =
     let b2 = createInnings 7 0
     let a2 = createInnings 1 10
     let state = ABAB_VictoryB (a1, b1, b2, a2)
+    let sampleInnings = TestHelpers.sampleEmptyInnings
 
     [<Test>]
     let ``starting the match throws an error`` ()=
-        (fun () -> StartMatch sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> StartMatch sampleInnings sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
     [<Test>]
     let ``abandoning the match throws an error`` ()=
@@ -584,11 +603,11 @@ module ``MatchState ABBA_VictoryB tests`` =
 
     [<Test>]
     let ``enforcing the follow-on throws an error`` ()=
-        (fun () -> EnforceFollowOn sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> EnforceFollowOn sampleInnings sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
     [<Test>]
     let ``declining the follow-on throws an error`` ()=
-        (fun () -> DeclineFollowOn sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> DeclineFollowOn sampleInnings sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
 module ``MatchState ABBA_MatchDrawn tests`` =
 
@@ -597,10 +616,11 @@ module ``MatchState ABBA_MatchDrawn tests`` =
     let b2 = createInnings 7 0
     let a2 = createInnings 1 0
     let state = ABBA_MatchDrawn (a1, b1, b2, a2)
+    let sampleInnings = TestHelpers.sampleEmptyInnings
 
     [<Test>]
     let ``starting the match throws an error`` ()=
-        (fun () -> StartMatch sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> StartMatch sampleInnings sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
     [<Test>]
     let ``abandoning the match throws an error`` ()=
@@ -616,11 +636,11 @@ module ``MatchState ABBA_MatchDrawn tests`` =
 
     [<Test>]
     let ``enforcing the follow-on throws an error`` ()=
-        (fun () -> EnforceFollowOn sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> EnforceFollowOn sampleInnings sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
     [<Test>]
     let ``declining the follow-on throws an error`` ()=
-        (fun () -> DeclineFollowOn sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> DeclineFollowOn sampleInnings sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
 module ``MatchState ABBA_MatchTied tests`` =
 
@@ -629,10 +649,11 @@ module ``MatchState ABBA_MatchTied tests`` =
     let b2 = createInnings 7 0
     let a2 = createInnings 2 10
     let state = ABBA_MatchTied (a1, b1, b2, a2)
+    let sampleInnings = TestHelpers.sampleEmptyInnings
 
     [<Test>]
     let ``starting the match throws an error`` ()=
-        (fun () -> StartMatch sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> StartMatch sampleInnings sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
     [<Test>]
     let ``abandoning the match throws an error`` ()=
@@ -648,11 +669,11 @@ module ``MatchState ABBA_MatchTied tests`` =
 
     [<Test>]
     let ``enforcing the follow-on throws an error`` ()=
-        (fun () -> EnforceFollowOn sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> EnforceFollowOn sampleInnings sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
     [<Test>]
     let ``declining the follow-on throws an error`` ()=
-        (fun () -> DeclineFollowOn sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> DeclineFollowOn sampleInnings sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
 // ongoing cases
 
@@ -660,10 +681,11 @@ module ``MatchState A_Ongoing tests`` =
 
     let a1 = createInnings 5 0
     let state = A_Ongoing (a1)
+    let sampleInnings = TestHelpers.sampleEmptyInnings
 
     [<Test>]
     let ``starting the match throws an error`` ()=
-        (fun () -> StartMatch sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> StartMatch sampleInnings sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
     [<Test>]
     let ``abandoning the match throws an error`` ()=
@@ -671,11 +693,11 @@ module ``MatchState A_Ongoing tests`` =
 
     [<Test>]
     let ``enforcing the follow-on throws an error`` ()=
-        (fun () -> EnforceFollowOn sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> EnforceFollowOn sampleInnings sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
     [<Test>]
     let ``declining the follow-on throws an error`` ()=
-        (fun () -> DeclineFollowOn sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> DeclineFollowOn sampleInnings sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
     [<Test>]
     let ``drawing the match creates a drawn match`` ()=
@@ -702,10 +724,11 @@ module ``MatchState AB_Ongoing tests`` =
     let a1 = createInnings 500 0
     let b1 = createInnings 10 0
     let state = AB_Ongoing (a1, b1)
+    let sampleInnings = TestHelpers.sampleEmptyInnings
 
     [<Test>]
     let ``starting the match throws an error`` ()=
-        (fun () -> StartMatch sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> StartMatch sampleInnings sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
     [<Test>]
     let ``abandoning the match throws an error`` ()=
@@ -713,11 +736,11 @@ module ``MatchState AB_Ongoing tests`` =
 
     [<Test>]
     let ``enforcing the follow-on throws an error`` ()=
-        (fun () -> EnforceFollowOn sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> EnforceFollowOn sampleInnings sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
     [<Test>]
     let ``declining the follow-on throws an error`` ()=
-        (fun () -> DeclineFollowOn sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> DeclineFollowOn sampleInnings sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
     [<Test>]
     let ``drawing the match creates a drawn match`` ()=
@@ -759,10 +782,11 @@ module ``MatchState ABA_Ongoing tests`` =
     let b1 = createInnings 10 0
     let a2 = createInnings 3 0
     let state = ABA_Ongoing (a1, b1, a2)
+    let sampleInnings = TestHelpers.sampleEmptyInnings
 
     [<Test>]
     let ``starting the match throws an error`` ()=
-        (fun () -> StartMatch sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> StartMatch sampleInnings sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
     [<Test>]
     let ``abandoning the match throws an error`` ()=
@@ -770,11 +794,11 @@ module ``MatchState ABA_Ongoing tests`` =
 
     [<Test>]
     let ``enforcing the follow-on throws an error`` ()=
-        (fun () -> EnforceFollowOn sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> EnforceFollowOn sampleInnings sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
     [<Test>]
     let ``declining the follow-on throws an error`` ()=
-        (fun () -> DeclineFollowOn sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> DeclineFollowOn sampleInnings sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
     [<Test>]
     let ``drawing the match creates a drawn match`` ()=
@@ -816,10 +840,11 @@ module ``MatchState ABB_Ongoing tests`` =
     let b1 = createInnings 5 0
     let b2 = createInnings 3 0
     let state = ABB_Ongoing (a1, b1, b2)
+    let sampleInnings = TestHelpers.sampleEmptyInnings
 
     [<Test>]
     let ``starting the match throws an error`` ()=
-        (fun () -> StartMatch sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> StartMatch sampleInnings sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
     [<Test>]
     let ``abandoning the match throws an error`` ()=
@@ -827,11 +852,11 @@ module ``MatchState ABB_Ongoing tests`` =
 
     [<Test>]
     let ``enforcing the follow-on throws an error`` ()=
-        (fun () -> EnforceFollowOn sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> EnforceFollowOn sampleInnings sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
     [<Test>]
     let ``declining the follow-on throws an error`` ()=
-        (fun () -> DeclineFollowOn sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> DeclineFollowOn sampleInnings sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
     [<Test>]
     let ``drawing the match creates a drawn match`` ()=
@@ -874,10 +899,11 @@ module ``MatchState ABAB_Ongoing tests`` =
     let a2 = createInnings 8 0
     let b2 = createInnings 2 0
     let state = ABAB_Ongoing (a1, b1, a2, b2)
+    let sampleInnings = TestHelpers.sampleEmptyInnings
 
     [<Test>]
     let ``starting the match throws an error`` ()=
-        (fun () -> StartMatch sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> StartMatch sampleInnings sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
     [<Test>]
     let ``abandoning the match throws an error`` ()=
@@ -885,11 +911,11 @@ module ``MatchState ABAB_Ongoing tests`` =
 
     [<Test>]
     let ``enforcing the follow-on throws an error`` ()=
-        (fun () -> EnforceFollowOn sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> EnforceFollowOn sampleInnings sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
     [<Test>]
     let ``declining the follow-on throws an error`` ()=
-        (fun () -> DeclineFollowOn sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> DeclineFollowOn sampleInnings sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
     [<Test>]
     let ``drawing the match creates a drawn match`` ()=
@@ -953,10 +979,11 @@ module ``MatchState ABBA_Ongoing tests`` =
     let b2 = createInnings 8 0
     let a2 = createInnings 1 0
     let state = ABBA_Ongoing (a1, b1, b2, a2)
+    let sampleInnings = TestHelpers.sampleEmptyInnings
 
     [<Test>]
     let ``starting the match throws an error`` ()=
-        (fun () -> StartMatch sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> StartMatch sampleInnings sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
     [<Test>]
     let ``abandoning the match throws an error`` ()=
@@ -964,11 +991,11 @@ module ``MatchState ABBA_Ongoing tests`` =
 
     [<Test>]
     let ``enforcing the follow-on throws an error`` ()=
-        (fun () -> EnforceFollowOn sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> EnforceFollowOn sampleInnings sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
     [<Test>]
     let ``declining the follow-on throws an error`` ()=
-        (fun () -> DeclineFollowOn sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> DeclineFollowOn sampleInnings sampleMatchRules state |> ignore) |> should throw typeof<System.Exception>
 
     [<Test>]
     let ``drawing the match creates a drawn match`` ()=
