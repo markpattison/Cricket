@@ -56,7 +56,7 @@ module InningsFunctions =
         List.mapi updateFunction list
 
     let swap (a, b) = (b, a)
-    let tempBowler = Name "tempBowler" // TODO
+    let tempBowler = Name "testBowler" // TODO
 
     let UpdateInningsWithBall (ballOutcome: BallOutcome) state =
         let swapEnds = ballOutcome.HasChangedEnds
@@ -66,6 +66,7 @@ module InningsFunctions =
             | false, _ -> state.OversCompleted, state.BallsSoFarThisOver, state.EndFacingNext
             | true, 5 -> state.OversCompleted + 1, 0, state.EndFacingNext.OtherEnd
             | true, n -> state.OversCompleted, n + 1, state.EndFacingNext
+        let indexOfStriker = (if state.EndFacingNext = End1 then state.IndexOfBatsmanAtEnd1 else state.IndexOfBatsmanAtEnd2).Value
         let isStrikerOut = Option.isSome (ballOutcome.GetHowStrikerOut tempBowler)
         let isNonStrikerOut = Option.isSome ballOutcome.GetHowNonStrikerOut
         let unswappedAssumingEnd1 =
@@ -81,6 +82,7 @@ module InningsFunctions =
         InningsOngoing
             {
                 state with
+                    Individuals = (UpdateAtN (fun (p, ii) -> (p, Update tempBowler ballOutcome ii)) indexOfStriker state.Individuals);
                     IndexOfBatsmanAtEnd1 = batsmanAtEnd1;
                     IndexOfBatsmanAtEnd2 = batsmanAtEnd2;
                     EndFacingNext = endFacing;

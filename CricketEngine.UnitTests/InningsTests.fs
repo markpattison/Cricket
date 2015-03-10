@@ -116,6 +116,47 @@ type BatsmanOutTests ()=
             updated.IndexOfBatsmanAtEnd2 |> should equal None
 
 [<TestFixture>]
+type InningsIndividualsUpdatedCorrectly ()=
+
+    let innings, _, _ = SampleData.sampleInningsData
+
+    static member TestData =
+        [|
+            DotBall;
+            ScoreRuns 1;
+            ScoreRuns 2;
+            Four;
+            Six;
+            Bowled;
+            LBW;
+            HitWicket;
+            Caught (SampleData.sampleFielder, false);
+            Caught (SampleData.sampleFielder, true);
+            Stumped SampleData.sampleFielder;
+            RunOutStriker (2, false);
+            RunOutStriker (2, true);
+            RunOutStriker (1, false);
+            RunOutStriker (1, true);
+            RunOutNonStriker (2, false);
+            RunOutNonStriker (2, true);
+            RunOutNonStriker (1, false);
+            RunOutNonStriker (1, true);
+        |]
+
+    static member Ends = [| End1; End2 |]
+
+    [<Test>]
+    member _x.``striker's individual innings is updated correctly`` ([<ValueSource("TestData")>] testData) ([<ValueSource("Ends")>] currentEnd) =
+        let ball = testData
+        let testInnings = { innings with EndFacingNext = currentEnd }
+        let updated = (UpdateInningsWithBall ball testInnings).GetInnings
+        let index = (if currentEnd = End1 then innings.IndexOfBatsmanAtEnd1 else innings.IndexOfBatsmanAtEnd2).Value
+        let (player, testIndividualInnings) = List.nth innings.Individuals index
+        let expectedIndividualInnings = Update SampleData.sampleBowler ball testIndividualInnings
+        (List.nth updated.Individuals index) |> should equal (player, expectedIndividualInnings)
+
+
+[<TestFixture>]
 type InningsBallsIncrementedTests ()=
 
     let innings, _, _ = SampleData.sampleInningsData

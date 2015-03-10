@@ -13,8 +13,8 @@ module ``Acceptance tests`` =
     let batsman2 = Name "batsman 2"
     let batsman3 = Name "batsman 3"
 
-    let dotBall = UpdateInningsWithBall DotBall
-    let score1 = UpdateInningsWithBall (ScoreRuns 1)
+    let dot = UpdateCurrentInnings (UpdateInningsWithBall DotBall)
+    let score1 = UpdateCurrentInnings (UpdateInningsWithBall (ScoreRuns 1))
 
     [<Test>]
     let ``start first innings`` ()=
@@ -26,27 +26,54 @@ module ``Acceptance tests`` =
 
         SummaryStatus match' |> should equal "Team A are 0 for 0 in their first innings"
 
-//    [<Test>]
-//    let ``one over`` ()=
-//        let match' =
-//            NewMatch sampleMatchRules "Team A" "Team B"
-//            |> UpdateMatchState StartMatch
-//            |> UpdateCurrentInnings (SendInNewBatsman batsman1)
-//            |> UpdateCurrentInnings (SendInNewBatsman batsman2)
-//            |> UpdateCurrentInnings dotBall
-//            |> UpdateCurrentInnings dotBall
-//            |> UpdateCurrentInnings dotBall
-//            |> UpdateCurrentInnings dotBall
-//            |> UpdateCurrentInnings dotBall
-//            |> UpdateCurrentInnings score1
-//
-//        let firstInnings = CurrentInnings match'.State
-//
-//        SummaryStatus match' |> should equal "Team A are 1 for 0 in their first innings"
-//        firstInnings.GetRuns |> should equal 1
-//        firstInnings.GetWickets |> should equal 0
-//        firstInnings.IndexOfBatsmanAtEnd1 |> should equal 1
-//        firstInnings.IndexOfBatsmanAtEnd2 |> should equal 0
-//        firstInnings.OversCompleted |> should equal 1
-//        firstInnings.BallsSoFarThisOver |> should equal 0
+    [<Test>]
+    let ``one Boycott over`` ()=
+        let match' =
+            NewMatch sampleMatchRules "Team A" "Team B"
+            |> UpdateMatchState StartMatch
+            |> UpdateCurrentInnings (SendInNewBatsman batsman1)
+            |> UpdateCurrentInnings (SendInNewBatsman batsman2)
+            |> dot
+            |> dot
+            |> dot
+            |> dot
+            |> dot
+            |> score1
+
+        let expected =
+            {
+                TeamA = "Team A";
+                TeamB = "Team B";
+                Rules = sampleMatchRules;
+                State = A_Ongoing
+                    {
+                        Individuals =
+                            [
+                                batsman1, 
+                                {
+                                    Score = 1;
+                                    HowOut = None;
+                                    BallsFaced = 6;
+                                    Fours = 0;
+                                    Sixes = 0;
+                                };
+                                batsman2, 
+                                {
+                                    Score = 0;
+                                    HowOut = None;
+                                    BallsFaced = 0;
+                                    Fours = 0;
+                                    Sixes = 0;
+                                };
+                            ];
+                        IsDeclared = false;
+                        IndexOfBatsmanAtEnd1 = Some 1;
+                        IndexOfBatsmanAtEnd2 = Some 0;
+                        EndFacingNext = End2;
+                        OversCompleted = 1;
+                        BallsSoFarThisOver = 0;
+                    }
+            }
+
+        match' |> should equal expected
 
