@@ -30,5 +30,7 @@ module IndividualInningsFunctions =
             Sixes = innings.Sixes + if (ball.IsASix) then 1 else 0;
         }
 
-    let UpdateRunOutNonStriker (innings: IndividualInnings) =
-        { innings with HowOut = Some HowOut.RunOut }
+    let UpdateNonStriker (ball: BallOutcome) (innings: IndividualInnings) =
+        match ball with
+        | RunOutNonStriker _ -> { innings with HowOut = Some HowOut.RunOut }
+        | _ -> innings

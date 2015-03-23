@@ -143,6 +143,14 @@ type InningsIndividualsUpdatedCorrectly ()=
             RunOutNonStriker (1, true);
         |]
 
+    static member NonStrikerRunOutTestData =
+        [|
+            RunOutNonStriker (2, false);
+            RunOutNonStriker (2, true);
+            RunOutNonStriker (1, false);
+            RunOutNonStriker (1, true);
+        |]
+
     static member Ends = [| End1; End2 |]
 
     [<Test>]
@@ -155,6 +163,15 @@ type InningsIndividualsUpdatedCorrectly ()=
         let expectedIndividualInnings = Update SampleData.sampleBowler ball testIndividualInnings
         (List.nth updated.Individuals index) |> should equal (player, expectedIndividualInnings)
 
+    [<Test>]
+    member _x.``non-striker's individual innings is updated correctly when he is run out`` ([<ValueSource("NonStrikerRunOutTestData")>] testData) ([<ValueSource("Ends")>] currentEnd) =
+        let ball = testData
+        let testInnings = { innings with EndFacingNext = currentEnd }
+        let updated = (UpdateInningsWithBall ball testInnings).GetInnings
+        let nonStrikerIndex = (if currentEnd = End1 then innings.IndexOfBatsmanAtEnd2 else innings.IndexOfBatsmanAtEnd1).Value
+        let (player, testIndividualInnings) = List.nth innings.Individuals nonStrikerIndex
+        let expectedIndividualInnings = UpdateNonStriker ball testIndividualInnings
+        (List.nth updated.Individuals nonStrikerIndex) |> should equal (player, expectedIndividualInnings)
 
 [<TestFixture>]
 type InningsBallsIncrementedTests ()=

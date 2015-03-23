@@ -51,8 +51,12 @@ module InningsFunctions =
             BallsSoFarThisOver = 0;
         }
 
-    let UpdateAtN f n list =
-        let updateFunction i x = if i = n then f x else x
+    let UpdateIndividuals updateStriker updateNonStriker indexStriker indexNonStriker list =
+        let updateFunction i x =
+            match i with
+            | a when a = indexStriker -> updateStriker x
+            | a when a = indexNonStriker -> updateNonStriker x
+            | _ -> x
         List.mapi updateFunction list
 
     let swap (a, b) = (b, a)
@@ -67,6 +71,7 @@ module InningsFunctions =
             | true, 5 -> state.OversCompleted + 1, 0, state.EndFacingNext.OtherEnd
             | true, n -> state.OversCompleted, n + 1, state.EndFacingNext
         let indexOfStriker = (if state.EndFacingNext = End1 then state.IndexOfBatsmanAtEnd1 else state.IndexOfBatsmanAtEnd2).Value
+        let indexOfNonStriker = (if state.EndFacingNext = End1 then state.IndexOfBatsmanAtEnd2 else state.IndexOfBatsmanAtEnd1).Value
         let isStrikerOut = Option.isSome (ballOutcome.GetHowStrikerOut tempBowler)
         let isNonStrikerOut = Option.isSome ballOutcome.GetHowNonStrikerOut
         let unswappedAssumingEnd1 =
@@ -79,10 +84,12 @@ module InningsFunctions =
             match state.EndFacingNext, swapEnds with
             | End1, false | End2, true -> unswappedAssumingEnd1
             | End1, true | End2, false -> swap unswappedAssumingEnd1
+        let updateStriker (p, ii) = (p, Update tempBowler ballOutcome ii)
+        let updateNonStriker (p, ii) = (p, UpdateNonStriker ballOutcome ii)
         InningsOngoing
             {
                 state with
-                    Individuals = (UpdateAtN (fun (p, ii) -> (p, Update tempBowler ballOutcome ii)) indexOfStriker state.Individuals);
+                    Individuals = (UpdateIndividuals updateStriker updateNonStriker indexOfStriker indexOfNonStriker state.Individuals);
                     IndexOfBatsmanAtEnd1 = batsmanAtEnd1;
                     IndexOfBatsmanAtEnd2 = batsmanAtEnd2;
                     EndFacingNext = endFacing;

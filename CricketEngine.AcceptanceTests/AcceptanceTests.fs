@@ -77,3 +77,60 @@ module ``Acceptance tests`` =
 
         match' |> should equal expected
 
+    [<Test>]
+    let ``non-striker run out`` ()=
+        let match' =
+            NewMatch sampleMatchRules "Team A" "Team B"
+            |> UpdateMatchState StartMatch
+            |> UpdateCurrentInnings (SendInNewBatsman batsman1)
+            |> UpdateCurrentInnings (SendInNewBatsman batsman2)
+            |> dot
+            |> score1
+            |> score1
+            |> UpdateCurrentInnings (UpdateInningsWithBall (RunOutNonStriker (1, false)))
+            |> UpdateCurrentInnings (SendInNewBatsman batsman3)
+
+        let expected =
+            {
+                TeamA = "Team A";
+                TeamB = "Team B";
+                Rules = sampleMatchRules;
+                State = A_Ongoing
+                    {
+                        Individuals =
+                            [
+                                batsman1, 
+                                {
+                                    Score = 2;
+                                    HowOut = None;
+                                    BallsFaced = 3;
+                                    Fours = 0;
+                                    Sixes = 0;
+                                };
+                                batsman2, 
+                                {
+                                    Score = 1;
+                                    HowOut = Some RunOut;
+                                    BallsFaced = 1;
+                                    Fours = 0;
+                                    Sixes = 0;
+                                };
+                                batsman3, 
+                                {
+                                    Score = 0;
+                                    HowOut = None;
+                                    BallsFaced = 0;
+                                    Fours = 0;
+                                    Sixes = 0;
+                                };
+                            ];
+                        IsDeclared = false;
+                        IndexOfBatsmanAtEnd1 = Some 2;
+                        IndexOfBatsmanAtEnd2 = Some 0;
+                        EndFacingNext = End1;
+                        OversCompleted = 0;
+                        BallsSoFarThisOver = 4;
+                    }
+            }
+
+        match' |> should equal expected
