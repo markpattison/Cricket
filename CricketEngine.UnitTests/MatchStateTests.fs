@@ -755,7 +755,7 @@ module ``MatchState AB_Ongoing tests`` =
         (sampleUpdaterOngoing state) |> should equal (AB_Ongoing (a1, sampleOngoingInnings))
 
     let sampleCompletedInningsNoFollowOn = createInnings 301 10
-    let sampleUpdaterCompletedNoFollowOn = UpdateInnings (fun _ -> InningsCompleted sampleCompletedInningsNoFollowOn) sampleMatchRules
+    let sampleUpdaterCompletedNoFollowOn = UpdateInnings (fun _ -> sampleCompletedInningsNoFollowOn) sampleMatchRules
 
     [<Test>]
     let ``updating the innings as completed with B on follow-on target should leave the state as AB_CompletedNoFollowOn`` ()=
@@ -766,7 +766,7 @@ module ``MatchState AB_Ongoing tests`` =
         (sampleUpdaterCompletedNoFollowOn state) |> should equal (AB_CompletedNoFollowOn (a1, sampleCompletedInningsNoFollowOn))
 
     let sampleCompletedInningsPossibleFollowOn = createInnings 300 10
-    let sampleUpdaterCompletedPossibleFollowOn = UpdateInnings (fun _ -> InningsCompleted sampleCompletedInningsPossibleFollowOn) sampleMatchRules
+    let sampleUpdaterCompletedPossibleFollowOn = UpdateInnings (fun _ -> sampleCompletedInningsPossibleFollowOn) sampleMatchRules
 
     [<Test>]
     let ``updating the innings as completed with B behind follow-on target should leave the state as AB_CompletedPossibleFollowOn`` ()=
@@ -813,7 +813,7 @@ module ``MatchState ABA_Ongoing tests`` =
         (sampleUpdaterOngoing state) |> should equal (ABA_Ongoing (a1, b1, sampleOngoingInnings))
 
     let sampleCompletedInningsNoVictory = createInnings 5 10
-    let sampleUpdaterCompletedNoVictory = UpdateInnings (fun _ -> InningsCompleted sampleCompletedInningsNoVictory) sampleMatchRules
+    let sampleUpdaterCompletedNoVictory = UpdateInnings (fun _ -> sampleCompletedInningsNoVictory) sampleMatchRules
 
     [<Test>]
     let ``updating the innings as completed with A not behind should leave the state as ABA_Completed`` ()=
@@ -824,7 +824,7 @@ module ``MatchState ABA_Ongoing tests`` =
         (sampleUpdaterCompletedNoVictory state) |> should equal (ABA_Completed (a1, b1, sampleCompletedInningsNoVictory))
 
     let sampleCompletedInningsVictory = createInnings 4 10
-    let sampleUpdaterCompletedVictory = UpdateInnings (fun _ -> InningsCompleted sampleCompletedInningsVictory) sampleMatchRules
+    let sampleUpdaterCompletedVictory = UpdateInnings (fun _ -> sampleCompletedInningsVictory) sampleMatchRules
 
     [<Test>]
     let ``updating the innings as completed with A behind should leave the state as ABA_VictoryB`` ()=
@@ -871,7 +871,7 @@ module ``MatchState ABB_Ongoing tests`` =
         (sampleUpdaterOngoing state) |> should equal (ABB_Ongoing (a1, b1, sampleOngoingInnings))
 
     let sampleCompletedInningsNoVictory = createInnings 5 10
-    let sampleUpdaterCompletedNoVictory = UpdateInnings (fun _ -> InningsCompleted sampleCompletedInningsNoVictory) sampleMatchRules
+    let sampleUpdaterCompletedNoVictory = UpdateInnings (fun _ -> sampleCompletedInningsNoVictory) sampleMatchRules
 
     [<Test>]
     let ``updating the innings as completed with B not behind should leave the state as ABB_Completed`` ()=
@@ -882,7 +882,7 @@ module ``MatchState ABB_Ongoing tests`` =
         (sampleUpdaterCompletedNoVictory state) |> should equal (ABB_Completed (a1, b1, sampleCompletedInningsNoVictory))
 
     let sampleCompletedInningsVictory = createInnings 4 10
-    let sampleUpdaterCompletedVictory = UpdateInnings (fun _ -> InningsCompleted sampleCompletedInningsVictory) sampleMatchRules
+    let sampleUpdaterCompletedVictory = UpdateInnings (fun _ -> sampleCompletedInningsVictory) sampleMatchRules
 
     [<Test>]
     let ``updating the innings as completed with B behind should leave the state as ABB_VictoryA`` ()=
@@ -922,7 +922,7 @@ module ``MatchState ABAB_Ongoing tests`` =
         (DrawMatch sampleMatchRules state) |> should equal (ABAB_MatchDrawn (a1, b1, a2, b2))
     
     let sampleMatchOngoingInnings = createInnings 3 5
-    let sampleUpdaterMatchOngoing = UpdateInnings (fun _ -> InningsOngoing sampleMatchOngoingInnings) sampleMatchRules
+    let sampleUpdaterMatchOngoing = UpdateInnings (fun _ -> sampleMatchOngoingInnings) sampleMatchRules
         
     [<Test>]
     let ``updating the innings as ongoing with B not ahead should leave the state as ABAB_Ongoing`` ()=
@@ -933,7 +933,7 @@ module ``MatchState ABAB_Ongoing tests`` =
         (sampleUpdaterMatchOngoing state) |> should equal (ABAB_Ongoing (a1, b1, a2, sampleMatchOngoingInnings))
 
     let sampleOngoingInningsWicketsVictory = createInnings 5 7
-    let sampleUpdaterOngoingWicketsVictory = UpdateInnings (fun _ -> InningsOngoing sampleOngoingInningsWicketsVictory) sampleMatchRules
+    let sampleUpdaterOngoingWicketsVictory = UpdateInnings (fun _ -> sampleOngoingInningsWicketsVictory) sampleMatchRules
 
     [<Test>]
     let ``updating the innings as ongoing with B ahead should leave the state as ABAB_VictoryB`` ()=
@@ -944,7 +944,7 @@ module ``MatchState ABAB_Ongoing tests`` =
         (sampleUpdaterOngoingWicketsVictory state) |> should equal (ABAB_VictoryB (a1, b1, a2, sampleOngoingInningsWicketsVictory))
 
     let sampleCompletedInningsRunsVictory = createInnings 2 10
-    let sampleUpdaterCompletedRunsVictory = UpdateInnings (fun _ -> InningsCompleted sampleCompletedInningsRunsVictory) sampleMatchRules
+    let sampleUpdaterCompletedRunsVictory = UpdateInnings (fun _ -> sampleCompletedInningsRunsVictory) sampleMatchRules
 
     [<Test>]
     let ``updating the innings as completed with B behind should leave the state as ABAB_VictoryA`` ()=
@@ -955,7 +955,7 @@ module ``MatchState ABAB_Ongoing tests`` =
         (sampleUpdaterCompletedRunsVictory state) |> should equal (ABAB_VictoryA (a1, b1, a2, sampleCompletedInningsRunsVictory))
     
     let sampleCompletedInningsTie = createInnings 3 10
-    let sampleUpdaterCompletedTie = UpdateInnings (fun _ -> InningsCompleted sampleCompletedInningsTie) sampleMatchRules
+    let sampleUpdaterCompletedTie = UpdateInnings (fun _ -> sampleCompletedInningsTie) sampleMatchRules
 
     [<Test>]
     let ``updating the innings as completed with B level should leave the state as ABAB_MatchTied`` ()=
@@ -966,7 +966,7 @@ module ``MatchState ABAB_Ongoing tests`` =
         (sampleUpdaterCompletedTie state) |> should equal (ABAB_MatchTied (a1, b1, a2, sampleCompletedInningsTie))
 
     let sampleCompletedInningsInconsistent = createInnings 4 10
-    let sampleUpdaterCompletedInconsistent = UpdateInnings (fun _ -> InningsCompleted sampleCompletedInningsInconsistent) sampleMatchRules
+    let sampleUpdaterCompletedInconsistent = UpdateInnings (fun _ -> sampleCompletedInningsInconsistent) sampleMatchRules
 
     [<Test>]
     let ``updating the innings as completed with B ahead throws an error`` ()=
@@ -1002,7 +1002,7 @@ module ``MatchState ABBA_Ongoing tests`` =
         (DrawMatch sampleMatchRules state) |> should equal (ABBA_MatchDrawn (a1, b1, b2, a2))
         
     let sampleMatchOngoingInnings = createInnings 3 5
-    let sampleUpdaterMatchOngoing = UpdateInnings (fun _ -> InningsOngoing sampleMatchOngoingInnings) sampleMatchRules
+    let sampleUpdaterMatchOngoing = UpdateInnings (fun _ -> sampleMatchOngoingInnings) sampleMatchRules
         
     [<Test>]
     let ``updating the innings as ongoing with A not ahead should leave the state as ABBA_Ongoing`` ()=
@@ -1013,7 +1013,7 @@ module ``MatchState ABBA_Ongoing tests`` =
         (sampleUpdaterMatchOngoing state) |> should equal (ABBA_Ongoing (a1, b1, b2, sampleMatchOngoingInnings))
 
     let sampleOngoingInningsWicketsVictory = createInnings 5 7
-    let sampleUpdaterOngoingWicketsVictory = UpdateInnings (fun _ -> InningsOngoing sampleOngoingInningsWicketsVictory) sampleMatchRules
+    let sampleUpdaterOngoingWicketsVictory = UpdateInnings (fun _ -> sampleOngoingInningsWicketsVictory) sampleMatchRules
 
     [<Test>]
     let ``updating the innings as ongoing with A ahead should leave the state as ABBA_VictoryA`` ()=
@@ -1024,7 +1024,7 @@ module ``MatchState ABBA_Ongoing tests`` =
         (sampleUpdaterOngoingWicketsVictory state) |> should equal (ABBA_VictoryA (a1, b1, b2, sampleOngoingInningsWicketsVictory))
 
     let sampleCompletedInningsRunsVictory = createInnings 2 10
-    let sampleUpdaterCompletedRunsVictory = UpdateInnings (fun _ -> InningsCompleted sampleCompletedInningsRunsVictory) sampleMatchRules
+    let sampleUpdaterCompletedRunsVictory = UpdateInnings (fun _ -> sampleCompletedInningsRunsVictory) sampleMatchRules
 
     [<Test>]
     let ``updating the innings as completed with A behind should leave the state as ABBA_VictoryB`` ()=
@@ -1035,7 +1035,7 @@ module ``MatchState ABBA_Ongoing tests`` =
         (sampleUpdaterCompletedRunsVictory state) |> should equal (ABBA_VictoryB (a1, b1, b2, sampleCompletedInningsRunsVictory))
     
     let sampleCompletedInningsTie = createInnings 3 10
-    let sampleUpdaterCompletedTie = UpdateInnings (fun _ -> InningsCompleted sampleCompletedInningsTie) sampleMatchRules
+    let sampleUpdaterCompletedTie = UpdateInnings (fun _ -> sampleCompletedInningsTie) sampleMatchRules
 
     [<Test>]
     let ``updating the innings as completed with A level should leave the state as ABBA_MatchTied`` ()=
@@ -1046,7 +1046,7 @@ module ``MatchState ABBA_Ongoing tests`` =
         (sampleUpdaterCompletedTie state) |> should equal (ABBA_MatchTied (a1, b1, b2, sampleCompletedInningsTie))
 
     let sampleCompletedInningsInconsistent = createInnings 4 10
-    let sampleUpdaterCompletedInconsistent = UpdateInnings (fun _ -> InningsCompleted sampleCompletedInningsInconsistent) sampleMatchRules
+    let sampleUpdaterCompletedInconsistent = UpdateInnings (fun _ -> sampleCompletedInningsInconsistent) sampleMatchRules
 
     [<Test>]
     let ``updating the innings as completed with A ahead throws an error`` ()=

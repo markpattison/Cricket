@@ -19,6 +19,9 @@ type Innings =
         _this.Individuals |> List.sumBy (fun (_, ii) -> ii.Score)
     member _this.GetWickets =
         _this.Individuals |> List.filter (fun (_, ii) -> ii.HowOut.IsSome) |> List.length
+    member _this.IsCompleted =
+        _this.IsDeclared || _this.GetWickets = 10
+
 //    member _this.GetFacingBatsman =
 //        let indexOfFacingBatsman =
 //            match _this.IsDeclared, _this.GetWickets, _this.EndFacingNext with
@@ -29,16 +32,11 @@ type Innings =
 //        | None -> failwith "facing batsman not found"
 //        | Some n -> _this.Individuals.Item n
 
-type InningsStatus =
-    | InningsCompleted of Innings
-    | InningsOngoing of Innings
-    member _x.GetInnings =
-        match _x with
-        | InningsCompleted innings -> innings
-        | InningsOngoing innings -> innings
-
 [<AutoOpen>]
 module InningsFunctions =
+
+    let (|InningsOngoing|InningsCompleted|) (innings: Innings) =
+        if innings.IsCompleted then InningsCompleted innings else InningsOngoing innings
 
     let NewInnings =
         {
@@ -86,16 +84,15 @@ module InningsFunctions =
             | End1, true | End2, false -> swap unswappedAssumingEnd1
         let updateStriker (p, ii) = (p, Update tempBowler ballOutcome ii)
         let updateNonStriker (p, ii) = (p, UpdateNonStriker ballOutcome ii)
-        InningsOngoing
-            {
-                state with
-                    Individuals = (UpdateIndividuals updateStriker updateNonStriker indexOfStriker indexOfNonStriker state.Individuals);
-                    IndexOfBatsmanAtEnd1 = batsmanAtEnd1;
-                    IndexOfBatsmanAtEnd2 = batsmanAtEnd2;
-                    EndFacingNext = endFacing;
-                    OversCompleted = overs;
-                    BallsSoFarThisOver = balls;
-            }
+        {
+            state with
+                Individuals = (UpdateIndividuals updateStriker updateNonStriker indexOfStriker indexOfNonStriker state.Individuals);
+                IndexOfBatsmanAtEnd1 = batsmanAtEnd1;
+                IndexOfBatsmanAtEnd2 = batsmanAtEnd2;
+                EndFacingNext = endFacing;
+                OversCompleted = overs;
+                BallsSoFarThisOver = balls;
+        }
 
     let SendInNewBatsman (nextBatsman: Player) state =
         let nextIndex = List.length state.Individuals
@@ -122,4 +119,4 @@ module InningsFunctions =
                         Individuals = List.append state.Individuals [(nextBatsman, NewIndividualInnings)];
                         IndexOfBatsmanAtEnd2 = Some nextIndex;
                 }
-        InningsOngoing updatedState
+        updatedState
