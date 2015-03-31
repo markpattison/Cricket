@@ -29,6 +29,13 @@ type MatchState =
     | ABBA_MatchDrawn of Innings * Innings * Innings * Innings
     | ABBA_MatchTied of Innings * Innings * Innings * Innings
 
+type SummaryState =
+    | NotYetStarted
+    | InningsInProgress of Innings
+    | BetweenInnings
+    | AwaitingFollowOnDecision
+    | Completed
+
 [<AutoOpen>]
 module MatchStateTransitions = 
     //    let (|MatchNotStarted|MatchAbandoned|MatchDrawn|MatchVictoryA|MatchVictoryB|MatchTied|MatchOngoing|) state =
@@ -147,6 +154,36 @@ module MatchStateTransitions =
 
 [<AutoOpen>]
 module MatchStateFunctions = 
+
+    let SummaryState state =
+        match state with
+        | NotStarted -> NotYetStarted
+        | Abandoned
+            | A_MatchDrawn _
+            | AB_MatchDrawn _
+            | ABBA_VictoryA _
+            | ABB_VictoryA _
+            | ABA_MatchDrawn _
+            | ABA_VictoryB _ 
+            | ABBA_VictoryB _
+            | ABBA_MatchDrawn _
+            | ABBA_MatchTied _
+            | ABAB_MatchDrawn _
+            | ABAB_MatchTied _
+            | ABAB_VictoryB _
+            | ABAB_VictoryA _
+            | ABB_MatchDrawn _ -> Completed
+        | AB_CompletedPossibleFollowOn _ -> AwaitingFollowOnDecision
+        | A_Ongoing a1 -> InningsInProgress a1
+        | AB_Ongoing (_, b1) -> InningsInProgress b1
+        | ABA_Ongoing (_, _, a2) -> InningsInProgress a2
+        | ABB_Ongoing (_, _, b2) -> InningsInProgress b2
+        | ABAB_Ongoing (_, _, _, b2) -> InningsInProgress b2
+        | ABBA_Ongoing (_, _, _, a2) -> InningsInProgress a2
+        | A_Completed _
+            | AB_CompletedNoFollowOn _
+            | ABA_Completed _
+            | ABB_Completed _ -> BetweenInnings
 
     let CurrentInnings state =
         match state with
