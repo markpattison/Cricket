@@ -1,13 +1,20 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "CricketEngine", "CricketEngine\CricketEngine.fsproj", "{8A04469C-F09F-4AB2-B6FE-977698DD897B}"
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "CricketEngine.UnitTests", "CricketEngine.UnitTests\CricketEngine.UnitTests.fsproj", "{5D4C0263-4763-4E27-87E2-BA094E733EF9}"
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "CricketEngine.AcceptanceTests", "CricketEngine.AcceptanceTests\CricketEngine.AcceptanceTests.fsproj", "{9D9510F4-F123-40C8-AC18-CAD105CF6953}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".paket", ".paket", "{1FE34719-AC8E-46EB-9367-1EEFBF1B3DC7}"
+	ProjectSection(SolutionItems) = preProject
+		.paket\paket.bootstrapper.exe = .paket\paket.bootstrapper.exe
+		paket.dependencies = paket.dependencies
+		paket.lock = paket.lock
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
