@@ -38,6 +38,30 @@ type ``MatchState between innings tests`` ()=
             stateCompletedABB          
         ]
 
+    // start next innings cases
+
+    [<Test>]
+    member _x.``starting the next innings after one innings leaves the state as AB_Ongoing`` ()=
+        stateCompletedA |> update StartNextInnings |> should equal (AB_Ongoing (a1, NewInnings))
+
+    [<Test>]
+    member _x.``starting the next innings after two innings leaves the state as ABA_Ongoing`` ()=
+        stateCompletedNoFollowOnAB |> update StartNextInnings |> should equal (ABA_Ongoing (a1, b1, NewInnings))
+
+    [<Test>]
+    member _x.``starting the next innings after two innings with possible follow on throws an error`` ()=
+        (fun () -> stateCompletedPossibleFollowOnAB |> update StartNextInnings |> ignore) |> should throw typeof<System.Exception>
+
+    [<Test>]
+    member _x.``starting the next innings after three innings leaves the state as ABAB_Ongoing`` ()=
+        stateCompletedABA |> update StartNextInnings |> should equal (ABAB_Ongoing (a1, b1, a2, NewInnings))
+
+    [<Test>]
+    member _x.``starting the next innings after three innings leaves the state as ABBA_Ongoing`` ()=
+        stateCompletedABB |> update StartNextInnings |> should equal (ABBA_Ongoing (a1, b1, b2, NewInnings))
+
+    // draw cases
+
     [<Test>]
     member _x.``drawing the match after one innings creates a drawn match`` ()=
         stateCompletedA |> update DrawMatch |> should equal (A_MatchDrawn (a1))
@@ -48,7 +72,7 @@ type ``MatchState between innings tests`` ()=
 
     [<Test>]
     member _x.``drawing the match after two innings with possible follow on creates a drawn match`` ()=
-        stateCompletedPossibleFollowOnAB |> update DrawMatch |> should equal (AB_MatchDrawn (a1, b1))
+       stateCompletedPossibleFollowOnAB |> update DrawMatch |> should equal (AB_MatchDrawn (a1, b1))
 
     [<Test>]
     member _x.``drawing the match after three innings creates a drawn match`` ()=
@@ -58,13 +82,17 @@ type ``MatchState between innings tests`` ()=
     member _x.``drawing the match after three innings with follow on creates a drawn match`` ()=
         stateCompletedABB |> update DrawMatch |> should equal (ABB_MatchDrawn (a1, b1, b2))
 
+    // follow-on cases
+
     [<Test>]
     member _x.``enforcing the follow-on leaves the state as ABB_Ongoing`` ()=
-        stateCompletedPossibleFollowOnAB |> update EnforceFollowOn |> matchStateCase |> should equal ABB_OngoingCase 
+        stateCompletedPossibleFollowOnAB |> update EnforceFollowOn |> should equal (ABB_Ongoing (a1, b1, NewInnings))
 
     [<Test>]
     member _x.``declining the follow-on leaves the state as ABA_Ongoing`` ()=
-        stateCompletedPossibleFollowOnAB |> update DeclineFollowOn |> matchStateCase |> should equal ABA_OngoingCase 
+        stateCompletedPossibleFollowOnAB |> update DeclineFollowOn |>  should equal (ABA_Ongoing (a1, b1, NewInnings))
+
+    // error cases
 
     [<TestCaseSource("testData")>]
     member _x.``starting the match throws an error`` state =
