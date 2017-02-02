@@ -36,6 +36,15 @@ type SummaryState =
     | AwaitingFollowOnDecision
     | Completed
 
+type MatchUpdate =
+    | StartMatch
+    | AbandonMatch
+    | DrawMatch
+    | StartNextInnings
+    | EnforceFollowOn
+    | DeclineFollowOn
+    | UpdateInnings of (Innings -> Innings)
+
 [<AutoOpen>]
 module MatchStateTransitions = 
     //    let (|MatchNotStarted|MatchAbandoned|MatchDrawn|MatchVictoryA|MatchVictoryB|MatchTied|MatchOngoing|) state =
@@ -53,17 +62,17 @@ module MatchStateTransitions =
     //        | MatchNotStarted -> NotStarted
     //        | MatchOngoing -> Ongoing
     //        | _ -> Completed
-    let StartMatch rules state = 
+    let private startMatch state = 
         match state with
         | NotStarted -> A_Ongoing(NewInnings)
         | _ -> failwith "Call to StartMatch in invalid state"
     
-    let AbandonMatch rules state = 
+    let private abandonMatch state = 
         match state with
         | NotStarted -> Abandoned
         | _ -> failwith "Call to AbandonMatch in invalid state"
     
-    let DrawMatch rules state = 
+    let private drawMatch state = 
         match state with
         | A_Ongoing(a1) | A_Completed(a1) -> A_MatchDrawn(a1)
         | AB_Ongoing(a1, b1) | AB_CompletedNoFollowOn(a1, b1) | AB_CompletedPossibleFollowOn(a1, b1) -> 
@@ -74,17 +83,17 @@ module MatchStateTransitions =
         | ABBA_Ongoing(a1, b1, b2, a2) -> ABBA_MatchDrawn(a1, b1, b2, a2)
         | _ -> failwith "Call to DrawMatch in invalid state"
     
-    let EnforceFollowOn rules state = 
+    let private enforceFollowOn state = 
         match state with
         | AB_CompletedPossibleFollowOn(a1, b1) -> ABB_Ongoing(a1, b1, NewInnings)
         | _ -> failwith "Call to EnforceFollowOn in invalid state"
     
-    let DeclineFollowOn rules state = 
+    let private declineFollowOn state = 
         match state with
         | AB_CompletedPossibleFollowOn(a1, b1) -> ABA_Ongoing(a1, b1, NewInnings)
         | _ -> failwith "Call to DeclineFollowOn in invalid state"
     
-    let UpdateInnings inningsUpdater rules state = 
+    let private updateInnings inningsUpdater rules state = 
         match state with
         | A_Ongoing(a1) -> 
             match inningsUpdater a1 with
@@ -124,6 +133,18 @@ module MatchStateTransitions =
             | InningsCompleted _ -> failwith "Call to UpdateInnings in inconsistent state"
         | _ -> failwith "Call to UpdateInnings in invalid state"
 
+    let update rules update state =
+        match update with
+        | StartMatch -> startMatch state
+        | AbandonMatch -> abandonMatch state
+        | DrawMatch -> drawMatch state
+        | StartNextInnings -> failwith "Not implemented"
+        | EnforceFollowOn -> enforceFollowOn state
+        | DeclineFollowOn -> declineFollowOn state
+        | UpdateInnings inningsUpdate -> updateInnings inningsUpdate rules state
+
+
+//    for convenience when writing new functions...
 //        | NotStarted
 //        | Abandoned
 //        | A_Ongoing a1

@@ -11,7 +11,7 @@ type Match =
 [<AutoOpen>]
 module MatchFunctions =
     
-    let UpdateMatchState update match' = { match' with State = (update match'.Rules match'.State) }
+    let UpdateMatchState update match' = { match' with State = MatchStateTransitions.update match'.Rules update match'.State }
     let UpdateCurrentInnings update = UpdateMatchState (UpdateInnings update)
 
     let NewMatch rules teamA teamB =
