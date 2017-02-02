@@ -13,8 +13,8 @@ module SampleData =
             Sixes = 1;
         }
 
-    let sampleBatsman1 = Name "testBatsman 1"
-    let sampleBatsman2 = Name "testBatsman 2"
+    let sampleBatsman1 = { Name = "testBatsman 1" }
+    let sampleBatsman2 = { Name = "testBatsman 2" }
 
     let sampleInnings =
         {
@@ -28,10 +28,10 @@ module SampleData =
         }
 
     let sampleBowler =
-        Name "testBowler"
+        { Name = "testBowler" }
 
     let sampleFielder =
-        Name "testFielder"
+        { Name = "testFielder" }
 
     let sampleIndividualData = sampleIndividualInnings, sampleBowler, sampleFielder
     let sampleInningsData = sampleInnings, sampleBowler, sampleFielder

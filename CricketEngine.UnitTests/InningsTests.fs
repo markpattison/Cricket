@@ -257,8 +257,8 @@ type SendInNewBatsmanTests ()=
     let inningsWithNoBatsmanAtEnd2 = { innings with IndexOfBatsmanAtEnd2 = None }
     let inningsWithNoBatsmen = { innings with IndexOfBatsmanAtEnd1 = None; IndexOfBatsmanAtEnd2 = None }
 
-    let testBatsman = Name "sentInBatsman"
-    let testBatsman2 = Name "sentInBatsman2"
+    let testBatsman = { Name = "sentInBatsman" }
+    let testBatsman2 = { Name = "sentInBatsman2" }
 
     [<Test>]
     member _x.``cannot send in a new batsman to an already-started innings with no batsmen`` ()=

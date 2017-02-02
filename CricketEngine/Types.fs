@@ -1,7 +1,7 @@
 ﻿namespace Cricket.CricketEngine
 
 type Player =
-    | Name of string
+    { Name: string }
 
 type HowOut =
     | Bowled of BowledBy: Player
@@ -17,15 +17,15 @@ type HowOut =
 
     override _this.ToString() =
         match _this with
-        | Bowled (Name bowler) -> sprintf "b %s" bowler
+        | Bowled (bowler) -> sprintf "b %s" bowler.Name
         | TimedOut -> "timed out"
-        | Caught(Name bowler, Name catcher) -> sprintf "c %s b %s" catcher bowler
+        | Caught(bowler, catcher) -> sprintf "c %s b %s" catcher.Name bowler.Name
         | HandledTheBall -> "out handled the ball"
         | HitTheBallTwice -> "out hit the ball twice"
-        | HitWicket(Name bowler) -> sprintf "hit wicket b %s" bowler
-        | LBW(Name bowler) -> sprintf "lbw b %s" bowler
+        | HitWicket(bowler) -> sprintf "hit wicket b %s" bowler.Name
+        | LBW(bowler) -> sprintf "lbw b %s" bowler.Name
         | ObstructingTheField -> "out obstructing the field"
         | RunOut -> "run out"
-        | Stumped(Name bowler, Name stumper) -> sprintf "st %s b %s" stumper bowler
+        | Stumped(bowler, stumper) -> sprintf "st %s b %s" stumper.Name bowler.Name
 
 

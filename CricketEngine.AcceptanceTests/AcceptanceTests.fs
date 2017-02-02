@@ -9,9 +9,9 @@ module ``Acceptance tests`` =
 
     let sampleMatchRules = { FollowOnMargin = 200; }
 
-    let batsman1 = Name "batsman 1"
-    let batsman2 = Name "batsman 2"
-    let batsman3 = Name "batsman 3"
+    let batsman1 = { Name = "batsman 1" }
+    let batsman2 = { Name = "batsman 2" }
+    let batsman3 = { Name = "batsman 3" }
 
     let dot = UpdateCurrentInnings (UpdateInningsWithBall DotBall)
     let score1 = UpdateCurrentInnings (UpdateInningsWithBall (ScoreRuns 1))

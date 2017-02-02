@@ -62,7 +62,7 @@ module InningsFunctions =
         List.mapi updateFunction list
 
     let swap (a, b) = (b, a)
-    let tempBowler = Name "testBowler" // TODO
+    let tempBowler = { Name = "testBowler" } // TODO
 
     let UpdateInningsWithBall (ballOutcome: BallOutcome) state =
         let swapEnds = ballOutcome.HasChangedEnds

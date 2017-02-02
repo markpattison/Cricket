@@ -73,7 +73,7 @@ type BallOutcome =
         | Bowled -> "out bowled"
         | HitWicket -> "out hit wicket"
         | LBW -> "out lbw"
-        | Caught(Name name, crossed) -> (sprintf "out caught (%s)" name) + if crossed then ", batsmen crossed" else ""
-        | Stumped(Name name) -> sprintf "out stumped (%s)" name
+        | Caught(catcher, crossed) -> (sprintf "out caught (%s)" catcher.Name) + if crossed then ", batsmen crossed" else ""
+        | Stumped(stumper) -> sprintf "out stumped (%s)" stumper.Name
         | RunOutStriker(runs, alsoCrossed) -> (sprintf "striker run out (%i runs)" runs) + if alsoCrossed then ", batsmen crossed" else ""
         | RunOutNonStriker(runs, alsoCrossed) -> (sprintf "non-striker run out (%i runs)" runs) + if alsoCrossed then ", batsmen crossed" else ""
