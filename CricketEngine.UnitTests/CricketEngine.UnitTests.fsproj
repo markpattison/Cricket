@@ -52,10 +52,13 @@
     <Content Include="paket.references" />
     <Content Include="app.config" />
     <Compile Include="TestHelpers.fs" />
-    <Compile Include="MatchStateTests.fs" />
     <Compile Include="SummaryStatusTests.fs" />
     <Compile Include="IndividualInningsTests.fs" />
     <Compile Include="InningsTests.fs" />
+    <Compile Include="MatchStateTests\NotStarted.fs" />
+    <Compile Include="MatchStateTests\Finished.fs" />
+    <Compile Include="MatchStateTests\BetweenInnings.fs" />
+    <Compile Include="MatchStateTests\Ongoing.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />
