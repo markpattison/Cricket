@@ -48,6 +48,10 @@ module ``MatchState A_Ongoing tests`` =
     let ``updating the innings as completed should use the result of the innings update`` ()=
         state |> update sampleUpdaterCompleted |> should equal (A_Completed (sampleCompletedInnings))
 
+    [<Test>]
+    let ``starting the next innings throws an error`` ()=
+        (fun () -> state |> update StartNextInnings |> ignore) |> should throw typeof<System.Exception>
+
 module ``MatchState AB_Ongoing tests`` =
 
     let a1 = createInnings 500 0
@@ -104,6 +108,10 @@ module ``MatchState AB_Ongoing tests`` =
     [<Test>]
     let ``updating the innings as completed with B behind follow-on target should use the result of the innings update`` ()=
         state |> update sampleUpdaterCompletedPossibleFollowOn  |> should equal (AB_CompletedPossibleFollowOn (a1, sampleCompletedInningsPossibleFollowOn))
+
+    [<Test>]
+    let ``starting the next innings throws an error`` ()=
+        (fun () -> state |> update StartNextInnings |> ignore) |> should throw typeof<System.Exception>
 
 module ``MatchState ABA_Ongoing tests`` =
 
@@ -163,6 +171,10 @@ module ``MatchState ABA_Ongoing tests`` =
     let ``updating the innings as completed with A behind should use the result of the innings update`` ()=
         state |> update sampleUpdaterCompletedVictory  |> should equal (ABA_VictoryB (a1, b1, sampleCompletedInningsVictory))
 
+    [<Test>]
+    let ``starting the next innings throws an error`` ()=
+        (fun () -> state |> update StartNextInnings |> ignore) |> should throw typeof<System.Exception>
+
 module ``MatchState ABB_Ongoing tests`` =
 
     let a1 = createInnings 10 0
@@ -220,6 +232,10 @@ module ``MatchState ABB_Ongoing tests`` =
     [<Test>]
     let ``updating the innings as completed with B behind should use the result of the innings update`` ()=
         state |> update sampleUpdaterCompletedVictory |> should equal (ABB_VictoryA (a1, b1, sampleCompletedInningsVictory))
+
+    [<Test>]
+    let ``starting the next innings throws an error`` ()=
+        (fun () -> state |> update StartNextInnings |> ignore) |> should throw typeof<System.Exception>
 
 module ``MatchState ABAB_Ongoing tests`` =
 
@@ -301,6 +317,10 @@ module ``MatchState ABAB_Ongoing tests`` =
     let ``updating the innings as completed with B ahead throws an error`` ()=
         (fun () -> state |> update sampleUpdaterCompletedInconsistent |> ignore) |> should throw typeof<System.Exception>
 
+    [<Test>]
+    let ``starting the next innings throws an error`` ()=
+        (fun () -> state |> update StartNextInnings |> ignore) |> should throw typeof<System.Exception>
+
 module ``MatchState ABBA_Ongoing tests`` =
 
     let a1 = createInnings 15 0
@@ -380,3 +400,7 @@ module ``MatchState ABBA_Ongoing tests`` =
     [<Test>]
     let ``updating the innings as completed with A ahead throws an error`` ()=
         (fun () -> state |> update sampleUpdaterCompletedInconsistent |> ignore) |> should throw typeof<System.Exception>
+
+    [<Test>]
+    let ``starting the next innings throws an error`` ()=
+        (fun () -> state |> update StartNextInnings |> ignore) |> should throw typeof<System.Exception>

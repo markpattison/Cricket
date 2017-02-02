@@ -7,7 +7,7 @@ open Cricket.CricketEngine
 open TestHelpers
 
 [<TestFixture>]
-type ``Finished MatchState tests`` ()=
+type ``MatchState finished tests`` ()=
     
     static member testData =
         [
@@ -51,3 +51,7 @@ type ``Finished MatchState tests`` ()=
     [<TestCaseSource("testData")>]
     member _x.``declining the follow-on throws an error`` state =
         (fun () -> state |> update DeclineFollowOn |> ignore) |> should throw typeof<System.Exception>
+
+    [<TestCaseSource("testData")>]
+    member _x.``starting the next innings throws an error`` state =
+        (fun () -> state |> update StartNextInnings |> ignore) |> should throw typeof<System.Exception>

@@ -6,10 +6,9 @@ open NUnit.Framework
 open Cricket.CricketEngine
 open TestHelpers
 
-module ``MatchState NotStarted tests`` =
+module ``MatchState not started tests`` =
 
     let state = NotStarted
-    let sampleInnings = TestHelpers.sampleEmptyInnings
 
     [<Test>]
     let ``starting the match creates a new ongoing match`` ()=
@@ -34,3 +33,7 @@ module ``MatchState NotStarted tests`` =
     [<Test>]
     let ``declining the follow-on throws an error`` ()=
         (fun () -> state |> update DeclineFollowOn |> ignore) |> should throw typeof<System.Exception>
+
+    [<Test>]
+    let ``starting the next innings throws an error`` ()=
+        (fun () -> state |> update StartNextInnings |> ignore) |> should throw typeof<System.Exception>

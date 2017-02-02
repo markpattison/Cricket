@@ -7,7 +7,9 @@ open Cricket.CricketEngine
 open TestHelpers
 
 [<TestFixture>]
-type ``Between innings MatchState tests`` ()=
+type ``MatchState between innings tests`` ()=
+
+    // TODO tests for starting next innings
 
     static let a1 = createInnings 10 0
     static let b1 = createInnings 9 0
