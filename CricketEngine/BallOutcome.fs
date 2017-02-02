@@ -63,3 +63,17 @@ type BallOutcome =
         match _this with
         | Six | ScoreRuns 6 | RunOutStriker (6, _) | RunOutNonStriker (6, _) -> true
         | _ -> false
+
+    override _this.ToString() =
+        match _this with
+        | DotBall -> "dot ball"
+        | ScoreRuns(runs) -> sprintf "run %i" runs
+        | Four -> "four"
+        | Six -> "six"
+        | Bowled -> "out bowled"
+        | HitWicket -> "out hit wicket"
+        | LBW -> "out lbw"
+        | Caught(Name name, crossed) -> (sprintf "out caught (%s)" name) + if crossed then ", batsmen crossed" else ""
+        | Stumped(Name name) -> sprintf "out stumped (%s)" name
+        | RunOutStriker(runs, alsoCrossed) -> (sprintf "striker run out (%i runs)" runs) + if alsoCrossed then ", batsmen crossed" else ""
+        | RunOutNonStriker(runs, alsoCrossed) -> (sprintf "non-striker run out (%i runs)" runs) + if alsoCrossed then ", batsmen crossed" else ""

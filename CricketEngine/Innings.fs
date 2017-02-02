@@ -4,6 +4,10 @@ type End =
     | End1
     | End2
     member _this.OtherEnd = if _this = End1 then End2 else End1
+    override _this.ToString() =
+        match _this with
+        | End1 -> "end 1"
+        | End2 -> "end 2"
 
 type Innings =
     {
