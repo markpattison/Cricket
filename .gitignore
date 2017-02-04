@@ -162,3 +162,10 @@ $RECYCLE.BIN/
 
 # Paket
 .paket/paket.exe
+
+# FAKE
+.fake/
+
+# tests
+test/
+*TestResult*.xml
