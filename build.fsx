@@ -39,12 +39,12 @@ Target "BuildTests" (fun _ ->
 
 Target "UnitTests" (fun _ ->
     !! (testDir + "/*UnitTests.dll")
-        |> NUnit3 (fun arg -> { arg with ResultSpecs = ["UnitTestResults.xml"] })
+        |> NUnit3 (fun arg -> { arg with ResultSpecs = [testDir </> "UnitTestResults.xml"] })
 )
 
 Target "AcceptanceTests" (fun _ ->
     !! (testDir + "/*AcceptanceTests.dll")
-        |> NUnit3 (fun arg -> { arg with ResultSpecs = ["AcceptanceTestResults.xml"] })
+        |> NUnit3 (fun arg -> { arg with ResultSpecs = [testDir </> "AcceptanceTestResults.xml"] })
 )
 
 // Build order
