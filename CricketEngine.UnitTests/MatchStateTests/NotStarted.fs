@@ -12,28 +12,28 @@ module ``MatchState not started tests`` =
 
     [<Test>]
     let ``starting the match creates a new ongoing match`` ()=
-        state |> update StartMatch |> matchStateCase |> should equal A_OngoingCase
+        state |> updater StartMatch |> matchStateCase |> should equal A_OngoingCase
 
     [<Test>]
     let ``abandoning the match creates an abandoned match`` ()=
-        state |> update AbandonMatch |> should equal Abandoned
+        state |> updater AbandonMatch |> should equal Abandoned
 
     [<Test>]
     let ``drawing the match throws an error`` ()=
-        (fun () -> state |> update DrawMatch |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> state |> updater DrawMatch |> ignore) |> should throw typeof<System.Exception>
         
     [<Test>]
     let ``updating the current innings throws an error`` ()=
-        (fun () -> state |> update sampleUpdaterOngoing |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> state |> updater sampleUpdaterOngoing |> ignore) |> should throw typeof<System.Exception>
 
     [<Test>]
     let ``enforcing the follow-on throws an error`` ()=
-        (fun () -> state |> update EnforceFollowOn |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> state |> updater EnforceFollowOn |> ignore) |> should throw typeof<System.Exception>
 
     [<Test>]
     let ``declining the follow-on throws an error`` ()=
-        (fun () -> state |> update DeclineFollowOn |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> state |> updater DeclineFollowOn |> ignore) |> should throw typeof<System.Exception>
 
     [<Test>]
     let ``starting the next innings throws an error`` ()=
-        (fun () -> state |> update StartNextInnings |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> state |> updater StartNextInnings |> ignore) |> should throw typeof<System.Exception>

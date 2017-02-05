@@ -9,10 +9,10 @@ type IndividualInnings =
         Sixes: int;
     }
 
-[<AutoOpen>]
-module IndividualInningsFunctions =
+[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix )>]
+module IndividualInnings =
 
-    let NewIndividualInnings =
+    let create =
         {
             Score = 0;
             HowOut = None;
@@ -21,16 +21,16 @@ module IndividualInningsFunctions =
             Sixes = 0;
         }
 
-    let Update (bowler: Player) (ball: BallOutcome) (innings: IndividualInnings) =
+    let update (bowler: Player) (ball: BallOutcome) (innings: IndividualInnings) =
         {
-            Score = innings.Score + ball.GetRuns;
-            HowOut = ball.GetHowStrikerOut bowler;
-            BallsFaced = innings.BallsFaced + if (ball.CountsAsBallFaced) then 1 else 0;
-            Fours = innings.Fours + if (ball.IsAFour) then 1 else 0;
-            Sixes = innings.Sixes + if (ball.IsASix) then 1 else 0;
+            Score = innings.Score + BallOutcome.getRuns ball;
+            HowOut = BallOutcome.howStrikerOut bowler ball;
+            BallsFaced = innings.BallsFaced + if (BallOutcome.countsAsBallFaced ball) then 1 else 0;
+            Fours = innings.Fours + if (BallOutcome.isAFour ball) then 1 else 0;
+            Sixes = innings.Sixes + if (BallOutcome.isASix ball) then 1 else 0;
         }
 
-    let UpdateNonStriker (ball: BallOutcome) (innings: IndividualInnings) =
+    let updateNonStriker (ball: BallOutcome) (innings: IndividualInnings) =
         match ball with
         | RunOutNonStriker _ -> { innings with HowOut = Some HowOut.RunOut }
         | _ -> innings

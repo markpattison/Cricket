@@ -18,7 +18,7 @@ module SampleData =
 
     let sampleInnings =
         {
-            Individuals = [ (sampleBatsman1, NewIndividualInnings); (sampleBatsman2, NewIndividualInnings) ];
+            Individuals = [ (sampleBatsman1, IndividualInnings.create); (sampleBatsman2, IndividualInnings.create) ];
             IsDeclared = false;
             IndexOfBatsmanAtEnd1 = Some 0;
             IndexOfBatsmanAtEnd2 = Some 1;
@@ -101,8 +101,8 @@ module TestHelpers =
 
     let rec createInnings score wickets =
         match wickets with
-        | 0 -> { SampleData.sampleInnings with Individuals = [ (SampleData.sampleBatsman1, {NewIndividualInnings with Score = score}); (SampleData.sampleBatsman2, NewIndividualInnings) ] }
-        | n -> { SampleData.sampleInnings with Individuals = (SampleData.sampleBatsman1, { NewIndividualInnings with HowOut = Some HowOut.RunOut }) :: (createInnings score (n - 1)).Individuals }
+        | 0 -> { SampleData.sampleInnings with Individuals = [ (SampleData.sampleBatsman1, { IndividualInnings.create with Score = score}); (SampleData.sampleBatsman2, IndividualInnings.create) ] }
+        | n -> { SampleData.sampleInnings with Individuals = (SampleData.sampleBatsman1, { IndividualInnings.create with HowOut = Some HowOut.RunOut }) :: (createInnings score (n - 1)).Individuals }
 
     let (%/) runs wickets = createInnings runs wickets
     let (%/%) runs wickets = { (createInnings runs wickets) with IsDeclared = true }
@@ -113,4 +113,4 @@ module TestHelpers =
 
     let sampleUpdaterOngoing = UpdateInnings (fun _ -> sampleOngoingInnings)
     let sampleUpdaterCompleted = UpdateInnings (fun _ -> sampleCompletedInnings)
-    let update = MatchStateTransitions.update sampleMatchRules
+    let updater = MatchState.update sampleMatchRules

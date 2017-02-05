@@ -30,28 +30,28 @@ type ``MatchState finished tests`` ()=
 
     [<TestCaseSource("testData")>]
     member _x.``starting the match throws an error`` state =
-        (fun () -> state |> update StartMatch |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> state |> updater StartMatch |> ignore) |> should throw typeof<System.Exception>
 
     [<TestCaseSource("testData")>]
     member _x.``abandoning the match throws an error`` state =
-        (fun () -> state |> update AbandonMatch |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> state |> updater AbandonMatch |> ignore) |> should throw typeof<System.Exception>
 
     [<TestCaseSource("testData")>]
     member _x.``drawing the match throws an error`` state =
-        (fun () -> state |> update DrawMatch |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> state |> updater DrawMatch |> ignore) |> should throw typeof<System.Exception>
         
     [<TestCaseSource("testData")>]
     member _x.``updating the current innings throws an error`` state =
-        (fun () -> state |> update sampleUpdaterOngoing |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> state |> updater sampleUpdaterOngoing |> ignore) |> should throw typeof<System.Exception>
 
     [<TestCaseSource("testData")>]
     member _x.``enforcing the follow-on throws an error`` state =
-        (fun () -> state |> update EnforceFollowOn |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> state |> updater EnforceFollowOn |> ignore) |> should throw typeof<System.Exception>
 
     [<TestCaseSource("testData")>]
     member _x.``declining the follow-on throws an error`` state =
-        (fun () -> state |> update DeclineFollowOn |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> state |> updater DeclineFollowOn |> ignore) |> should throw typeof<System.Exception>
 
     [<TestCaseSource("testData")>]
     member _x.``starting the next innings throws an error`` state =
-        (fun () -> state |> update StartNextInnings |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> state |> updater StartNextInnings |> ignore) |> should throw typeof<System.Exception>

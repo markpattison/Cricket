@@ -30,7 +30,7 @@ type IndividualInningsScoreTests ()=
     [<TestCaseSource("TestData")>]
     member _x.``batsman's score increases correctly`` testData =
         let ball, scoreIncreasesBy = testData
-        (Update bowler ball innings).Score |> should equal (innings.Score + scoreIncreasesBy)
+        (IndividualInnings.update bowler ball innings).Score |> should equal (innings.Score + scoreIncreasesBy)
 
 [<TestFixture>]
 type IndividualInningsHowOutTests ()=
@@ -58,7 +58,7 @@ type IndividualInningsHowOutTests ()=
     [<TestCaseSource("TestData")>]
     member _x.``batsman is out correctly`` (testData: BallOutcome * HowOut option) =
         let ball, howOut = testData
-        (Update bowler ball innings).HowOut |> should equal howOut
+        (IndividualInnings.update bowler ball innings).HowOut |> should equal howOut
 
 [<TestFixture>]
 type IndividualInningsBallsFacedTests ()=
@@ -85,7 +85,7 @@ type IndividualInningsBallsFacedTests ()=
     [<TestCaseSource("TestData")>]
     member _x.``batsman's balls faced update correctly`` testData =
         let ball, ballsFacedIncreased = testData
-        (Update bowler ball innings).BallsFaced |> should equal (innings.BallsFaced + if ballsFacedIncreased then 1 else 0)
+        (IndividualInnings.update bowler ball innings).BallsFaced |> should equal (innings.BallsFaced + if ballsFacedIncreased then 1 else 0)
 
 [<TestFixture>]
 type IndividualInningsFoursTests ()=
@@ -116,7 +116,7 @@ type IndividualInningsFoursTests ()=
     [<TestCaseSource("TestData")>]
     member _x.``batsman's fours update correctly`` testData =
         let ball, foursIncreased = testData
-        (Update bowler ball innings).Fours |> should equal (innings.Fours + if foursIncreased then 1 else 0)
+        (IndividualInnings.update bowler ball innings).Fours |> should equal (innings.Fours + if foursIncreased then 1 else 0)
 
 [<TestFixture>]
 type IndividualInningsSixesTests ()=
@@ -148,4 +148,4 @@ type IndividualInningsSixesTests ()=
     [<TestCaseSource("TestData")>]
     member _x.``batsman's sixes update correctly`` testData =
         let ball, sixesIncreased = testData
-        (Update bowler ball innings).Sixes |> should equal (innings.Sixes + if sixesIncreased then 1 else 0)
+        (IndividualInnings.update bowler ball innings).Sixes |> should equal (innings.Sixes + if sixesIncreased then 1 else 0)
