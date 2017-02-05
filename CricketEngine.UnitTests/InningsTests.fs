@@ -159,9 +159,9 @@ type InningsIndividualsUpdatedCorrectly ()=
         let testInnings = { innings with EndFacingNext = currentEnd }
         let updated = UpdateInningsWithBall ball testInnings
         let index = (if currentEnd = End1 then innings.IndexOfBatsmanAtEnd1 else innings.IndexOfBatsmanAtEnd2).Value
-        let (player, testIndividualInnings) = List.nth innings.Individuals index
+        let (player, testIndividualInnings) = List.item index innings.Individuals
         let expectedIndividualInnings = Update SampleData.sampleBowler ball testIndividualInnings
-        (List.nth updated.Individuals index) |> should equal (player, expectedIndividualInnings)
+        (List.item index updated.Individuals) |> should equal (player, expectedIndividualInnings)
 
     [<Test>]
     member _x.``non-striker's individual innings is updated correctly when he is run out`` ([<ValueSource("NonStrikerRunOutTestData")>] testData) ([<ValueSource("Ends")>] currentEnd) =
@@ -169,9 +169,9 @@ type InningsIndividualsUpdatedCorrectly ()=
         let testInnings = { innings with EndFacingNext = currentEnd }
         let updated = UpdateInningsWithBall ball testInnings
         let nonStrikerIndex = (if currentEnd = End1 then innings.IndexOfBatsmanAtEnd2 else innings.IndexOfBatsmanAtEnd1).Value
-        let (player, testIndividualInnings) = List.nth innings.Individuals nonStrikerIndex
+        let (player, testIndividualInnings) = List.item nonStrikerIndex innings.Individuals
         let expectedIndividualInnings = UpdateNonStriker ball testIndividualInnings
-        (List.nth updated.Individuals nonStrikerIndex) |> should equal (player, expectedIndividualInnings)
+        (List.item nonStrikerIndex updated.Individuals) |> should equal (player, expectedIndividualInnings)
 
 [<TestFixture>]
 type InningsBallsIncrementedTests ()=
