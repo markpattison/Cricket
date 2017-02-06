@@ -12,20 +12,20 @@ type ``MatchState finished tests`` ()=
     static member testData =
         [
             Abandoned;
-            A_MatchDrawn (createInnings 5 0);
-            AB_MatchDrawn (createInnings 5 0, createInnings 10 0);
-            ABA_VictoryB (createInnings 5 0, createInnings 10 0, createInnings 3 10);
-            ABA_MatchDrawn (createInnings 5 0, createInnings 10 0, createInnings 3 0);
-            ABB_VictoryA (createInnings 5 0, createInnings 10 0, createInnings 3 10);
-            ABB_MatchDrawn (createInnings 5 0, createInnings 10 0, createInnings 3 0);
-            ABAB_VictoryA (createInnings 5 0, createInnings 10 0, createInnings 8 0, createInnings 2 10);
-            ABAB_VictoryB (createInnings 5 0, createInnings 10 0, createInnings 8 0, createInnings 4 0);
-            ABAB_MatchDrawn (createInnings 5 0, createInnings 10 0, createInnings 8 0, createInnings 2 0);
-            ABAB_MatchTied (createInnings 5 0, createInnings 10 0, createInnings 8 0, createInnings 3 10);
-            ABBA_VictoryA (createInnings 15 0, createInnings 10 0, createInnings 7 0, createInnings 3 0);
-            ABBA_VictoryB (createInnings 15 0, createInnings 10 0, createInnings 7 0, createInnings 1 10);
-            ABBA_MatchDrawn (createInnings 15 0, createInnings 10 0, createInnings 7 0, createInnings 1 0);
-            ABBA_MatchTied (createInnings 15 0, createInnings 10 0, createInnings 7 0, createInnings 2 10);
+            A'MatchDrawn (createInnings 5 0);
+            AB'MatchDrawn (createInnings 5 0, createInnings 10 0);
+            ABA'VictoryB (createInnings 5 0, createInnings 10 0, createInnings 3 10);
+            ABA'MatchDrawn (createInnings 5 0, createInnings 10 0, createInnings 3 0);
+            ABB'VictoryA (createInnings 5 0, createInnings 10 0, createInnings 3 10);
+            ABB'MatchDrawn (createInnings 5 0, createInnings 10 0, createInnings 3 0);
+            ABAB'VictoryA (createInnings 5 0, createInnings 10 0, createInnings 8 0, createInnings 2 10);
+            ABAB'VictoryB (createInnings 5 0, createInnings 10 0, createInnings 8 0, createInnings 4 0);
+            ABAB'MatchDrawn (createInnings 5 0, createInnings 10 0, createInnings 8 0, createInnings 2 0);
+            ABAB'MatchTied (createInnings 5 0, createInnings 10 0, createInnings 8 0, createInnings 3 10);
+            ABBA'VictoryA (createInnings 15 0, createInnings 10 0, createInnings 7 0, createInnings 3 0);
+            ABBA'VictoryB (createInnings 15 0, createInnings 10 0, createInnings 7 0, createInnings 1 10);
+            ABBA'MatchDrawn (createInnings 15 0, createInnings 10 0, createInnings 7 0, createInnings 1 0);
+            ABBA'MatchTied (createInnings 15 0, createInnings 10 0, createInnings 7 0, createInnings 2 10);
         ]
 
     [<TestCaseSource("testData")>]

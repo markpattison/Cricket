@@ -14,11 +14,11 @@ type ``MatchState between innings tests`` ()=
     static let b1 = createInnings 9 0
     static let a2 = createInnings 5 0
     static let b2 = createInnings 4 0
-    static let stateCompletedA = A_Completed (a1)
-    static let stateCompletedNoFollowOnAB = AB_CompletedNoFollowOn (a1, b1)
-    static let stateCompletedPossibleFollowOnAB = AB_CompletedPossibleFollowOn (a1, b1)
-    static let stateCompletedABA = ABA_Completed (a1, b1, a2)
-    static let stateCompletedABB = ABB_Completed (a1, b1, b2)
+    static let stateCompletedA = A'Completed (a1)
+    static let stateCompletedNoFollowOnAB = AB'CompletedNoFollowOn (a1, b1)
+    static let stateCompletedPossibleFollowOnAB = AB'CompletedPossibleFollowOn (a1, b1)
+    static let stateCompletedABA = ABA'Completed (a1, b1, a2)
+    static let stateCompletedABB = ABB'Completed (a1, b1, b2)
 
     static member testData =
         [
@@ -41,11 +41,11 @@ type ``MatchState between innings tests`` ()=
 
     [<Test>]
     member _x.``starting the next innings after one innings leaves the state as AB_Ongoing`` ()=
-        stateCompletedA |> updater StartNextInnings |> should equal (AB_Ongoing (a1, Innings.create))
+        stateCompletedA |> updater StartNextInnings |> should equal (AB'Ongoing (a1, Innings.create))
 
     [<Test>]
     member _x.``starting the next innings after two innings leaves the state as ABA_Ongoing`` ()=
-        stateCompletedNoFollowOnAB |> updater StartNextInnings |> should equal (ABA_Ongoing (a1, b1, Innings.create))
+        stateCompletedNoFollowOnAB |> updater StartNextInnings |> should equal (ABA'Ongoing (a1, b1, Innings.create))
 
     [<Test>]
     member _x.``starting the next innings after two innings with possible follow on throws an error`` ()=
@@ -53,43 +53,43 @@ type ``MatchState between innings tests`` ()=
 
     [<Test>]
     member _x.``starting the next innings after three innings leaves the state as ABAB_Ongoing`` ()=
-        stateCompletedABA |> updater StartNextInnings |> should equal (ABAB_Ongoing (a1, b1, a2, Innings.create))
+        stateCompletedABA |> updater StartNextInnings |> should equal (ABAB'Ongoing (a1, b1, a2, Innings.create))
 
     [<Test>]
     member _x.``starting the next innings after three innings leaves the state as ABBA_Ongoing`` ()=
-        stateCompletedABB |> updater StartNextInnings |> should equal (ABBA_Ongoing (a1, b1, b2, Innings.create))
+        stateCompletedABB |> updater StartNextInnings |> should equal (ABBA'Ongoing (a1, b1, b2, Innings.create))
 
     // draw cases
 
     [<Test>]
     member _x.``drawing the match after one innings creates a drawn match`` ()=
-        stateCompletedA |> updater DrawMatch |> should equal (A_MatchDrawn (a1))
+        stateCompletedA |> updater DrawMatch |> should equal (A'MatchDrawn (a1))
 
     [<Test>]
     member _x.``drawing the match after two innings creates a drawn match`` ()=
-        stateCompletedNoFollowOnAB |> updater DrawMatch |> should equal (AB_MatchDrawn (a1, b1))
+        stateCompletedNoFollowOnAB |> updater DrawMatch |> should equal (AB'MatchDrawn (a1, b1))
 
     [<Test>]
     member _x.``drawing the match after two innings with possible follow on creates a drawn match`` ()=
-       stateCompletedPossibleFollowOnAB |> updater DrawMatch |> should equal (AB_MatchDrawn (a1, b1))
+       stateCompletedPossibleFollowOnAB |> updater DrawMatch |> should equal (AB'MatchDrawn (a1, b1))
 
     [<Test>]
     member _x.``drawing the match after three innings creates a drawn match`` ()=
-        stateCompletedABA |> updater DrawMatch |> should equal (ABA_MatchDrawn (a1, b1, a2))
+        stateCompletedABA |> updater DrawMatch |> should equal (ABA'MatchDrawn (a1, b1, a2))
 
     [<Test>]
     member _x.``drawing the match after three innings with follow on creates a drawn match`` ()=
-        stateCompletedABB |> updater DrawMatch |> should equal (ABB_MatchDrawn (a1, b1, b2))
+        stateCompletedABB |> updater DrawMatch |> should equal (ABB'MatchDrawn (a1, b1, b2))
 
     // follow-on cases
 
     [<Test>]
     member _x.``enforcing the follow-on leaves the state as ABB_Ongoing`` ()=
-        stateCompletedPossibleFollowOnAB |> updater EnforceFollowOn |> should equal (ABB_Ongoing (a1, b1, Innings.create))
+        stateCompletedPossibleFollowOnAB |> updater EnforceFollowOn |> should equal (ABB'Ongoing (a1, b1, Innings.create))
 
     [<Test>]
     member _x.``declining the follow-on leaves the state as ABA_Ongoing`` ()=
-        stateCompletedPossibleFollowOnAB |> updater DeclineFollowOn |>  should equal (ABA_Ongoing (a1, b1, Innings.create))
+        stateCompletedPossibleFollowOnAB |> updater DeclineFollowOn |>  should equal (ABA'Ongoing (a1, b1, Innings.create))
 
     // error cases
 

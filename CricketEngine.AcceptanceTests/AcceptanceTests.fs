@@ -45,7 +45,7 @@ module ``Acceptance tests`` =
                 TeamA = "Team A";
                 TeamB = "Team B";
                 Rules = sampleMatchRules;
-                State = A_Ongoing
+                State = A'Ongoing
                     {
                         Individuals =
                             [
@@ -95,7 +95,7 @@ module ``Acceptance tests`` =
                 TeamA = "Team A";
                 TeamB = "Team B";
                 Rules = sampleMatchRules;
-                State = A_Ongoing
+                State = A'Ongoing
                     {
                         Individuals =
                             [

@@ -12,7 +12,7 @@ module ``MatchState not started tests`` =
 
     [<Test>]
     let ``starting the match creates a new ongoing match`` ()=
-        state |> updater StartMatch |> matchStateCase |> should equal A_OngoingCase
+        state |> updater StartMatch |> matchStateCase |> should equal A'OngoingCase
 
     [<Test>]
     let ``abandoning the match creates an abandoned match`` ()=

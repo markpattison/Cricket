@@ -46,19 +46,19 @@ module Match =
         match match'.State with
         | NotStarted -> "Match not started"
         | Abandoned -> "Match abandoned without a ball being bowled"
-        | A_MatchDrawn _ | AB_MatchDrawn _ | ABA_MatchDrawn _ | ABB_MatchDrawn _ | ABAB_MatchDrawn _ | ABBA_MatchDrawn _ -> "Match drawn"
-        | A_Ongoing a1 -> sprintf "%s are %i for %i in their first innings" teamA a1.GetRuns a1.GetWickets
-        | A_Completed a1 when a1.IsDeclared -> sprintf "%s scored %i for %i declared in their first innings" teamA a1.GetRuns a1.GetWickets
-        | A_Completed a1 -> sprintf "%s scored %i all out in their first innings" teamA a1.GetRuns
-        | AB_Ongoing (_, b1) & ALeads -> sprintf "%s trail by %s with %s remaining in their first innings" teamB (formatRuns leadA) (formatWicketsLeft b1.GetWickets)
-        | AB_Ongoing (_, b1) & ScoresLevel -> sprintf "%s are level with %s remaining in their first innings" teamB (formatWicketsLeft b1.GetWickets)
-        | AB_Ongoing (_, b1) & BLeads -> sprintf "%s lead by %s with %s remaining in their first innings" teamB (formatRuns leadB) (formatWicketsLeft b1.GetWickets)
-        | (AB_CompletedNoFollowOn (a1, b1) | AB_CompletedPossibleFollowOn (a1, b1)) & ALeads -> sprintf "%s lead by %s after the first innings" teamA (formatRuns leadA)
-        | (AB_CompletedNoFollowOn (a1, b1) | AB_CompletedPossibleFollowOn (a1, b1)) & ScoresLevel -> sprintf "%s are level after the first innings" teamB
-        | (AB_CompletedNoFollowOn (a1, b1) | AB_CompletedPossibleFollowOn (a1, b1)) & BLeads -> sprintf "%s lead by %s after the first innings" teamB (formatRuns leadB)
-        | ABA_Ongoing (_, _, a2) & BLeads -> sprintf "%s trail by %s with %s remaining in their second innings" teamA (formatRuns leadB) (formatWicketsLeft a2.GetWickets)
-        | ABA_Ongoing (_, _, a2) & ScoresLevel -> sprintf "%s are level with %s remaining in their second innings" teamA (formatWicketsLeft a2.GetWickets)
-        | ABA_Ongoing (_, _, a2) & ALeads -> sprintf "%s lead by %s with %s remaining in their second innings" teamA (formatRuns leadA) (formatWicketsLeft a2.GetWickets)
-        | ABA_VictoryB _ -> sprintf "%s won by %s" teamB (formatRuns leadB)
-        | ABA_Completed _ -> sprintf "%s need %s to win in their second innings" teamB (formatRuns leadA)
+        | A'MatchDrawn _ | AB'MatchDrawn _ | ABA'MatchDrawn _ | ABB'MatchDrawn _ | ABAB'MatchDrawn _ | ABBA'MatchDrawn _ -> "Match drawn"
+        | A'Ongoing a1 -> sprintf "%s are %i for %i in their first innings" teamA a1.GetRuns a1.GetWickets
+        | A'Completed a1 when a1.IsDeclared -> sprintf "%s scored %i for %i declared in their first innings" teamA a1.GetRuns a1.GetWickets
+        | A'Completed a1 -> sprintf "%s scored %i all out in their first innings" teamA a1.GetRuns
+        | AB'Ongoing (_, b1) & ALeads -> sprintf "%s trail by %s with %s remaining in their first innings" teamB (formatRuns leadA) (formatWicketsLeft b1.GetWickets)
+        | AB'Ongoing (_, b1) & ScoresLevel -> sprintf "%s are level with %s remaining in their first innings" teamB (formatWicketsLeft b1.GetWickets)
+        | AB'Ongoing (_, b1) & BLeads -> sprintf "%s lead by %s with %s remaining in their first innings" teamB (formatRuns leadB) (formatWicketsLeft b1.GetWickets)
+        | (AB'CompletedNoFollowOn (a1, b1) | AB'CompletedPossibleFollowOn (a1, b1)) & ALeads -> sprintf "%s lead by %s after the first innings" teamA (formatRuns leadA)
+        | (AB'CompletedNoFollowOn (a1, b1) | AB'CompletedPossibleFollowOn (a1, b1)) & ScoresLevel -> sprintf "%s are level after the first innings" teamB
+        | (AB'CompletedNoFollowOn (a1, b1) | AB'CompletedPossibleFollowOn (a1, b1)) & BLeads -> sprintf "%s lead by %s after the first innings" teamB (formatRuns leadB)
+        | ABA'Ongoing (_, _, a2) & BLeads -> sprintf "%s trail by %s with %s remaining in their second innings" teamA (formatRuns leadB) (formatWicketsLeft a2.GetWickets)
+        | ABA'Ongoing (_, _, a2) & ScoresLevel -> sprintf "%s are level with %s remaining in their second innings" teamA (formatWicketsLeft a2.GetWickets)
+        | ABA'Ongoing (_, _, a2) & ALeads -> sprintf "%s lead by %s with %s remaining in their second innings" teamA (formatRuns leadA) (formatWicketsLeft a2.GetWickets)
+        | ABA'VictoryB _ -> sprintf "%s won by %s" teamB (formatRuns leadB)
+        | ABA'Completed _ -> sprintf "%s need %s to win in their second innings" teamB (formatRuns leadA)
         | _ -> failwith "not implemented"

@@ -41,61 +41,61 @@ module TestHelpers =
     type MatchStateCase =
         | NotStartedCase
         | AbandonedCase
-        | A_OngoingCase
-        | A_CompletedCase
-        | A_MatchDrawnCase
-        | AB_OngoingCase
-        | AB_CompletedNoFollowOnCase
-        | AB_CompletedPossibleFollowOnCase
-        | AB_MatchDrawnCase
-        | ABA_OngoingCase
-        | ABA_VictoryBCase
-        | ABA_CompletedCase
-        | ABA_MatchDrawnCase
-        | ABB_OngoingCase
-        | ABB_VictoryACase
-        | ABB_CompletedCase
-        | ABB_MatchDrawnCase
-        | ABAB_OngoingCase
-        | ABAB_VictoryACase
-        | ABAB_VictoryBCase
-        | ABAB_MatchDrawnCase
-        | ABAB_MatchTiedCase
-        | ABBA_OngoingCase
-        | ABBA_VictoryACase
-        | ABBA_VictoryBCase
-        | ABBA_MatchDrawnCase
-        | ABBA_MatchTiedCase
+        | A'OngoingCase
+        | A'CompletedCase
+        | A'MatchDrawnCase
+        | AB'OngoingCase
+        | AB'CompletedNoFollowOnCase
+        | AB'CompletedPossibleFollowOnCase
+        | AB'MatchDrawnCase
+        | ABA'OngoingCase
+        | ABA'VictoryBCase
+        | ABA'CompletedCase
+        | ABA'MatchDrawnCase
+        | ABB'OngoingCase
+        | ABB'VictoryACase
+        | ABB'CompletedCase
+        | ABB'MatchDrawnCase
+        | ABAB'OngoingCase
+        | ABAB'VictoryACase
+        | ABAB'VictoryBCase
+        | ABAB'MatchDrawnCase
+        | ABAB'MatchTiedCase
+        | ABBA'OngoingCase
+        | ABBA'VictoryACase
+        | ABBA'VictoryBCase
+        | ABBA'MatchDrawnCase
+        | ABBA'MatchTiedCase
 
     let matchStateCase state =
         match state with
         | NotStarted _ -> NotStartedCase
         | Abandoned _ -> AbandonedCase
-        | A_Ongoing _ -> A_OngoingCase
-        | A_Completed _ -> A_CompletedCase
-        | A_MatchDrawn _ -> A_MatchDrawnCase
-        | AB_Ongoing _ -> AB_OngoingCase
-        | AB_CompletedNoFollowOn _ -> AB_CompletedNoFollowOnCase
-        | AB_CompletedPossibleFollowOn _ -> AB_CompletedPossibleFollowOnCase
-        | AB_MatchDrawn _ -> AB_MatchDrawnCase
-        | ABA_Ongoing _ -> ABA_OngoingCase
-        | ABA_VictoryB _ -> ABA_VictoryBCase
-        | ABA_Completed _ -> ABA_CompletedCase
-        | ABA_MatchDrawn _ -> ABA_MatchDrawnCase
-        | ABB_Ongoing _ -> ABB_OngoingCase
-        | ABB_VictoryA _ -> ABB_VictoryACase
-        | ABB_Completed _ -> ABB_CompletedCase
-        | ABB_MatchDrawn _ -> ABB_MatchDrawnCase
-        | ABAB_Ongoing _ -> ABAB_OngoingCase
-        | ABAB_VictoryA _ -> ABAB_VictoryACase
-        | ABAB_VictoryB _ -> ABAB_VictoryBCase
-        | ABAB_MatchDrawn _ -> ABAB_MatchDrawnCase
-        | ABAB_MatchTied _ -> ABAB_MatchTiedCase
-        | ABBA_Ongoing _ -> ABBA_OngoingCase
-        | ABBA_VictoryA _ -> ABBA_VictoryACase
-        | ABBA_VictoryB _ -> ABBA_VictoryBCase
-        | ABBA_MatchDrawn _ -> ABBA_MatchDrawnCase
-        | ABBA_MatchTied _ -> ABBA_MatchTiedCase
+        | A'Ongoing _ -> A'OngoingCase
+        | A'Completed _ -> A'CompletedCase
+        | A'MatchDrawn _ -> A'MatchDrawnCase
+        | AB'Ongoing _ -> AB'OngoingCase
+        | AB'CompletedNoFollowOn _ -> AB'CompletedNoFollowOnCase
+        | AB'CompletedPossibleFollowOn _ -> AB'CompletedPossibleFollowOnCase
+        | AB'MatchDrawn _ -> AB'MatchDrawnCase
+        | ABA'Ongoing _ -> ABA'OngoingCase
+        | ABA'VictoryB _ -> ABA'VictoryBCase
+        | ABA'Completed _ -> ABA'CompletedCase
+        | ABA'MatchDrawn _ -> ABA'MatchDrawnCase
+        | ABB'Ongoing _ -> ABB'OngoingCase
+        | ABB'VictoryA _ -> ABB'VictoryACase
+        | ABB'Completed _ -> ABB'CompletedCase
+        | ABB'MatchDrawn _ -> ABB'MatchDrawnCase
+        | ABAB'Ongoing _ -> ABAB'OngoingCase
+        | ABAB'VictoryA _ -> ABAB'VictoryACase
+        | ABAB'VictoryB _ -> ABAB'VictoryBCase
+        | ABAB'MatchDrawn _ -> ABAB'MatchDrawnCase
+        | ABAB'MatchTied _ -> ABAB'MatchTiedCase
+        | ABBA'Ongoing _ -> ABBA'OngoingCase
+        | ABBA'VictoryA _ -> ABBA'VictoryACase
+        | ABBA'VictoryB _ -> ABBA'VictoryBCase
+        | ABBA'MatchDrawn _ -> ABBA'MatchDrawnCase
+        | ABBA'MatchTied _ -> ABBA'MatchTiedCase
 
     let sampleMatchRules = { FollowOnMargin = 200; }
 
