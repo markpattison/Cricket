@@ -113,39 +113,104 @@ module ``SummaryStatus tests`` =
     [<Test>]
     let ``ABA completed`` ()=
         let state = ABA'Completed (100 %/ 10, 110 %/ 10, 20 %/ 10)
-        (summary state) |> should equal "TeamB need 10 runs to win in their second innings"
+        (summary state) |> should equal "TeamB need 11 runs to win in their second innings"
 
     [<Test>]
     let ``ABA match drawn`` ()=
         let state = ABA'MatchDrawn (sampleEmptyInnings, sampleEmptyInnings, sampleEmptyInnings)
         (summary state) |> should equal "Match drawn"
 
-//        | ABB_Ongoing (a1, b1, b2)
-//        | ABB_VictoryA (a1, b1, b2)
-//        | ABB_Completed (a1, b1, b2)
+    [<Test>]
+    let ``ABB ongoing, B ahead`` ()=
+        let state = ABB'Ongoing (100 %/ 10, 30 %/ 10, 110 %/ 5)
+        (summary state) |> should equal "TeamB lead by 40 runs with 5 wickets remaining in their second innings"
+
+    [<Test>]
+    let ``ABB ongoing, B level`` ()=
+        let state = ABB'Ongoing (100 %/ 10, 30 %/ 10, 70 %/ 5)
+        (summary state) |> should equal "TeamB are level with 5 wickets remaining in their second innings"
+
+    [<Test>]
+    let ``ABB ongoing, B behind`` ()=
+        let state = ABB'Ongoing (100 %/ 10, 30 %/ 10, 30 %/ 5)
+        (summary state) |> should equal "TeamB trail by 40 runs with 5 wickets remaining in their second innings"
+
+    [<Test>]
+    let ``ABB victory A`` ()=
+        let state = ABB'VictoryA (100 %/ 10, 30 %/ 10, 30 %/ 10)
+        (summary state) |> should equal "TeamA won by an innings and 40 runs"
+
+    [<Test>]
+    let ``ABB completed, B ahead`` ()=
+        let state = ABB'Completed (100 %/ 10, 30 %/ 10, 110 %/ 10)
+        (summary state) |> should equal "TeamA need 41 runs to win in their second innings"
+
+    [<Test>]
+    let ``ABB completed, B level`` ()=
+        let state = ABB'Completed (100 %/ 10, 30 %/ 10, 70 %/ 10)
+        (summary state) |> should equal "TeamA need 1 run to win in their second innings"
 
     [<Test>]
     let ``ABB match drawn`` ()=
         let state = ABB'MatchDrawn (sampleEmptyInnings, sampleEmptyInnings, sampleEmptyInnings)
         (summary state) |> should equal "Match drawn"
 
-//        | ABAB_Ongoing (a1, b1, a2, b2)
-//        | ABAB_VictoryA (a1, b1, a2, b2)
-//        | ABAB_VictoryB (a1, b1, a2, b2)
+    [<Test>]
+    let ``ABAB ongoing, B level`` ()=
+        let state = ABAB'Ongoing (100 %/ 10, 100 %/ 10, 70 %/ 10, 70 %/ 0)
+        (summary state) |> should equal "TeamB need 1 run to win with 10 wickets remaining"
+
+    [<Test>]
+    let ``ABAB ongoing, B behind`` ()=
+        let state = ABAB'Ongoing (100 %/ 10, 100 %/ 10, 70 %/ 10, 50 %/ 9)
+        (summary state) |> should equal "TeamB need 21 runs to win with 1 wicket remaining"
+
+    [<Test>]
+    let ``ABAB victory A`` ()=
+        let state = ABAB'VictoryA (100 %/ 10, 100 %/ 10, 70 %/ 10, 68 %/ 10)
+        (summary state) |> should equal "TeamA won by 2 runs"
+
+    [<Test>]
+    let ``ABAB victory B`` ()=
+        let state = ABAB'VictoryB (100 %/ 10, 100 %/ 10, 70 %/ 10, 71 %/ 9)
+        (summary state) |> should equal "TeamB won by 1 wicket"
 
     [<Test>]
     let ``ABAB match drawn`` ()=
         let state = ABAB'MatchDrawn (sampleEmptyInnings, sampleEmptyInnings, sampleEmptyInnings, sampleEmptyInnings)
         (summary state) |> should equal "Match drawn"
 
-//        | ABAB_MatchTied (a1, b1, a2, b2)
-//        | ABBA_Ongoing (a1, b1, b2, a2)
-//        | ABBA_VictoryA (a1, b1, b2, a2)
-//        | ABBA_VictoryB (a1, b1, b2, a2)
+    [<Test>]
+    let ``ABAB match tied`` ()=
+        let state = ABAB'MatchTied (100 %/ 10, 100 %/ 10, 70 %/ 10, 70 %/ 10)
+        (summary state) |> should equal "Match tied"
+
+    [<Test>]
+    let ``ABBA ongoing, A level`` ()=
+        let state = ABBA'Ongoing (100 %/ 10, 70 %/ 10, 100 %/ 10, 70 %/ 8)
+        (summary state) |> should equal "TeamA need 1 run to win with 2 wickets remaining"
+
+    [<Test>]
+    let ``ABBA ongoing, A behind`` ()=
+        let state = ABBA'Ongoing (100 %/ 10, 70 %/ 10, 100 %/ 10, 60 %/ 8)
+        (summary state) |> should equal "TeamA need 11 runs to win with 2 wickets remaining"
+
+    [<Test>]
+    let ``ABBA victory A`` ()=
+        let state = ABBA'VictoryA (100 %/ 10, 70 %/ 10, 70 %/ 10, 101 %/ 8)
+        (summary state) |> should equal "TeamA won by 2 wickets"
+
+    [<Test>]
+    let ``ABBA victory B`` ()=
+        let state = ABBA'VictoryB (100 %/ 10, 70 %/ 10, 70 %/ 10, 30 %/ 7)
+        (summary state) |> should equal "TeamB won by 10 runs"
 
     [<Test>]
     let ``ABBA match drawn`` ()=
         let state = ABBA'MatchDrawn (sampleEmptyInnings, sampleEmptyInnings, sampleEmptyInnings, sampleEmptyInnings)
         (summary state) |> should equal "Match drawn"
 
-//        | ABBA_MatchTied (a1, b1, b2, a2)
+    [<Test>]
+    let ``ABBA match tied`` ()=
+        let state = ABAB'MatchTied (100 %/ 10, 70 %/ 10, 70 %/ 10, 100 %/ 10)
+        (summary state) |> should equal "Match tied"
