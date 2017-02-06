@@ -5,6 +5,7 @@ open NUnit.Framework
 
 open Cricket.CricketEngine
 
+[<System.Diagnostics.CodeAnalysis.SuppressMessage("NameConventions", "MemberNamesMustBePascalCase")>]
 [<TestFixture>]
 type IndividualInningsScoreTests ()=
 
@@ -32,6 +33,7 @@ type IndividualInningsScoreTests ()=
         let ball, scoreIncreasesBy = testData
         (IndividualInnings.update bowler ball innings).Score |> should equal (innings.Score + scoreIncreasesBy)
 
+[<System.Diagnostics.CodeAnalysis.SuppressMessage("NameConventions", "MemberNamesMustBePascalCase")>]
 [<TestFixture>]
 type IndividualInningsHowOutTests ()=
 

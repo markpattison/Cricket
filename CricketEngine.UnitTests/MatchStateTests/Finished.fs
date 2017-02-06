@@ -6,6 +6,7 @@ open NUnit.Framework
 open Cricket.CricketEngine
 open TestHelpers
 
+[<System.Diagnostics.CodeAnalysis.SuppressMessage("NameConventions", "MemberNamesMustBePascalCase")>]
 [<TestFixture>]
 type ``MatchState finished tests`` ()=
     

@@ -5,6 +5,7 @@ open NUnit.Framework
 
 open Cricket.CricketEngine
 
+[<System.Diagnostics.CodeAnalysis.SuppressMessage("NameConventions", "MemberNamesMustBePascalCase")>]
 [<TestFixture>]
 type InningsChangeEndsTests ()=
 
@@ -70,6 +71,7 @@ type InningsChangeEndsTests ()=
         else
             updated.IndexOfBatsmanAtEnd1 |> should equal innings.IndexOfBatsmanAtEnd1
 
+[<System.Diagnostics.CodeAnalysis.SuppressMessage("NameConventions", "MemberNamesMustBePascalCase")>]
 [<TestFixture>]
 type BatsmanOutTests ()=
 
@@ -115,6 +117,7 @@ type BatsmanOutTests ()=
         else
             updated.IndexOfBatsmanAtEnd2 |> should equal None
 
+[<System.Diagnostics.CodeAnalysis.SuppressMessage("NameConventions", "MemberNamesMustBePascalCase")>]
 [<TestFixture>]
 type InningsIndividualsUpdatedCorrectly ()=
 
@@ -173,6 +176,7 @@ type InningsIndividualsUpdatedCorrectly ()=
         let expectedIndividualInnings = IndividualInnings.updateNonStriker ball testIndividualInnings
         (List.item nonStrikerIndex updated.Individuals) |> should equal (player, expectedIndividualInnings)
 
+[<System.Diagnostics.CodeAnalysis.SuppressMessage("NameConventions", "MemberNamesMustBePascalCase")>]
 [<TestFixture>]
 type InningsBallsIncrementedTests ()=
 
@@ -248,6 +252,7 @@ type InningsBallsIncrementedTests ()=
         let updated = Innings.updateForBall ball testInnings
         updated.EndFacingNext |> should not' (equal currentEnd)
 
+[<System.Diagnostics.CodeAnalysis.SuppressMessage("NameConventions", "MemberNamesMustBePascalCase")>]
 [<TestFixture>]
 type SendInNewBatsmanTests ()=
 

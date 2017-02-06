@@ -7,6 +7,7 @@ open Cricket.CricketEngine
 open Cricket.CricketEngine.MatchState
 open TestHelpers
 
+[<System.Diagnostics.CodeAnalysis.SuppressMessage("NameConventions", "MemberNamesMustBePascalCase")>]
 [<TestFixture>]
 type ``MatchState between innings tests`` ()=
 
