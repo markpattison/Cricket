@@ -26,7 +26,7 @@ module SampleData =
 
     let sampleInnings =
         {
-            Individuals = [ (sampleBatsman1, IndividualInnings.create); (sampleBatsman2, IndividualInnings.create) ];
+            Batsmen = [ (sampleBatsman1, IndividualInnings.create); (sampleBatsman2, IndividualInnings.create) ];
             IsDeclared = false;
             BatsmanAtEnd1 = Some sampleBatsman1;
             BatsmanAtEnd2 = Some sampleBatsman2;
@@ -110,8 +110,8 @@ module TestHelpers =
 
     let rec createInnings score wickets =
         match wickets with
-        | 0 -> { SampleData.sampleInnings with Individuals = [ (SampleData.sampleBatsman1, { IndividualInnings.create with Score = score}); (SampleData.sampleBatsman2, IndividualInnings.create) ] }
-        | n -> { SampleData.sampleInnings with Individuals = (SampleData.sampleBatsman1, { IndividualInnings.create with HowOut = Some HowOut.RunOut }) :: (createInnings score (n - 1)).Individuals }
+        | 0 -> { SampleData.sampleInnings with Batsmen = [ (SampleData.sampleBatsman1, { IndividualInnings.create with Score = score}); (SampleData.sampleBatsman2, IndividualInnings.create) ] }
+        | n -> { SampleData.sampleInnings with Batsmen = (SampleData.sampleBatsman1, { IndividualInnings.create with HowOut = Some HowOut.RunOut }) :: (createInnings score (n - 1)).Batsmen }
 
     let (%/) runs wickets = createInnings runs wickets
     let (%/%) runs wickets = { (createInnings runs wickets) with IsDeclared = true }

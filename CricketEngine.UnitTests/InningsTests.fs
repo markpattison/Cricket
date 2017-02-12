@@ -277,8 +277,8 @@ type SendInNewBatsmanTests ()=
         let updated = Innings.sendInBatsman testBatsman Innings.create
 
         updated.BatsmanAtEnd1 |> should equal (Some testBatsman)
-        updated.Individuals |> should haveLength 1
-        (updated.Individuals.Item 0) |> should equal (testBatsman, IndividualInnings.create)
+        updated.Batsmen |> should haveLength 1
+        (updated.Batsmen.Item 0) |> should equal (testBatsman, IndividualInnings.create)
 
     [<Test>]
     member _x.``second opener in is added correctly to innings`` ()=
@@ -286,8 +286,8 @@ type SendInNewBatsmanTests ()=
         let updated2 = Innings.sendInBatsman testBatsman2 updated1
 
         updated2.BatsmanAtEnd2 |> should equal (Some testBatsman2)
-        updated2.Individuals |> should haveLength 2
-        (updated2.Individuals.Item 1) |> should equal (testBatsman2, IndividualInnings.create)
+        updated2.Batsmen |> should haveLength 2
+        (updated2.Batsmen.Item 1) |> should equal (testBatsman2, IndividualInnings.create)
 
     [<Test>]
     member _x.``cannot send in a new batsman to an innings with two batsmen`` ()=
@@ -298,11 +298,11 @@ type SendInNewBatsmanTests ()=
         let updated = Innings.sendInBatsman testBatsman inningsWithNoBatsmanAtEnd1
 
         updated.BatsmanAtEnd1 |> should equal (Some testBatsman)
-        updated.Individuals.Item(2) |> should equal (testBatsman, IndividualInnings.create)
+        updated.Batsmen.Item(2) |> should equal (testBatsman, IndividualInnings.create)
 
     [<Test>]
     member _x.``new batsman added correctly to innings at end 2`` ()=
         let updated = Innings.sendInBatsman testBatsman inningsWithNoBatsmanAtEnd2
 
         updated.BatsmanAtEnd2 |> should equal (Some testBatsman)
-        updated.Individuals.Item(2) |> should equal (testBatsman, IndividualInnings.create)
+        updated.Batsmen.Item(2) |> should equal (testBatsman, IndividualInnings.create)

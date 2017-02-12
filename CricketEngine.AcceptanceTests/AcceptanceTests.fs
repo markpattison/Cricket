@@ -47,7 +47,7 @@ module ``Acceptance tests`` =
                 Rules = sampleMatchRules;
                 State = A'Ongoing
                     {
-                        Individuals =
+                        Batsmen =
                             [
                                 batsman1, 
                                 {
@@ -97,7 +97,7 @@ module ``Acceptance tests`` =
                 Rules = sampleMatchRules;
                 State = A'Ongoing
                     {
-                        Individuals =
+                        Batsmen =
                             [
                                 batsman1, 
                                 {

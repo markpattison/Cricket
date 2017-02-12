@@ -27,6 +27,10 @@ type BallOutcome =
         | RunOutStriker(runs, alsoCrossed) -> (sprintf "striker run out (%i runs)" runs) + if alsoCrossed then ", batsmen crossed" else ""
         | RunOutNonStriker(runs, alsoCrossed) -> (sprintf "non-striker run out (%i runs)" runs) + if alsoCrossed then ", batsmen crossed" else ""
 
+type WhoOut =
+    | Striker
+    | NonStriker
+    | Nobody
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix )>]
 module BallOutcome =
@@ -50,6 +54,12 @@ module BallOutcome =
         | RunOutNonStriker (runs, alsoCrossed) when (runs % 2 = 1) -> not alsoCrossed
         | RunOutStriker (_, alsoCrossed) -> alsoCrossed
         | RunOutNonStriker (_, alsoCrossed) -> alsoCrossed
+
+    let whoOut ball =
+        match ball with
+        | Bowled | LBW | HitWicket | Caught _ | Stumped _ | RunOutStriker _ -> Striker
+        | RunOutNonStriker _ -> NonStriker
+        | DotBall | ScoreRuns _ | Four | Six -> Nobody
 
     let howStrikerOut bowler ball =
         match ball with
