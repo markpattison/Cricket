@@ -71,7 +71,7 @@ module ``Acceptance tests`` =
                         BatsmanAtEnd2 = Some batsman1;
                         EndFacingNext = End2;
                         OversCompleted = 1;
-                        BallsSoFarThisOver = 0;
+                        BallsThisOver = [];
                     }
             }
 
@@ -129,7 +129,7 @@ module ``Acceptance tests`` =
                         BatsmanAtEnd2 = Some batsman1;
                         EndFacingNext = End1;
                         OversCompleted = 0;
-                        BallsSoFarThisOver = 4;
+                        BallsThisOver = [ DotBall; ScoreRuns 1; ScoreRuns 1; RunOutNonStriker (1, false) ]
                     }
             }
 

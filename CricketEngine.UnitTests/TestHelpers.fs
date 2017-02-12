@@ -32,7 +32,7 @@ module SampleData =
             BatsmanAtEnd2 = Some sampleBatsman2;
             EndFacingNext = End1;
             OversCompleted = 0;
-            BallsSoFarThisOver = 0;
+            BallsThisOver = [];
         }
 
     let sampleBowler =
@@ -123,3 +123,6 @@ module TestHelpers =
     let sampleUpdaterOngoing = UpdateInnings (fun _ -> sampleOngoingInnings)
     let sampleUpdaterCompleted = UpdateInnings (fun _ -> sampleCompletedInnings)
     let updater = MatchState.update sampleMatchRules
+
+    let dotBalls n =
+        [ for _ in 1 .. n -> DotBall ]

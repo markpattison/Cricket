@@ -4,6 +4,7 @@ open FsUnit
 open NUnit.Framework
 
 open Cricket.CricketEngine
+open TestHelpers
 
 [<System.Diagnostics.CodeAnalysis.SuppressMessage("NameConventions", "MemberNamesMustBePascalCase")>]
 [<TestFixture>]
@@ -213,7 +214,7 @@ type InningsBallsIncrementedTests ()=
     [<Test>]
     member _x.``balls faced this over should increment correctly before end of over`` ([<ValueSource("TestData")>] testData) ([<ValueSource("BallsFaced")>] ballsFaced) =
         let ball, shouldIncrementBalls = testData
-        let testInnings = { innings with BallsSoFarThisOver = ballsFaced }
+        let testInnings = { innings with BallsThisOver = dotBalls ballsFaced }
         let updated = Innings.updateForBall ball testInnings
         if shouldIncrementBalls then
             updated.BallsSoFarThisOver |> should equal (ballsFaced + 1)
@@ -223,7 +224,7 @@ type InningsBallsIncrementedTests ()=
     [<TestCaseSource("TestData")>]
     member _x.``balls faced should be reset to zero at the end of an over`` testData =
         let ball, shouldIncrementBalls = testData
-        let testInnings = { innings with BallsSoFarThisOver = 5 }
+        let testInnings = { innings with BallsThisOver = dotBalls 5 }
         let updated = Innings.updateForBall ball testInnings
         if shouldIncrementBalls then
             updated.BallsSoFarThisOver |> should equal 0
@@ -233,7 +234,7 @@ type InningsBallsIncrementedTests ()=
     [<TestCaseSource("TestData")>]
     member _x.``overs completed should be incremented at the end of an over`` testData =
         let ball, shouldIncrementBalls = testData
-        let testInnings = { innings with OversCompleted = 10; BallsSoFarThisOver = 5 }
+        let testInnings = { innings with OversCompleted = 10; BallsThisOver = dotBalls 5 }
         let updated = Innings.updateForBall ball testInnings
         if shouldIncrementBalls then
             updated.OversCompleted |> should equal 11
@@ -243,14 +244,14 @@ type InningsBallsIncrementedTests ()=
     [<Test>]
     member _x.``end facing next should not change before end of over`` ([<ValueSource("TestData")>] testData) ([<ValueSource("BallsFaced")>] ballsFaced) ([<ValueSource("Ends")>] currentEnd) =
         let ball, (_: bool) = testData
-        let testInnings = { innings with BallsSoFarThisOver = ballsFaced; EndFacingNext = currentEnd }
+        let testInnings = { innings with BallsThisOver = dotBalls ballsFaced; EndFacingNext = currentEnd }
         let updated = Innings.updateForBall ball testInnings
         updated.EndFacingNext |> should equal currentEnd
 
     [<Test>]
     member _x.``end facing next should change at the end of an over`` ([<ValueSource("TestData")>] testData) ([<ValueSource("Ends")>] currentEnd) =
         let ball, (_: bool) = testData
-        let testInnings = { innings with BallsSoFarThisOver = 5; EndFacingNext = currentEnd }
+        let testInnings = { innings with BallsThisOver = dotBalls 5; EndFacingNext = currentEnd }
         let updated = Innings.updateForBall ball testInnings
         updated.EndFacingNext |> should not' (equal currentEnd)
 

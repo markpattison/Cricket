@@ -17,7 +17,7 @@ type Innings =
         BatsmanAtEnd2: Player option;
         EndFacingNext: End;
         OversCompleted: int;
-        BallsSoFarThisOver: int
+        BallsThisOver: BallOutcome list;
     }
     member _this.GetRuns =
         _this.Individuals |> List.sumBy (fun (_, ii) -> ii.Score)
@@ -25,6 +25,8 @@ type Innings =
         _this.Individuals |> List.filter (fun (_, ii) -> ii.HowOut.IsSome) |> List.length
     member _this.IsCompleted =
         _this.IsDeclared || _this.GetWickets = 10
+    member _this.BallsSoFarThisOver =
+        _this.BallsThisOver |> List.length
 
 //    member _this.GetFacingBatsman =
 //        let indexOfFacingBatsman =
@@ -50,7 +52,7 @@ module Innings =
             BatsmanAtEnd2 = None;
             EndFacingNext = End1;
             OversCompleted = 0;
-            BallsSoFarThisOver = 0;
+            BallsThisOver = [];
         }
 
     let forPlayer player state =
@@ -64,28 +66,28 @@ module Innings =
     let private swap (a, b) = (b, a)
     let private tempBowler = { Name = "testBowler" } // TODO
 
-    let updateForBall (ballOutcome: BallOutcome) state =
+    let updateForBall (ballOutcome: BallOutcome) (state: Innings) =
         let swapEnds = BallOutcome.changedEnds ballOutcome
         let countsAsBallFaced = BallOutcome.countsAsBallFaced ballOutcome
-        let (overs, balls, endFacing) =
-            match countsAsBallFaced, state.BallsSoFarThisOver with
-            | false, _ -> state.OversCompleted, state.BallsSoFarThisOver, state.EndFacingNext
-            | true, 5 -> state.OversCompleted + 1, 0, state.EndFacingNext.OtherEnd
-            | true, n -> state.OversCompleted, n + 1, state.EndFacingNext
+        let overCompleted = countsAsBallFaced && state.BallsSoFarThisOver = 5
+
         let striker = (if state.EndFacingNext = End1 then state.BatsmanAtEnd1 else state.BatsmanAtEnd2).Value
         let nonStriker = (if state.EndFacingNext = End1 then state.BatsmanAtEnd2 else state.BatsmanAtEnd1).Value
         let isStrikerOut = Option.isSome (BallOutcome.howStrikerOut tempBowler ballOutcome)
         let isNonStrikerOut = Option.isSome (BallOutcome.howNonStrikerOut ballOutcome)
+
         let unswappedAssumingEnd1 =
             match isStrikerOut, isNonStrikerOut with
             | false, false -> (state.BatsmanAtEnd1, state.BatsmanAtEnd2)
             | false, true -> (state.BatsmanAtEnd1, None)
             | true, false -> (None, state.BatsmanAtEnd2)
             | true, true -> failwith "both batsman cannot be out on the same ball"
+
         let (batsmanAtEnd1, batsmanAtEnd2) =
             match state.EndFacingNext, swapEnds with
             | End1, false | End2, true -> unswappedAssumingEnd1
             | End1, true | End2, false -> swap unswappedAssumingEnd1
+
         {
             state with
                 Individuals =
@@ -94,9 +96,9 @@ module Innings =
                     |> updateIndividuals (IndividualInnings.updateNonStriker ballOutcome) nonStriker;
                 BatsmanAtEnd1 = batsmanAtEnd1;
                 BatsmanAtEnd2 = batsmanAtEnd2;
-                EndFacingNext = endFacing;
-                OversCompleted = overs;
-                BallsSoFarThisOver = balls;
+                EndFacingNext = if overCompleted then state.EndFacingNext.OtherEnd else state.EndFacingNext;
+                OversCompleted = if overCompleted then state.OversCompleted + 1 else state.OversCompleted;
+                BallsThisOver = if overCompleted then [] else state.BallsThisOver @ [ ballOutcome ];
         }
 
     let sendInBatsman (nextBatsman: Player) state =
