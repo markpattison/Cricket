@@ -13,8 +13,8 @@ type Innings =
     {
         Individuals: (Player * IndividualInnings) list;
         IsDeclared: bool;
-        IndexOfBatsmanAtEnd1: int option;
-        IndexOfBatsmanAtEnd2: int option;
+        BatsmanAtEnd1: Player option;
+        BatsmanAtEnd2: Player option;
         EndFacingNext: End;
         OversCompleted: int;
         BallsSoFarThisOver: int
@@ -46,20 +46,20 @@ module Innings =
         {
             Individuals = [];
             IsDeclared = false;
-            IndexOfBatsmanAtEnd1 = None;
-            IndexOfBatsmanAtEnd2 = None;
+            BatsmanAtEnd1 = None;
+            BatsmanAtEnd2 = None;
             EndFacingNext = End1;
             OversCompleted = 0;
             BallsSoFarThisOver = 0;
         }
 
-    let private updateIndividuals updateStriker updateNonStriker indexStriker indexNonStriker list =
-        let updateFunction i x =
-            match i with
-            | a when a = indexStriker -> updateStriker x
-            | a when a = indexNonStriker -> updateNonStriker x
-            | _ -> x
-        List.mapi updateFunction list
+    let forPlayer player state =
+        List.find (fun (p, _) -> p = player) state.Individuals |> snd
+
+    let private updateIndividuals f batsman (list: (Player * IndividualInnings) list) =
+        list
+        |> List.map (fun (player, indInnings) ->
+            (player, if player = batsman then f indInnings else indInnings))
 
     let private swap (a, b) = (b, a)
     let private tempBowler = { Name = "testBowler" } // TODO
@@ -72,27 +72,28 @@ module Innings =
             | false, _ -> state.OversCompleted, state.BallsSoFarThisOver, state.EndFacingNext
             | true, 5 -> state.OversCompleted + 1, 0, state.EndFacingNext.OtherEnd
             | true, n -> state.OversCompleted, n + 1, state.EndFacingNext
-        let indexOfStriker = (if state.EndFacingNext = End1 then state.IndexOfBatsmanAtEnd1 else state.IndexOfBatsmanAtEnd2).Value
-        let indexOfNonStriker = (if state.EndFacingNext = End1 then state.IndexOfBatsmanAtEnd2 else state.IndexOfBatsmanAtEnd1).Value
+        let striker = (if state.EndFacingNext = End1 then state.BatsmanAtEnd1 else state.BatsmanAtEnd2).Value
+        let nonStriker = (if state.EndFacingNext = End1 then state.BatsmanAtEnd2 else state.BatsmanAtEnd1).Value
         let isStrikerOut = Option.isSome (BallOutcome.howStrikerOut tempBowler ballOutcome)
         let isNonStrikerOut = Option.isSome (BallOutcome.howNonStrikerOut ballOutcome)
         let unswappedAssumingEnd1 =
             match isStrikerOut, isNonStrikerOut with
-            | false, false -> (state.IndexOfBatsmanAtEnd1, state.IndexOfBatsmanAtEnd2)
-            | false, true -> (state.IndexOfBatsmanAtEnd1, None)
-            | true, false -> (None, state.IndexOfBatsmanAtEnd2)
+            | false, false -> (state.BatsmanAtEnd1, state.BatsmanAtEnd2)
+            | false, true -> (state.BatsmanAtEnd1, None)
+            | true, false -> (None, state.BatsmanAtEnd2)
             | true, true -> failwith "both batsman cannot be out on the same ball"
         let (batsmanAtEnd1, batsmanAtEnd2) =
             match state.EndFacingNext, swapEnds with
             | End1, false | End2, true -> unswappedAssumingEnd1
             | End1, true | End2, false -> swap unswappedAssumingEnd1
-        let updateStriker (p, ii) = (p, IndividualInnings.update tempBowler ballOutcome ii)
-        let updateNonStriker (p, ii) = (p, IndividualInnings.updateNonStriker ballOutcome ii)
         {
             state with
-                Individuals = (updateIndividuals updateStriker updateNonStriker indexOfStriker indexOfNonStriker state.Individuals);
-                IndexOfBatsmanAtEnd1 = batsmanAtEnd1;
-                IndexOfBatsmanAtEnd2 = batsmanAtEnd2;
+                Individuals =
+                    state.Individuals
+                    |> updateIndividuals (IndividualInnings.update tempBowler ballOutcome) striker
+                    |> updateIndividuals (IndividualInnings.updateNonStriker ballOutcome) nonStriker;
+                BatsmanAtEnd1 = batsmanAtEnd1;
+                BatsmanAtEnd2 = batsmanAtEnd2;
                 EndFacingNext = endFacing;
                 OversCompleted = overs;
                 BallsSoFarThisOver = balls;
@@ -100,27 +101,24 @@ module Innings =
 
     let sendInBatsman (nextBatsman: Player) state =
         let nextIndex = List.length state.Individuals
-        let updatedState =
-            match state.IndexOfBatsmanAtEnd1, state.IndexOfBatsmanAtEnd2 with
-            | None, None ->
-                if nextIndex = 0 then
-                    {
-                        state with
-                            Individuals = List.append state.Individuals [(nextBatsman, IndividualInnings.create)];
-                            IndexOfBatsmanAtEnd1 = Some nextIndex;
-                    }
-                else failwith "cannot have two batsmen out at the same time"
-            | Some _, Some _ -> failwith "cannot send in new batsman unless one is out"
-            | None, Some _ ->
+        match state.BatsmanAtEnd1, state.BatsmanAtEnd2, nextIndex with
+        | None, None, 0 ->
                 {
                     state with
                         Individuals = List.append state.Individuals [(nextBatsman, IndividualInnings.create)];
-                        IndexOfBatsmanAtEnd1 = Some nextIndex;
+                        BatsmanAtEnd1 = Some nextBatsman;
                 }
-            | Some _, None ->
-                {
-                    state with
-                        Individuals = List.append state.Individuals [(nextBatsman, IndividualInnings.create)];
-                        IndexOfBatsmanAtEnd2 = Some nextIndex;
-                }
-        updatedState
+        | None, None, _ -> failwith "cannot have two batsmen out at the same time"
+        | Some _, Some _, _ -> failwith "cannot send in new batsman unless one is out"
+        | None, Some _, _ ->
+            {
+                state with
+                    Individuals = List.append state.Individuals [(nextBatsman, IndividualInnings.create)];
+                    BatsmanAtEnd1 = Some nextBatsman;
+            }
+        | Some _, None, _ ->
+            {
+                state with
+                    Individuals = List.append state.Individuals [(nextBatsman, IndividualInnings.create)];
+                    BatsmanAtEnd2 = Some nextBatsman;
+            }

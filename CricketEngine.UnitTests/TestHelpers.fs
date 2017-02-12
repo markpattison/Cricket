@@ -20,8 +20,8 @@ module SampleData =
         {
             Individuals = [ (sampleBatsman1, IndividualInnings.create); (sampleBatsman2, IndividualInnings.create) ];
             IsDeclared = false;
-            IndexOfBatsmanAtEnd1 = Some 0;
-            IndexOfBatsmanAtEnd2 = Some 1;
+            BatsmanAtEnd1 = Some sampleBatsman1;
+            BatsmanAtEnd2 = Some sampleBatsman2;
             EndFacingNext = End1;
             OversCompleted = 0;
             BallsSoFarThisOver = 0;

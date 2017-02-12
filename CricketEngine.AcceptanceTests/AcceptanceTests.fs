@@ -67,8 +67,8 @@ module ``Acceptance tests`` =
                                 };
                             ];
                         IsDeclared = false;
-                        IndexOfBatsmanAtEnd1 = Some 1;
-                        IndexOfBatsmanAtEnd2 = Some 0;
+                        BatsmanAtEnd1 = Some batsman2;
+                        BatsmanAtEnd2 = Some batsman1;
                         EndFacingNext = End2;
                         OversCompleted = 1;
                         BallsSoFarThisOver = 0;
@@ -125,8 +125,8 @@ module ``Acceptance tests`` =
                                 };
                             ];
                         IsDeclared = false;
-                        IndexOfBatsmanAtEnd1 = Some 2;
-                        IndexOfBatsmanAtEnd2 = Some 0;
+                        BatsmanAtEnd1 = Some batsman3;
+                        BatsmanAtEnd2 = Some batsman1;
                         EndFacingNext = End1;
                         OversCompleted = 0;
                         BallsSoFarThisOver = 4;

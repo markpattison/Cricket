@@ -47,29 +47,29 @@ type InningsChangeEndsTests ()=
         let ball, shouldChangeEnds = testData
         let updated = Innings.updateForBall ball innings
         if shouldChangeEnds then
-            updated.IndexOfBatsmanAtEnd1 |> should equal innings.IndexOfBatsmanAtEnd2
-            updated.IndexOfBatsmanAtEnd2 |> should equal innings.IndexOfBatsmanAtEnd1
+            updated.BatsmanAtEnd1 |> should equal innings.BatsmanAtEnd2
+            updated.BatsmanAtEnd2 |> should equal innings.BatsmanAtEnd1
         else
-            updated.IndexOfBatsmanAtEnd1 |> should equal innings.IndexOfBatsmanAtEnd1
-            updated.IndexOfBatsmanAtEnd2 |> should equal innings.IndexOfBatsmanAtEnd2
+            updated.BatsmanAtEnd1 |> should equal innings.BatsmanAtEnd1
+            updated.BatsmanAtEnd2 |> should equal innings.BatsmanAtEnd2
 
     [<TestCaseSource("TestDataStrikerOut")>]
     member _x.``non-striker changes ends correctly when striker is out`` testData =
         let ball, shouldChangeEnds = testData
         let updated = Innings.updateForBall ball innings
         if shouldChangeEnds then
-            updated.IndexOfBatsmanAtEnd1 |> should equal innings.IndexOfBatsmanAtEnd2
+            updated.BatsmanAtEnd1 |> should equal innings.BatsmanAtEnd2
         else
-            updated.IndexOfBatsmanAtEnd2 |> should equal innings.IndexOfBatsmanAtEnd2
+            updated.BatsmanAtEnd2 |> should equal innings.BatsmanAtEnd2
 
     [<TestCaseSource("TestDataNonStrikerOut")>]
     member _x.``striker change ends correctly when non-striker is out`` testData =
         let ball, shouldChangeEnds = testData
         let updated = Innings.updateForBall ball innings
         if shouldChangeEnds then
-            updated.IndexOfBatsmanAtEnd2 |> should equal innings.IndexOfBatsmanAtEnd1
+            updated.BatsmanAtEnd2 |> should equal innings.BatsmanAtEnd1
         else
-            updated.IndexOfBatsmanAtEnd1 |> should equal innings.IndexOfBatsmanAtEnd1
+            updated.BatsmanAtEnd1 |> should equal innings.BatsmanAtEnd1
 
 [<System.Diagnostics.CodeAnalysis.SuppressMessage("NameConventions", "MemberNamesMustBePascalCase")>]
 [<TestFixture>]
@@ -104,18 +104,18 @@ type BatsmanOutTests ()=
         let ball, shouldChangeEnds = testData
         let updated = Innings.updateForBall ball innings
         if shouldChangeEnds then
-            updated.IndexOfBatsmanAtEnd2 |> should equal None
+            updated.BatsmanAtEnd2 |> should equal None
         else
-            updated.IndexOfBatsmanAtEnd1 |> should equal None
+            updated.BatsmanAtEnd1 |> should equal None
 
     [<TestCaseSource("TestDataNonStrikerOut")>]
     member _x.``non-striker is out correctly`` testData =
         let ball, shouldChangeEnds = testData
         let updated = Innings.updateForBall ball innings
         if shouldChangeEnds then
-            updated.IndexOfBatsmanAtEnd1 |> should equal None
+            updated.BatsmanAtEnd1 |> should equal None
         else
-            updated.IndexOfBatsmanAtEnd2 |> should equal None
+            updated.BatsmanAtEnd2 |> should equal None
 
 [<System.Diagnostics.CodeAnalysis.SuppressMessage("NameConventions", "MemberNamesMustBePascalCase")>]
 [<TestFixture>]
@@ -161,20 +161,22 @@ type InningsIndividualsUpdatedCorrectly ()=
         let ball = testData
         let testInnings = { innings with EndFacingNext = currentEnd }
         let updated = Innings.updateForBall ball testInnings
-        let index = (if currentEnd = End1 then innings.IndexOfBatsmanAtEnd1 else innings.IndexOfBatsmanAtEnd2).Value
-        let (player, testIndividualInnings) = List.item index innings.Individuals
+        let striker = (if currentEnd = End1 then innings.BatsmanAtEnd1 else innings.BatsmanAtEnd2).Value
+        let testIndividualInnings = innings |> Innings.forPlayer striker
         let expectedIndividualInnings = IndividualInnings.update SampleData.sampleBowler ball testIndividualInnings
-        (List.item index updated.Individuals) |> should equal (player, expectedIndividualInnings)
+
+        updated |> Innings.forPlayer striker |> should equal expectedIndividualInnings
 
     [<Test>]
     member _x.``non-striker's individual innings is updated correctly when he is run out`` ([<ValueSource("NonStrikerRunOutTestData")>] testData) ([<ValueSource("Ends")>] currentEnd) =
         let ball = testData
         let testInnings = { innings with EndFacingNext = currentEnd }
         let updated = Innings.updateForBall ball testInnings
-        let nonStrikerIndex = (if currentEnd = End1 then innings.IndexOfBatsmanAtEnd2 else innings.IndexOfBatsmanAtEnd1).Value
-        let (player, testIndividualInnings) = List.item nonStrikerIndex innings.Individuals
+        let nonStriker = (if currentEnd = End1 then innings.BatsmanAtEnd2 else innings.BatsmanAtEnd1).Value
+        let testIndividualInnings = innings |> Innings.forPlayer nonStriker
         let expectedIndividualInnings = IndividualInnings.updateNonStriker ball testIndividualInnings
-        (List.item nonStrikerIndex updated.Individuals) |> should equal (player, expectedIndividualInnings)
+
+        updated |> Innings.forPlayer nonStriker |> should equal expectedIndividualInnings
 
 [<System.Diagnostics.CodeAnalysis.SuppressMessage("NameConventions", "MemberNamesMustBePascalCase")>]
 [<TestFixture>]
@@ -258,9 +260,9 @@ type SendInNewBatsmanTests ()=
 
     let innings, _, _ = SampleData.sampleInningsData
 
-    let inningsWithNoBatsmanAtEnd1 = { innings with IndexOfBatsmanAtEnd1 = None }
-    let inningsWithNoBatsmanAtEnd2 = { innings with IndexOfBatsmanAtEnd2 = None }
-    let inningsWithNoBatsmen = { innings with IndexOfBatsmanAtEnd1 = None; IndexOfBatsmanAtEnd2 = None }
+    let inningsWithNoBatsmanAtEnd1 = { innings with BatsmanAtEnd1 = None }
+    let inningsWithNoBatsmanAtEnd2 = { innings with BatsmanAtEnd2 = None }
+    let inningsWithNoBatsmen = { innings with BatsmanAtEnd1 = None; BatsmanAtEnd2 = None }
 
     let testBatsman = { Name = "sentInBatsman" }
     let testBatsman2 = { Name = "sentInBatsman2" }
@@ -272,7 +274,8 @@ type SendInNewBatsmanTests ()=
     [<Test>]
     member _x.``first opener in is added correctly to innings`` ()=
         let updated = Innings.sendInBatsman testBatsman Innings.create
-        updated.IndexOfBatsmanAtEnd1 |> should equal (Some 0)
+
+        updated.BatsmanAtEnd1 |> should equal (Some testBatsman)
         updated.Individuals |> should haveLength 1
         (updated.Individuals.Item 0) |> should equal (testBatsman, IndividualInnings.create)
 
@@ -280,7 +283,8 @@ type SendInNewBatsmanTests ()=
     member _x.``second opener in is added correctly to innings`` ()=
         let updated1 = Innings.sendInBatsman testBatsman Innings.create
         let updated2 = Innings.sendInBatsman testBatsman2 updated1
-        updated2.IndexOfBatsmanAtEnd2 |> should equal (Some 1)
+
+        updated2.BatsmanAtEnd2 |> should equal (Some testBatsman2)
         updated2.Individuals |> should haveLength 2
         (updated2.Individuals.Item 1) |> should equal (testBatsman2, IndividualInnings.create)
 
@@ -291,11 +295,13 @@ type SendInNewBatsmanTests ()=
     [<Test>]
     member _x.``new batsman added correctly to innings at end 1`` ()=
         let updated = Innings.sendInBatsman testBatsman inningsWithNoBatsmanAtEnd1
-        updated.IndexOfBatsmanAtEnd1 |> should equal (Some 2)
+
+        updated.BatsmanAtEnd1 |> should equal (Some testBatsman)
         updated.Individuals.Item(2) |> should equal (testBatsman, IndividualInnings.create)
 
     [<Test>]
     member _x.``new batsman added correctly to innings at end 2`` ()=
         let updated = Innings.sendInBatsman testBatsman inningsWithNoBatsmanAtEnd2
-        updated.IndexOfBatsmanAtEnd2 |> should equal (Some 2)
+
+        updated.BatsmanAtEnd2 |> should equal (Some testBatsman)
         updated.Individuals.Item(2) |> should equal (testBatsman, IndividualInnings.create)
