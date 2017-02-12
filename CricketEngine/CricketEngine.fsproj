@@ -48,6 +48,7 @@
     <Compile Include="MatchRules.fs" />
     <Compile Include="BallOutcome.fs" />
     <Compile Include="IndividualInnings.fs" />
+    <Compile Include="BowlingAnalysis.fs" />
     <Compile Include="Innings.fs" />
     <Compile Include="MatchState.fs" />
     <Compile Include="Match.fs" />

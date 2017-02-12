@@ -13,6 +13,14 @@ module SampleData =
             Sixes = 1;
         }
 
+    let sampleBowlingAnalysis =
+        {
+            Balls = 10;
+            Maidens = 1;
+            RunsConceded = 7;
+            Wickets = 2;
+        }
+
     let sampleBatsman1 = { Name = "testBatsman 1" }
     let sampleBatsman2 = { Name = "testBatsman 2" }
 
@@ -35,6 +43,7 @@ module SampleData =
 
     let sampleIndividualData = sampleIndividualInnings, sampleBowler, sampleFielder
     let sampleInningsData = sampleInnings, sampleBowler, sampleFielder
+    let sampleBowlingData = sampleBowlingAnalysis, sampleBowler, sampleFielder
 
 module TestHelpers =
 

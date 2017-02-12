@@ -80,3 +80,8 @@ module BallOutcome =
         match ball with
         | Six | ScoreRuns 6 | RunOutStriker (6, _) | RunOutNonStriker (6, _) -> true
         | _ -> false
+
+    let isWicketForBowler ball =
+        match ball with
+        | Bowled | HitWicket | LBW | Caught _ | Stumped _ -> true
+        | _ -> false
