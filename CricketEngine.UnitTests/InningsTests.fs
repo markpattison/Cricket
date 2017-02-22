@@ -306,3 +306,114 @@ type SendInNewBatsmanTests ()=
 
         updated.BatsmanAtEnd2 |> should equal (Some testBatsman)
         updated.Batsmen.Item(2) |> should equal (testBatsman, IndividualInnings.create)
+
+[<System.Diagnostics.CodeAnalysis.SuppressMessage("NameConventions", "MemberNamesMustBePascalCase")>]
+[<TestFixture>]
+type BowlingAnalysesUpdatedCorrectly ()=
+
+    let innings, _, _ = SampleData.sampleInningsData
+
+    static member TestData =
+        [|
+            DotBall;
+            ScoreRuns 1;
+            ScoreRuns 2;
+            Four;
+            Six;
+            Bowled;
+            LBW;
+            HitWicket;
+            Caught (SampleData.sampleFielder, false);
+            Caught (SampleData.sampleFielder, true);
+            Stumped SampleData.sampleFielder;
+            RunOutStriker (2, false);
+            RunOutStriker (2, true);
+            RunOutStriker (1, false);
+            RunOutStriker (1, true);
+            RunOutNonStriker (2, false);
+            RunOutNonStriker (2, true);
+            RunOutNonStriker (1, false);
+            RunOutNonStriker (1, true);
+        |]
+
+    static member Ends = [| End1; End2 |]
+
+    [<Test>]
+    member _x.``bowler's analysis is updated correctly`` ([<ValueSource("TestData")>] testData) ([<ValueSource("Ends")>] currentEnd) =
+        let ball = testData
+        let testInnings = { innings with EndFacingNext = currentEnd }
+        let updated = Innings.updateForBall ball testInnings
+        let bowler = (if currentEnd = End1 then innings.BowlerToEnd1 else innings.BowlerToEnd2).Value
+        let testBowlingAnalysis = innings |> Innings.forBowler bowler
+        let expectedBowlingAnalysis = BowlingAnalysis.update ball testBowlingAnalysis
+
+        updated |> Innings.forBowler bowler |> should equal expectedBowlingAnalysis
+
+    [<Test>]
+    member _x.``new bowling analysis is created correctly`` ([<ValueSource("TestData")>] testData) =
+        let ball = testData
+        let newBowler = { Name = "new bowler" }
+        let testInnings = { innings with EndFacingNext = End1 } |> Innings.sendInBowler newBowler
+        let updated = Innings.updateForBall ball testInnings
+        let expectedBowlingAnalysis = BowlingAnalysis.update ball BowlingAnalysis.create
+
+        updated |> Innings.forBowler newBowler |> should equal expectedBowlingAnalysis
+
+    [<Test>]
+    member _x.``bowling analysis is correct after a maiden over`` ()=
+        let newBowler = { Name = "new bowler" }
+        let testInnings = { innings with EndFacingNext = End1 } |> Innings.sendInBowler newBowler
+        let updated =
+            testInnings
+            |> Innings.updateForBall DotBall
+            |> Innings.updateForBall DotBall
+            |> Innings.updateForBall DotBall
+            |> Innings.updateForBall DotBall
+            |> Innings.updateForBall DotBall
+            |> Innings.updateForBall DotBall
+
+        let expectedBowlingAnalysis = { Balls = 6; Maidens = 1; RunsConceded = 0; Wickets = 0 }
+
+        updated |> Innings.forBowler newBowler |> should equal expectedBowlingAnalysis
+
+[<System.Diagnostics.CodeAnalysis.SuppressMessage("NameConventions", "MemberNamesMustBePascalCase")>]
+[<TestFixture>]
+type SendInNewBowlerTests ()=
+
+    let innings, _, _ = SampleData.sampleInningsData
+
+    let newBowler = { Name = "new bowler" }
+
+    [<Test>]
+    member _x.``new bowler added correctly for new over to end 1`` ()=
+        let testInnings = { innings with BallsThisOver = []; EndFacingNext = End1 }
+        let updated = testInnings |> Innings.sendInBowler newBowler
+
+        updated.BowlerToEnd1 |> should equal (Some newBowler)
+
+    [<Test>]
+    member _x.``new bowler added correctly for new over to end 2`` ()=
+        let testInnings = { innings with BallsThisOver = []; EndFacingNext = End2 }
+        let updated = testInnings |> Innings.sendInBowler newBowler
+
+        updated.BowlerToEnd2 |> should equal (Some newBowler)
+
+    [<Test>]
+    member _x.``new bowler cannot be added during over to end 1`` ()=
+        let testInnings = { innings with BallsThisOver = [ DotBall ]; EndFacingNext = End1 }
+        (fun () -> (testInnings |> Innings.sendInBowler newBowler) |> ignore) |> should throw typeof<System.Exception>
+
+    [<Test>]
+    member _x.``new bowler cannot be added during over to end 2`` ()=
+        let testInnings = { innings with BallsThisOver = [ DotBall; DotBall; DotBall; DotBall; DotBall ]; EndFacingNext = End2 }
+        (fun () -> (testInnings |> Innings.sendInBowler newBowler) |> ignore) |> should throw typeof<System.Exception>
+
+    [<Test>]
+    member _x.``same bowler cannot bowl to end 1 then end 2`` ()=
+        let testInnings = { innings with BallsThisOver = []; EndFacingNext = End2; BowlerToEnd1 = Some newBowler; OversCompleted = 1 }
+        (fun () -> (testInnings |> Innings.sendInBowler newBowler) |> ignore) |> should throw typeof<System.Exception>
+
+    [<Test>]
+    member _x.``same bowler cannot bowl to end 2 then end 1`` ()=
+        let testInnings = { innings with BallsThisOver = []; EndFacingNext = End1; BowlerToEnd2 = Some newBowler; OversCompleted = 1 }
+        (fun () -> (testInnings |> Innings.sendInBowler newBowler) |> ignore) |> should throw typeof<System.Exception>

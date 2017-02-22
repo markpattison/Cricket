@@ -13,26 +13,30 @@ module ``Acceptance tests`` =
     let batsman2 = { Name = "batsman 2" }
     let batsman3 = { Name = "batsman 3" }
 
+    let bowler1 = { Name = "bowler 1" }
+    let bowler2 = { Name = "bowler 2" }
+
     let dot = Match.updateCurrentInnings (Innings.updateForBall DotBall)
     let score1 = Match.updateCurrentInnings (Innings.updateForBall (ScoreRuns 1))
 
     [<Test>]
     let ``start first innings`` ()=
-        let match' =
+        let matchState =
             Match.newMatch sampleMatchRules "Team A" "Team B"
             |> Match.updateMatchState StartMatch
             |> Match.updateCurrentInnings (Innings.sendInBatsman batsman1)
             |> Match.updateCurrentInnings (Innings.sendInBatsman batsman2)
 
-        Match.summaryStatus match' |> should equal "Team A are 0 for 0 in their first innings"
+        Match.summaryStatus matchState |> should equal "Team A are 0 for 0 in their first innings"
 
     [<Test>]
     let ``one Boycott over`` ()=
-        let match' =
+        let matchState =
             Match.newMatch sampleMatchRules "Team A" "Team B"
             |> Match.updateMatchState StartMatch
             |> Match.updateCurrentInnings (Innings.sendInBatsman batsman1)
             |> Match.updateCurrentInnings (Innings.sendInBatsman batsman2)
+            |> Match.updateCurrentInnings (Innings.sendInBowler bowler1)
             |> dot
             |> dot
             |> dot
@@ -66,24 +70,37 @@ module ``Acceptance tests`` =
                                     Sixes = 0;
                                 };
                             ];
+                        Bowlers =
+                            [
+                                bowler1,
+                                {
+                                    Balls = 6;
+                                    Maidens = 0;
+                                    RunsConceded = 1;
+                                    Wickets = 0;
+                                }
+                            ]
                         IsDeclared = false;
                         BatsmanAtEnd1 = Some batsman2;
                         BatsmanAtEnd2 = Some batsman1;
                         EndFacingNext = End2;
                         OversCompleted = 1;
                         BallsThisOver = [];
+                        BowlerToEnd1 = Some bowler1;
+                        BowlerToEnd2 = None
                     }
             }
 
-        match' |> should equal expected
+        matchState |> should equal expected
 
     [<Test>]
     let ``non-striker run out`` ()=
-        let match' =
+        let matchState =
             Match.newMatch sampleMatchRules "Team A" "Team B"
             |> Match.updateMatchState StartMatch
             |> Match.updateCurrentInnings (Innings.sendInBatsman batsman1)
             |> Match.updateCurrentInnings (Innings.sendInBatsman batsman2)
+            |> Match.updateCurrentInnings (Innings.sendInBowler bowler1)
             |> dot
             |> score1
             |> score1
@@ -124,13 +141,25 @@ module ``Acceptance tests`` =
                                     Sixes = 0;
                                 };
                             ];
+                        Bowlers =
+                            [
+                                bowler1,
+                                {
+                                    Balls = 4;
+                                    Maidens = 0;
+                                    RunsConceded = 3;
+                                    Wickets = 0;
+                                }
+                            ]
                         IsDeclared = false;
                         BatsmanAtEnd1 = Some batsman3;
                         BatsmanAtEnd2 = Some batsman1;
                         EndFacingNext = End1;
                         OversCompleted = 0;
                         BallsThisOver = [ DotBall; ScoreRuns 1; ScoreRuns 1; RunOutNonStriker (1, false) ]
+                        BowlerToEnd1 = Some bowler1;
+                        BowlerToEnd2 = None
                     }
             }
 
-        match' |> should equal expected
+        matchState |> should equal expected

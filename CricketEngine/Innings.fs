@@ -12,12 +12,15 @@ type End =
 type Innings =
     {
         Batsmen: (Player * IndividualInnings) list;
+        Bowlers: (Player * BowlingAnalysis) list;
         IsDeclared: bool;
         BatsmanAtEnd1: Player option;
         BatsmanAtEnd2: Player option;
         EndFacingNext: End;
         OversCompleted: int;
         BallsThisOver: BallOutcome list;
+        BowlerToEnd1: Player option;
+        BowlerToEnd2: Player option
     }
     member _this.GetRuns =
         _this.Batsmen |> List.sumBy (fun (_, ii) -> ii.Score)
@@ -47,16 +50,22 @@ module Innings =
     let create =
         {
             Batsmen = [];
+            Bowlers = [];
             IsDeclared = false;
             BatsmanAtEnd1 = None;
             BatsmanAtEnd2 = None;
             EndFacingNext = End1;
             OversCompleted = 0;
             BallsThisOver = [];
+            BowlerToEnd1 = None;
+            BowlerToEnd2 = None;
         }
 
     let forPlayer player state =
         List.find (fun (p, _) -> p = player) state.Batsmen |> snd
+
+    let forBowler player state =
+        List.find (fun (p, _) -> p = player) state.Bowlers |> snd
 
     let private updateBatsmen f batsman (list: (Player * IndividualInnings) list) =
         list
@@ -64,6 +73,25 @@ module Innings =
             (player, if player = batsman then f indInnings else indInnings))
 
     let private tempBowler = { Name = "testBowler" } // TODO
+
+    let private addBowlerIfNeeded bowler bowlers =
+        if List.exists (fun (p, _) -> p = bowler) bowlers then
+            bowlers
+        else
+            bowlers @ [ (bowler, BowlingAnalysis.create) ]
+
+    let private updateBowlers ball bowler (list: (Player * BowlingAnalysis) list) =
+        list
+        |> List.map (fun (player, bowling) ->
+            (player, if player = bowler then BowlingAnalysis.update ball bowling else bowling))
+
+    let private updateBowlersForEndOverIfNeeded overCompleted ballsThisOver bowler (list: (Player * BowlingAnalysis) list) =
+        if overCompleted then
+            list
+            |> List.map (fun (player, bowling) ->
+                (player, if player = bowler then BowlingAnalysis.updateAfterOver ballsThisOver bowling else bowling))
+        else
+            list
 
     let updateForBall (ballOutcome: BallOutcome) (state: Innings) =
         let swapEnds = BallOutcome.changedEnds ballOutcome
@@ -92,17 +120,30 @@ module Innings =
             | End1 -> batsmanAtFacingEnd, batsmanAtNonFacingEnd
             | End2 -> batsmanAtNonFacingEnd, batsmanAtFacingEnd
 
+        let bowler =
+            match state.EndFacingNext, state.BowlerToEnd1, state.BowlerToEnd2 with
+            | End1, Some bowl, _ -> bowl
+            | End2, _, Some bowl -> bowl
+            | _ -> failwith "cannot bowl ball without bowler"
+
+        let ballsThisOver = state.BallsThisOver @ [ ballOutcome ]
+
         {
             state with
                 Batsmen =
                     state.Batsmen
                     |> updateBatsmen (IndividualInnings.update tempBowler ballOutcome) striker
                     |> updateBatsmen (IndividualInnings.updateNonStriker ballOutcome) nonStriker;
+                Bowlers =
+                    state.Bowlers
+                    |> addBowlerIfNeeded bowler
+                    |> updateBowlers ballOutcome bowler
+                    |> updateBowlersForEndOverIfNeeded overCompleted ballsThisOver bowler
                 BatsmanAtEnd1 = batsmanAtEnd1;
                 BatsmanAtEnd2 = batsmanAtEnd2;
                 EndFacingNext = if overCompleted then state.EndFacingNext.OtherEnd else state.EndFacingNext;
                 OversCompleted = if overCompleted then state.OversCompleted + 1 else state.OversCompleted;
-                BallsThisOver = if overCompleted then [] else state.BallsThisOver @ [ ballOutcome ];
+                BallsThisOver = if overCompleted then [] else ballsThisOver;
         }
 
     let sendInBatsman (nextBatsman: Player) state =
@@ -128,3 +169,15 @@ module Innings =
                     Batsmen = List.append state.Batsmen [(nextBatsman, IndividualInnings.create)];
                     BatsmanAtEnd2 = Some nextBatsman;
             }
+
+    let sendInBowler (nextBowler: Player) (state: Innings) =
+        if state.BallsSoFarThisOver <> 0 then failwith "cannot change bowler during an over"
+        let lastBowler =
+            match state.EndFacingNext.OtherEnd with
+            | End1 -> state.BowlerToEnd1
+            | End2 -> state.BowlerToEnd2
+        if state.OversCompleted > 0 && lastBowler = Some nextBowler then failwith "bowler cannot bowl consecutive overs"
+
+        match state.EndFacingNext with
+            | End1 -> { state with BowlerToEnd1 = Some nextBowler }
+            | End2 -> { state with BowlerToEnd2 = Some nextBowler }

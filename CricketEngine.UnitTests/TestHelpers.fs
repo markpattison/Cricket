@@ -24,15 +24,21 @@ module SampleData =
     let sampleBatsman1 = { Name = "testBatsman 1" }
     let sampleBatsman2 = { Name = "testBatsman 2" }
 
+    let sampleBowler1 = { Name = "testBowler 1" }
+    let sampleBowler2 = { Name = "testBowler 2" }
+
     let sampleInnings =
         {
             Batsmen = [ (sampleBatsman1, IndividualInnings.create); (sampleBatsman2, IndividualInnings.create) ];
+            Bowlers = [ (sampleBowler1, BowlingAnalysis.create); (sampleBowler2, BowlingAnalysis.create) ];
             IsDeclared = false;
             BatsmanAtEnd1 = Some sampleBatsman1;
             BatsmanAtEnd2 = Some sampleBatsman2;
             EndFacingNext = End1;
             OversCompleted = 0;
             BallsThisOver = [];
+            BowlerToEnd1 = Some sampleBowler1;
+            BowlerToEnd2 = Some sampleBowler2;
         }
 
     let sampleBowler =
