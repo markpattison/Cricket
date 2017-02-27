@@ -31,6 +31,11 @@ type Innings =
     member _this.BallsSoFarThisOver =
         _this.BallsThisOver |> List.length
 
+type InningsUpdate =
+    | SendInBatsman of Player
+    | SendInBowler of Player
+    | UpdateForBall of BallOutcome
+
 //    member _this.GetFacingBatsman =
 //        let indexOfFacingBatsman =
 //            match _this.IsDeclared, _this.GetWickets, _this.EndFacingNext with
@@ -93,7 +98,7 @@ module Innings =
         else
             list
 
-    let updateForBall (ballOutcome: BallOutcome) (state: Innings) =
+    let private updateForBall (ballOutcome: BallOutcome) (state: Innings) =
         let swapEnds = BallOutcome.changedEnds ballOutcome
         let countsAsBallFaced = BallOutcome.countsAsBallFaced ballOutcome
         let overCompleted = countsAsBallFaced && state.BallsSoFarThisOver = 5
@@ -146,7 +151,7 @@ module Innings =
                 BallsThisOver = if overCompleted then [] else ballsThisOver;
         }
 
-    let sendInBatsman (nextBatsman: Player) state =
+    let private sendInBatsman (nextBatsman: Player) state =
         let nextIndex = List.length state.Batsmen
         match state.BatsmanAtEnd1, state.BatsmanAtEnd2, nextIndex with
         | None, None, 0 ->
@@ -170,7 +175,7 @@ module Innings =
                     BatsmanAtEnd2 = Some nextBatsman;
             }
 
-    let sendInBowler (nextBowler: Player) (state: Innings) =
+    let private sendInBowler (nextBowler: Player) (state: Innings) =
         if state.BallsSoFarThisOver <> 0 then failwith "cannot change bowler during an over"
         let lastBowler =
             match state.EndFacingNext.OtherEnd with
@@ -181,3 +186,9 @@ module Innings =
         match state.EndFacingNext with
             | End1 -> { state with BowlerToEnd1 = Some nextBowler }
             | End2 -> { state with BowlerToEnd2 = Some nextBowler }
+
+    let update transition state =
+        match transition with
+        | SendInBatsman nextBatsman -> sendInBatsman nextBatsman state
+        | SendInBowler nextBowler -> sendInBowler nextBowler state
+        | UpdateForBall ball -> updateForBall ball state

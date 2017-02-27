@@ -16,16 +16,16 @@ module ``Acceptance tests`` =
     let bowler1 = { Name = "bowler 1" }
     let bowler2 = { Name = "bowler 2" }
 
-    let dot = Match.updateCurrentInnings (Innings.updateForBall DotBall)
-    let score1 = Match.updateCurrentInnings (Innings.updateForBall (ScoreRuns 1))
+    let dot = Match.updateCurrentInnings (Innings.update (UpdateForBall DotBall))
+    let score1 = Match.updateCurrentInnings (Innings.update (UpdateForBall (ScoreRuns 1)))
 
     [<Test>]
     let ``start first innings`` ()=
         let matchState =
             Match.newMatch sampleMatchRules "Team A" "Team B"
             |> Match.updateMatchState StartMatch
-            |> Match.updateCurrentInnings (Innings.sendInBatsman batsman1)
-            |> Match.updateCurrentInnings (Innings.sendInBatsman batsman2)
+            |> Match.updateCurrentInnings (Innings.update (SendInBatsman batsman1))
+            |> Match.updateCurrentInnings (Innings.update (SendInBatsman batsman2))
 
         Match.summaryStatus matchState |> should equal "Team A are 0 for 0 in their first innings"
 
@@ -34,9 +34,9 @@ module ``Acceptance tests`` =
         let matchState =
             Match.newMatch sampleMatchRules "Team A" "Team B"
             |> Match.updateMatchState StartMatch
-            |> Match.updateCurrentInnings (Innings.sendInBatsman batsman1)
-            |> Match.updateCurrentInnings (Innings.sendInBatsman batsman2)
-            |> Match.updateCurrentInnings (Innings.sendInBowler bowler1)
+            |> Match.updateCurrentInnings (Innings.update (SendInBatsman batsman1))
+            |> Match.updateCurrentInnings (Innings.update (SendInBatsman batsman2))
+            |> Match.updateCurrentInnings (Innings.update (SendInBowler bowler1))
             |> dot
             |> dot
             |> dot
@@ -98,14 +98,14 @@ module ``Acceptance tests`` =
         let matchState =
             Match.newMatch sampleMatchRules "Team A" "Team B"
             |> Match.updateMatchState StartMatch
-            |> Match.updateCurrentInnings (Innings.sendInBatsman batsman1)
-            |> Match.updateCurrentInnings (Innings.sendInBatsman batsman2)
-            |> Match.updateCurrentInnings (Innings.sendInBowler bowler1)
+            |> Match.updateCurrentInnings (Innings.update (SendInBatsman batsman1))
+            |> Match.updateCurrentInnings (Innings.update (SendInBatsman batsman2))
+            |> Match.updateCurrentInnings (Innings.update (SendInBowler bowler1))
             |> dot
             |> score1
             |> score1
-            |> Match.updateCurrentInnings (Innings.updateForBall (RunOutNonStriker (1, false)))
-            |> Match.updateCurrentInnings (Innings.sendInBatsman batsman3)
+            |> Match.updateCurrentInnings (Innings.update (UpdateForBall (RunOutNonStriker (1, false))))
+            |> Match.updateCurrentInnings (Innings.update (SendInBatsman batsman3))
 
         let expected =
             {
