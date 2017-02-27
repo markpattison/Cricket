@@ -163,3 +163,19 @@ module ``Acceptance tests`` =
             }
 
         matchState |> should equal expected
+
+    [<Test>]
+    let ``four declarations`` ()=
+        let matchState =
+            Match.newMatch sampleMatchRules "Team A" "Team B"
+            |> Match.updateMatchState StartMatch
+            |> Match.updateCurrentInnings (Innings.update Declare)
+            |> Match.updateMatchState StartNextInnings
+            |> Match.updateCurrentInnings (Innings.update Declare)
+            |> Match.updateMatchState StartNextInnings
+            |> Match.updateCurrentInnings (Innings.update Declare)
+            |> Match.updateMatchState StartNextInnings
+            |> Match.updateCurrentInnings (Innings.update Declare)
+
+        Match.summaryStatus matchState |> should equal "Match tied"
+        

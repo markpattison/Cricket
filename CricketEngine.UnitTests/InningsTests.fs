@@ -309,6 +309,20 @@ type SendInNewBatsmanTests ()=
 
 [<System.Diagnostics.CodeAnalysis.SuppressMessage("NameConventions", "MemberNamesMustBePascalCase")>]
 [<TestFixture>]
+type DeclarationTests ()=
+
+    [<Test>]
+    member _x.``innings declared`` ()=
+        let innings = 50 %/ 5
+        let declared = innings |> Innings.update Declare
+
+        declared.GetRuns |> should equal 50
+        declared.GetWickets |> should equal 5
+        declared.IsDeclared |> should be True
+        declared.IsCompleted |> should be True
+
+[<System.Diagnostics.CodeAnalysis.SuppressMessage("NameConventions", "MemberNamesMustBePascalCase")>]
+[<TestFixture>]
 type BowlingAnalysesUpdatedCorrectly ()=
 
     let innings, _, _ = SampleData.sampleInningsData

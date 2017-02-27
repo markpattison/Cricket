@@ -39,6 +39,7 @@ type SummaryInningsState =
     | MidOver
 
 type InningsUpdate =
+    | Declare
     | SendInBatsman of Player
     | SendInBowler of Player
     | UpdateForBall of BallOutcome
@@ -194,8 +195,12 @@ module Innings =
             | End1 -> { state with BowlerToEnd1 = Some nextBowler }
             | End2 -> { state with BowlerToEnd2 = Some nextBowler }
 
+    let private declare state =
+        { state with IsDeclared = true }
+
     let update transition state =
         match transition with
+        | Declare -> declare state
         | SendInBatsman nextBatsman -> sendInBatsman nextBatsman state
         | SendInBowler nextBowler -> sendInBowler nextBowler state
         | UpdateForBall ball -> updateForBall ball state
