@@ -53,6 +53,8 @@
     <Content Include="paket.references" />
     <Content Include="app.config" />
     <Compile Include="TestHelpers.fs" />
+    <Compile Include="SummaryInningsStateTests.fs" />
+    <Compile Include="SummaryMatchStateTests.fs" />
     <Compile Include="SummaryStatusTests.fs" />
     <Compile Include="IndividualInningsTests.fs" />
     <Compile Include="BowlingAnalysisTests.fs" />

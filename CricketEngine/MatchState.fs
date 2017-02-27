@@ -29,12 +29,12 @@ type MatchState =
     | ABBA'MatchDrawn of Innings * Innings * Innings * Innings
     | ABBA'MatchTied of Innings * Innings * Innings * Innings
 
-type SummaryState =
+type SummaryMatchState =
     | NotYetStarted
-    | InningsInProgress of Innings
+    | InningsInProgress of SummaryInningsState
     | BetweenInnings
     | AwaitingFollowOnDecision
-    | Completed
+    | MatchCompleted
 
 type MatchUpdate =
     | StartMatch
@@ -152,14 +152,14 @@ module MatchState =
             | ABAB'MatchTied _
             | ABAB'VictoryB _
             | ABAB'VictoryA _
-            | ABB'MatchDrawn _ -> Completed
+            | ABB'MatchDrawn _ -> MatchCompleted
         | AB'CompletedPossibleFollowOn _ -> AwaitingFollowOnDecision
-        | A'Ongoing a1 -> InningsInProgress a1
-        | AB'Ongoing (_, b1) -> InningsInProgress b1
-        | ABA'Ongoing (_, _, a2) -> InningsInProgress a2
-        | ABB'Ongoing (_, _, b2) -> InningsInProgress b2
-        | ABAB'Ongoing (_, _, _, b2) -> InningsInProgress b2
-        | ABBA'Ongoing (_, _, _, a2) -> InningsInProgress a2
+        | A'Ongoing a1 -> Innings.summaryState a1 |> InningsInProgress
+        | AB'Ongoing (_, b1) -> Innings.summaryState b1 |> InningsInProgress
+        | ABA'Ongoing (_, _, a2) -> Innings.summaryState a2 |> InningsInProgress
+        | ABB'Ongoing (_, _, b2) -> Innings.summaryState b2 |> InningsInProgress
+        | ABAB'Ongoing (_, _, _, b2) -> Innings.summaryState b2 |> InningsInProgress
+        | ABBA'Ongoing (_, _, _, a2) -> Innings.summaryState a2 |> InningsInProgress
         | A'Completed _
             | AB'CompletedNoFollowOn _
             | ABA'Completed _

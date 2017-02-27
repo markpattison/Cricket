@@ -31,6 +31,13 @@ type Innings =
     member _this.BallsSoFarThisOver =
         _this.BallsThisOver |> List.length
 
+type SummaryInningsState =
+    | Completed
+    | BatsmanRequired of int
+    | BowlerRequiredTo of End
+    | EndOver
+    | MidOver
+
 type InningsUpdate =
     | SendInBatsman of Player
     | SendInBowler of Player
@@ -192,3 +199,16 @@ module Innings =
         | SendInBatsman nextBatsman -> sendInBatsman nextBatsman state
         | SendInBowler nextBowler -> sendInBowler nextBowler state
         | UpdateForBall ball -> updateForBall ball state
+
+    let summaryState (state: Innings) =
+        if state.IsCompleted then
+            Completed
+        else
+            match state.BatsmanAtEnd1, state.BatsmanAtEnd2 with
+            | None, None -> BatsmanRequired 1
+            | None, Some _ | Some _, None -> BatsmanRequired (state.GetWickets + 2)
+            | _ ->
+                match state.EndFacingNext, state.BowlerToEnd1, state.BowlerToEnd2 with
+                | End1, None, _ -> BowlerRequiredTo End1
+                | End2, _, None -> BowlerRequiredTo End2
+                | _ -> if state.BallsSoFarThisOver = 0 then EndOver else MidOver
