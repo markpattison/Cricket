@@ -43,7 +43,7 @@ type MatchUpdate =
     | StartNextInnings
     | EnforceFollowOn
     | DeclineFollowOn
-    | UpdateInnings of (Innings -> Innings)
+    | UpdateInnings of InningsUpdate
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix )>]
 module MatchState = 
@@ -90,38 +90,39 @@ module MatchState =
     let private updateInnings inningsUpdater rules state = 
         match state with
         | A'Ongoing(a1) -> 
-            match inningsUpdater a1 with
+            match Innings.update inningsUpdater None a1 with
             | Innings.InningsOngoing i -> A'Ongoing(i)
             | Innings.InningsCompleted i -> A'Completed(i)
         | AB'Ongoing(a1, b1) -> 
-            match inningsUpdater b1 with
+            match Innings.update inningsUpdater None b1 with
             | Innings.InningsOngoing i -> AB'Ongoing(a1, i)
             | Innings.InningsCompleted i when (a1.GetRuns >= i.GetRuns + rules.FollowOnMargin) -> AB'CompletedPossibleFollowOn(a1, i)
             | Innings.InningsCompleted i -> AB'CompletedNoFollowOn(a1, i)
         | ABA'Ongoing(a1, b1, a2) -> 
-            match inningsUpdater a2 with
+            match Innings.update inningsUpdater None a2 with
             | Innings.InningsOngoing i -> ABA'Ongoing(a1, b1, i)
             | Innings.InningsCompleted i when (b1.GetRuns > a1.GetRuns + i.GetRuns) -> ABA'VictoryB(a1, b1, i)
             | Innings.InningsCompleted i -> ABA'Completed(a1, b1, i)
         | ABB'Ongoing(a1, b1, b2) -> 
-            match inningsUpdater b2 with
+            match Innings.update inningsUpdater None b2 with
             | Innings.InningsOngoing i -> ABB'Ongoing(a1, b1, i)
             | Innings.InningsCompleted i when (a1.GetRuns > b1.GetRuns + i.GetRuns) -> ABB'VictoryA(a1, b1, i)
             | Innings.InningsCompleted i -> ABB'Completed(a1, b1, i)
-        | ABAB'Ongoing(a1, b1, a2, b2) -> 
-            match inningsUpdater b2 with
+        | ABAB'Ongoing(a1, b1, a2, b2) ->
+            let toWin = Some (1 + a1.GetRuns + a2.GetRuns - b1.GetRuns - b2.GetRuns)
+            match Innings.update inningsUpdater toWin b2 with
             | Innings.InningsOngoing i when (b1.GetRuns + i.GetRuns > a1.GetRuns + a2.GetRuns) -> ABAB'VictoryB(a1, b1, a2, i)
             | Innings.InningsOngoing i -> ABAB'Ongoing(a1, b1, a2, i)
             | Innings.InningsCompleted i when (a1.GetRuns + a2.GetRuns > b1.GetRuns + i.GetRuns) -> ABAB'VictoryA(a1, b1, a2, i)
             | Innings.InningsCompleted i when (a1.GetRuns + a2.GetRuns = b1.GetRuns + i.GetRuns) -> ABAB'MatchTied(a1, b1, a2, i)
             | Innings.InningsCompleted _ -> failwith "Call to UpdateInnings in inconsistent state"
         | ABBA'Ongoing(a1, b1, b2, a2) -> 
-            match inningsUpdater a2 with
+            let toWin = Some (1 + b1.GetRuns + b2.GetRuns - a1.GetRuns - a2.GetRuns)
+            match Innings.update inningsUpdater toWin a2 with
             | Innings.InningsOngoing i when (a1.GetRuns + i.GetRuns > b1.GetRuns + b2.GetRuns) -> ABBA'VictoryA(a1, b1, b2, i)
             | Innings.InningsOngoing i -> ABBA'Ongoing(a1, b1, b2, i)
             | Innings.InningsCompleted i when (b1.GetRuns + b2.GetRuns > a1.GetRuns + i.GetRuns) -> ABBA'VictoryB(a1, b1, b2, i)
-            | Innings.InningsCompleted i when (b1.GetRuns + b2.GetRuns = a1.GetRuns + i.GetRuns) -> 
-                ABBA'MatchTied(a1, b1, b2, i)
+            | Innings.InningsCompleted i when (b1.GetRuns + b2.GetRuns = a1.GetRuns + i.GetRuns) -> ABBA'MatchTied(a1, b1, b2, i)
             | Innings.InningsCompleted _ -> failwith "Call to UpdateInnings in inconsistent state"
         | _ -> failwith "Call to UpdateInnings in invalid state"
 

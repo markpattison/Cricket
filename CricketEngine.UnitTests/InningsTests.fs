@@ -46,7 +46,7 @@ type InningsChangeEndsTests ()=
     [<TestCaseSource("TestDataNoWicket")>]
     member _x.``batsmen change ends correctly when no wicket falls`` testData =
         let ball, shouldChangeEnds = testData
-        let updated = Innings.update (UpdateForBall ball) innings
+        let updated = Innings.update (UpdateForBall ball) None innings
         if shouldChangeEnds then
             updated.BatsmanAtEnd1 |> should equal innings.BatsmanAtEnd2
             updated.BatsmanAtEnd2 |> should equal innings.BatsmanAtEnd1
@@ -57,7 +57,7 @@ type InningsChangeEndsTests ()=
     [<TestCaseSource("TestDataStrikerOut")>]
     member _x.``non-striker changes ends correctly when striker is out`` testData =
         let ball, shouldChangeEnds = testData
-        let updated = Innings.update (UpdateForBall ball) innings
+        let updated = Innings.update (UpdateForBall ball) None innings
         if shouldChangeEnds then
             updated.BatsmanAtEnd1 |> should equal innings.BatsmanAtEnd2
         else
@@ -66,7 +66,7 @@ type InningsChangeEndsTests ()=
     [<TestCaseSource("TestDataNonStrikerOut")>]
     member _x.``striker change ends correctly when non-striker is out`` testData =
         let ball, shouldChangeEnds = testData
-        let updated = Innings.update (UpdateForBall ball) innings
+        let updated = Innings.update (UpdateForBall ball) None innings
         if shouldChangeEnds then
             updated.BatsmanAtEnd2 |> should equal innings.BatsmanAtEnd1
         else
@@ -103,7 +103,7 @@ type BatsmanOutTests ()=
     [<TestCaseSource("TestDataStrikerOut")>]
     member _x.``striker is out correctly`` testData =
         let ball, shouldChangeEnds = testData
-        let updated = Innings.update (UpdateForBall ball) innings
+        let updated = Innings.update (UpdateForBall ball) None innings
         if shouldChangeEnds then
             updated.BatsmanAtEnd2 |> should equal None
         else
@@ -112,7 +112,7 @@ type BatsmanOutTests ()=
     [<TestCaseSource("TestDataNonStrikerOut")>]
     member _x.``non-striker is out correctly`` testData =
         let ball, shouldChangeEnds = testData
-        let updated = Innings.update (UpdateForBall ball) innings
+        let updated = Innings.update (UpdateForBall ball) None innings
         if shouldChangeEnds then
             updated.BatsmanAtEnd1 |> should equal None
         else
@@ -161,7 +161,7 @@ type InningsIndividualsUpdatedCorrectly ()=
     member _x.``striker's individual innings is updated correctly`` ([<ValueSource("TestData")>] testData) ([<ValueSource("Ends")>] currentEnd) =
         let ball = testData
         let testInnings = { innings with EndFacingNext = currentEnd }
-        let updated = Innings.update (UpdateForBall ball) testInnings
+        let updated = Innings.update (UpdateForBall ball) None testInnings
         let striker = (if currentEnd = End1 then innings.BatsmanAtEnd1 else innings.BatsmanAtEnd2).Value
         let testIndividualInnings = innings |> Innings.forPlayer striker
         let expectedIndividualInnings = IndividualInnings.update SampleData.sampleBowler ball testIndividualInnings
@@ -172,7 +172,7 @@ type InningsIndividualsUpdatedCorrectly ()=
     member _x.``non-striker's individual innings is updated correctly when he is run out`` ([<ValueSource("NonStrikerRunOutTestData")>] testData) ([<ValueSource("Ends")>] currentEnd) =
         let ball = testData
         let testInnings = { innings with EndFacingNext = currentEnd }
-        let updated = Innings.update (UpdateForBall ball) testInnings
+        let updated = Innings.update (UpdateForBall ball) None testInnings
         let nonStriker = (if currentEnd = End1 then innings.BatsmanAtEnd2 else innings.BatsmanAtEnd1).Value
         let testIndividualInnings = innings |> Innings.forPlayer nonStriker
         let expectedIndividualInnings = IndividualInnings.updateNonStriker ball testIndividualInnings
@@ -215,7 +215,7 @@ type InningsBallsIncrementedTests ()=
     member _x.``balls faced this over should increment correctly before end of over`` ([<ValueSource("TestData")>] testData) ([<ValueSource("BallsFaced")>] ballsFaced) =
         let ball, shouldIncrementBalls = testData
         let testInnings = { innings with BallsThisOver = dotBalls ballsFaced }
-        let updated = Innings.update (UpdateForBall ball) testInnings
+        let updated = Innings.update (UpdateForBall ball) None testInnings
         if shouldIncrementBalls then
             updated.BallsSoFarThisOver |> should equal (ballsFaced + 1)
         else
@@ -225,7 +225,7 @@ type InningsBallsIncrementedTests ()=
     member _x.``balls faced should be reset to zero at the end of an over`` testData =
         let ball, shouldIncrementBalls = testData
         let testInnings = { innings with BallsThisOver = dotBalls 5 }
-        let updated = Innings.update (UpdateForBall ball) testInnings
+        let updated = Innings.update (UpdateForBall ball) None testInnings
         if shouldIncrementBalls then
             updated.BallsSoFarThisOver |> should equal 0
         else
@@ -235,7 +235,7 @@ type InningsBallsIncrementedTests ()=
     member _x.``overs completed should be incremented at the end of an over`` testData =
         let ball, shouldIncrementBalls = testData
         let testInnings = { innings with OversCompleted = 10; BallsThisOver = dotBalls 5 }
-        let updated = Innings.update (UpdateForBall ball) testInnings
+        let updated = Innings.update (UpdateForBall ball) None testInnings
         if shouldIncrementBalls then
             updated.OversCompleted |> should equal 11
         else
@@ -245,14 +245,14 @@ type InningsBallsIncrementedTests ()=
     member _x.``end facing next should not change before end of over`` ([<ValueSource("TestData")>] testData) ([<ValueSource("BallsFaced")>] ballsFaced) ([<ValueSource("Ends")>] currentEnd) =
         let ball, (_: bool) = testData
         let testInnings = { innings with BallsThisOver = dotBalls ballsFaced; EndFacingNext = currentEnd }
-        let updated = Innings.update (UpdateForBall ball) testInnings
+        let updated = Innings.update (UpdateForBall ball) None testInnings
         updated.EndFacingNext |> should equal currentEnd
 
     [<Test>]
     member _x.``end facing next should change at the end of an over`` ([<ValueSource("TestData")>] testData) ([<ValueSource("Ends")>] currentEnd) =
         let ball, (_: bool) = testData
         let testInnings = { innings with BallsThisOver = dotBalls 5; EndFacingNext = currentEnd }
-        let updated = Innings.update (UpdateForBall ball) testInnings
+        let updated = Innings.update (UpdateForBall ball) None testInnings
         updated.EndFacingNext |> should not' (equal currentEnd)
 
 [<System.Diagnostics.CodeAnalysis.SuppressMessage("NameConventions", "MemberNamesMustBePascalCase")>]
@@ -270,11 +270,11 @@ type SendInNewBatsmanTests ()=
 
     [<Test>]
     member _x.``cannot send in a new batsman to an already-started innings with no batsmen`` ()=
-        (fun () -> (Innings.update (SendInBatsman testBatsman) inningsWithNoBatsmen) |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> (Innings.update (SendInBatsman testBatsman) None inningsWithNoBatsmen) |> ignore) |> should throw typeof<System.Exception>
 
     [<Test>]
     member _x.``first opener in is added correctly to innings`` ()=
-        let updated = Innings.update (SendInBatsman testBatsman) Innings.create
+        let updated = Innings.update (SendInBatsman testBatsman) None Innings.create
 
         updated.BatsmanAtEnd1 |> should equal (Some testBatsman)
         updated.Batsmen |> should haveLength 1
@@ -282,8 +282,8 @@ type SendInNewBatsmanTests ()=
 
     [<Test>]
     member _x.``second opener in is added correctly to innings`` ()=
-        let updated1 = Innings.update (SendInBatsman testBatsman) Innings.create
-        let updated2 = Innings.update (SendInBatsman testBatsman2) updated1
+        let updated1 = Innings.update (SendInBatsman testBatsman) None Innings.create
+        let updated2 = Innings.update (SendInBatsman testBatsman2) None updated1
 
         updated2.BatsmanAtEnd2 |> should equal (Some testBatsman2)
         updated2.Batsmen |> should haveLength 2
@@ -291,18 +291,18 @@ type SendInNewBatsmanTests ()=
 
     [<Test>]
     member _x.``cannot send in a new batsman to an innings with two batsmen`` ()=
-        (fun () -> (Innings.update (SendInBatsman testBatsman) innings) |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> (Innings.update (SendInBatsman testBatsman) None innings) |> ignore) |> should throw typeof<System.Exception>
 
     [<Test>]
     member _x.``new batsman added correctly to innings at end 1`` ()=
-        let updated = Innings.update (SendInBatsman testBatsman) inningsWithNoBatsmanAtEnd1
+        let updated = Innings.update (SendInBatsman testBatsman) None inningsWithNoBatsmanAtEnd1
 
         updated.BatsmanAtEnd1 |> should equal (Some testBatsman)
         updated.Batsmen.Item(2) |> should equal (testBatsman, IndividualInnings.create)
 
     [<Test>]
     member _x.``new batsman added correctly to innings at end 2`` ()=
-        let updated = Innings.update (SendInBatsman testBatsman) inningsWithNoBatsmanAtEnd2
+        let updated = Innings.update (SendInBatsman testBatsman) None inningsWithNoBatsmanAtEnd2
 
         updated.BatsmanAtEnd2 |> should equal (Some testBatsman)
         updated.Batsmen.Item(2) |> should equal (testBatsman, IndividualInnings.create)
@@ -314,7 +314,7 @@ type DeclarationTests ()=
     [<Test>]
     member _x.``innings declared`` ()=
         let innings = 50 %/ 5
-        let declared = innings |> Innings.update Declare
+        let declared = innings |> Innings.update Declare None
 
         declared.GetRuns |> should equal 50
         declared.GetWickets |> should equal 5
@@ -356,7 +356,7 @@ type BowlingAnalysesUpdatedCorrectly ()=
     member _x.``bowler's analysis is updated correctly`` ([<ValueSource("TestData")>] testData) ([<ValueSource("Ends")>] currentEnd) =
         let ball = testData
         let testInnings = { innings with EndFacingNext = currentEnd }
-        let updated = Innings.update (UpdateForBall ball) testInnings
+        let updated = Innings.update (UpdateForBall ball) None testInnings
         let bowler = (if currentEnd = End1 then innings.BowlerToEnd1 else innings.BowlerToEnd2).Value
         let testBowlingAnalysis = innings |> Innings.forBowler bowler
         let expectedBowlingAnalysis = BowlingAnalysis.update ball testBowlingAnalysis
@@ -367,8 +367,8 @@ type BowlingAnalysesUpdatedCorrectly ()=
     member _x.``new bowling analysis is created correctly`` ([<ValueSource("TestData")>] testData) =
         let ball = testData
         let newBowler = { Name = "new bowler" }
-        let testInnings = { innings with EndFacingNext = End1 } |> Innings.update (SendInBowler newBowler)
-        let updated = Innings.update (UpdateForBall ball) testInnings
+        let testInnings = { innings with EndFacingNext = End1 } |> Innings.update (SendInBowler newBowler) None
+        let updated = Innings.update (UpdateForBall ball) None testInnings
         let expectedBowlingAnalysis = BowlingAnalysis.update ball BowlingAnalysis.create
 
         updated |> Innings.forBowler newBowler |> should equal expectedBowlingAnalysis
@@ -376,15 +376,15 @@ type BowlingAnalysesUpdatedCorrectly ()=
     [<Test>]
     member _x.``bowling analysis is correct after a maiden over`` ()=
         let newBowler = { Name = "new bowler" }
-        let testInnings = { innings with EndFacingNext = End1 } |> Innings.update (SendInBowler newBowler)
+        let testInnings = { innings with EndFacingNext = End1 } |> Innings.update (SendInBowler newBowler) None
         let updated =
             testInnings
-            |> Innings.update (UpdateForBall DotBall)
-            |> Innings.update (UpdateForBall DotBall)
-            |> Innings.update (UpdateForBall DotBall)
-            |> Innings.update (UpdateForBall DotBall)
-            |> Innings.update (UpdateForBall DotBall)
-            |> Innings.update (UpdateForBall DotBall)
+            |> Innings.update (UpdateForBall DotBall) None
+            |> Innings.update (UpdateForBall DotBall) None
+            |> Innings.update (UpdateForBall DotBall) None
+            |> Innings.update (UpdateForBall DotBall) None
+            |> Innings.update (UpdateForBall DotBall) None
+            |> Innings.update (UpdateForBall DotBall) None
 
         let expectedBowlingAnalysis = { Balls = 6; Maidens = 1; RunsConceded = 0; Wickets = 0 }
 
@@ -401,33 +401,33 @@ type SendInNewBowlerTests ()=
     [<Test>]
     member _x.``new bowler added correctly for new over to end 1`` ()=
         let testInnings = { innings with BallsThisOver = []; EndFacingNext = End1 }
-        let updated = testInnings |> Innings.update (SendInBowler newBowler)
+        let updated = testInnings |> Innings.update (SendInBowler newBowler) None
 
         updated.BowlerToEnd1 |> should equal (Some newBowler)
 
     [<Test>]
     member _x.``new bowler added correctly for new over to end 2`` ()=
         let testInnings = { innings with BallsThisOver = []; EndFacingNext = End2 }
-        let updated = testInnings |> Innings.update (SendInBowler newBowler)
+        let updated = testInnings |> Innings.update (SendInBowler newBowler) None
 
         updated.BowlerToEnd2 |> should equal (Some newBowler)
 
     [<Test>]
     member _x.``new bowler cannot be added during over to end 1`` ()=
         let testInnings = { innings with BallsThisOver = [ DotBall ]; EndFacingNext = End1 }
-        (fun () -> (testInnings |> Innings.update (SendInBowler newBowler)) |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> (testInnings |> Innings.update (SendInBowler newBowler) None) |> ignore) |> should throw typeof<System.Exception>
 
     [<Test>]
     member _x.``new bowler cannot be added during over to end 2`` ()=
         let testInnings = { innings with BallsThisOver = [ DotBall; DotBall; DotBall; DotBall; DotBall ]; EndFacingNext = End2 }
-        (fun () -> (testInnings |> Innings.update (SendInBowler newBowler)) |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> (testInnings |> Innings.update (SendInBowler newBowler) None) |> ignore) |> should throw typeof<System.Exception>
 
     [<Test>]
     member _x.``same bowler cannot bowl to end 1 then end 2`` ()=
         let testInnings = { innings with BallsThisOver = []; EndFacingNext = End2; BowlerToEnd1 = Some newBowler; OversCompleted = 1 }
-        (fun () -> (testInnings |> Innings.update (SendInBowler newBowler)) |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> (testInnings |> Innings.update (SendInBowler newBowler) None) |> ignore) |> should throw typeof<System.Exception>
 
     [<Test>]
     member _x.``same bowler cannot bowl to end 2 then end 1`` ()=
         let testInnings = { innings with BallsThisOver = []; EndFacingNext = End1; BowlerToEnd2 = Some newBowler; OversCompleted = 1 }
-        (fun () -> (testInnings |> Innings.update (SendInBowler newBowler)) |> ignore) |> should throw typeof<System.Exception>
+        (fun () -> (testInnings |> Innings.update (SendInBowler newBowler) None) |> ignore) |> should throw typeof<System.Exception>

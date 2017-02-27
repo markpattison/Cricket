@@ -198,12 +198,14 @@ module Innings =
     let private declare state =
         { state with IsDeclared = true }
 
-    let update transition state =
+    let update transition toWin state =
         match transition with
         | Declare -> declare state
         | SendInBatsman nextBatsman -> sendInBatsman nextBatsman state
         | SendInBowler nextBowler -> sendInBowler nextBowler state
-        | UpdateForBall ball -> updateForBall ball state
+        | UpdateForBall ball ->
+            let ballRestricedForMatchEnd = BallOutcome.restrictForEndMatch toWin ball
+            updateForBall ballRestricedForMatchEnd state
 
     let summaryState (state: Innings) =
         if state.IsCompleted then

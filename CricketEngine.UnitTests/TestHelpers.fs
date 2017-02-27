@@ -117,7 +117,7 @@ module TestHelpers =
     let rec createInnings score wickets =
         match wickets with
         | 0 -> { SampleData.sampleInnings with Batsmen = [ (SampleData.sampleBatsman1, { IndividualInnings.create with Score = score}); (SampleData.sampleBatsman2, IndividualInnings.create) ] }
-        | n -> { SampleData.sampleInnings with Batsmen = (SampleData.sampleBatsman1, { IndividualInnings.create with HowOut = Some HowOut.RunOut }) :: (createInnings score (n - 1)).Batsmen }
+        | n -> { SampleData.sampleInnings with Batsmen = ({ Name = sprintf "testBatsman %i" (n + 1) }, { IndividualInnings.create with HowOut = Some HowOut.RunOut }) :: (createInnings score (n - 1)).Batsmen }
 
     let (%/) runs wickets = createInnings runs wickets
     let (%/%) runs wickets = { (createInnings runs wickets) with IsDeclared = true }
@@ -126,8 +126,8 @@ module TestHelpers =
     let sampleCompletedInnings = 789 %/ 10
     let sampleEmptyInnings = 0 %/ 0
 
-    let sampleUpdaterOngoing = UpdateInnings (fun _ -> sampleOngoingInnings)
-    let sampleUpdaterCompleted = UpdateInnings (fun _ -> sampleCompletedInnings)
+    let sampleUpdaterOngoing = UpdateInnings (UpdateForBall DotBall)
+    let sampleUpdaterCompleted = UpdateInnings Declare
     let updater = MatchState.update sampleMatchRules
 
     let dotBalls n =

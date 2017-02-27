@@ -29,93 +29,93 @@ module ``SummaryInningsState tests`` =
     let ``new innings, one batsman in`` ()=
         let innings =
             Innings.create
-            |> Innings.update (SendInBatsman SampleData.sampleBatsman1)
+            |> Innings.update (SendInBatsman SampleData.sampleBatsman1) None
         (summary innings) |> should equal (BatsmanRequired 2)
 
     [<Test>]
     let ``new innings, both batsman in`` ()=
         let innings =
             Innings.create
-            |> Innings.update (SendInBatsman SampleData.sampleBatsman1)
-            |> Innings.update (SendInBatsman SampleData.sampleBatsman2)
+            |> Innings.update (SendInBatsman SampleData.sampleBatsman1) None
+            |> Innings.update (SendInBatsman SampleData.sampleBatsman2) None
         (summary innings) |> should equal (BowlerRequiredTo End1)
 
     [<Test>]
     let ``new innings, both batsman in and bowler ready`` ()=
         let innings =
             Innings.create
-            |> Innings.update (SendInBatsman SampleData.sampleBatsman1)
-            |> Innings.update (SendInBatsman SampleData.sampleBatsman2)
-            |> Innings.update (SendInBowler SampleData.sampleBowler1)
+            |> Innings.update (SendInBatsman SampleData.sampleBatsman1) None
+            |> Innings.update (SendInBatsman SampleData.sampleBatsman2) None
+            |> Innings.update (SendInBowler SampleData.sampleBowler1) None
         (summary innings) |> should equal EndOver
 
     [<Test>]
     let ``new innings, after one over`` ()=
         let innings =
             Innings.create
-            |> Innings.update (SendInBatsman SampleData.sampleBatsman1)
-            |> Innings.update (SendInBatsman SampleData.sampleBatsman2)
-            |> Innings.update (SendInBowler SampleData.sampleBowler1)
-            |> Innings.update (UpdateForBall DotBall)
-            |> Innings.update (UpdateForBall DotBall)
-            |> Innings.update (UpdateForBall DotBall)
-            |> Innings.update (UpdateForBall DotBall)
-            |> Innings.update (UpdateForBall DotBall)
-            |> Innings.update (UpdateForBall DotBall)
+            |> Innings.update (SendInBatsman SampleData.sampleBatsman1) None
+            |> Innings.update (SendInBatsman SampleData.sampleBatsman2) None
+            |> Innings.update (SendInBowler SampleData.sampleBowler1) None
+            |> Innings.update (UpdateForBall DotBall) None
+            |> Innings.update (UpdateForBall DotBall) None
+            |> Innings.update (UpdateForBall DotBall) None
+            |> Innings.update (UpdateForBall DotBall) None
+            |> Innings.update (UpdateForBall DotBall) None
+            |> Innings.update (UpdateForBall DotBall) None
         (summary innings) |> should equal (BowlerRequiredTo End2)
 
     [<Test>]
     let ``batsman out`` ()=
         let innings =
             Innings.create
-            |> Innings.update (SendInBatsman SampleData.sampleBatsman1)
-            |> Innings.update (SendInBatsman SampleData.sampleBatsman2)
-            |> Innings.update (SendInBowler SampleData.sampleBowler1)
-            |> Innings.update (UpdateForBall LBW)
+            |> Innings.update (SendInBatsman SampleData.sampleBatsman1) None
+            |> Innings.update (SendInBatsman SampleData.sampleBatsman2) None
+            |> Innings.update (SendInBowler SampleData.sampleBowler1) None
+            |> Innings.update (UpdateForBall LBW) None
         (summary innings) |> should equal (BatsmanRequired 3)
 
     [<Test>]
     let ``after one ball`` ()=
         let innings =
             Innings.create
-            |> Innings.update (SendInBatsman SampleData.sampleBatsman1)
-            |> Innings.update (SendInBatsman SampleData.sampleBatsman2)
-            |> Innings.update (SendInBowler SampleData.sampleBowler1)
-            |> Innings.update (UpdateForBall DotBall)
+            |> Innings.update (SendInBatsman SampleData.sampleBatsman1) None
+            |> Innings.update (SendInBatsman SampleData.sampleBatsman2) None
+            |> Innings.update (SendInBowler SampleData.sampleBowler1) None
+            |> Innings.update (UpdateForBall DotBall) None
         (summary innings) |> should equal MidOver
 
     [<Test>]
     let ``after five balls`` ()=
         let innings =
             Innings.create
-            |> Innings.update (SendInBatsman SampleData.sampleBatsman1)
-            |> Innings.update (SendInBatsman SampleData.sampleBatsman2)
-            |> Innings.update (SendInBowler SampleData.sampleBowler1)
-            |> Innings.update (UpdateForBall DotBall)
-            |> Innings.update (UpdateForBall DotBall)
-            |> Innings.update (UpdateForBall DotBall)
-            |> Innings.update (UpdateForBall DotBall)
-            |> Innings.update (UpdateForBall DotBall)
+            |> Innings.update (SendInBatsman SampleData.sampleBatsman1) None
+            |> Innings.update (SendInBatsman SampleData.sampleBatsman2) None
+            |> Innings.update (SendInBowler SampleData.sampleBowler1) None
+            |> Innings.update (UpdateForBall DotBall) None
+            |> Innings.update (UpdateForBall DotBall) None
+            |> Innings.update (UpdateForBall DotBall) None
+            |> Innings.update (UpdateForBall DotBall) None
+            |> Innings.update (UpdateForBall DotBall) None
         (summary innings) |> should equal MidOver
 
     [<Test>]
     let ``end of over`` ()=
         let innings =
             Innings.create
-            |> Innings.update (SendInBatsman SampleData.sampleBatsman1)
-            |> Innings.update (SendInBatsman SampleData.sampleBatsman2)
-            |> Innings.update (SendInBowler SampleData.sampleBowler1)
-            |> Innings.update (UpdateForBall DotBall)
-            |> Innings.update (UpdateForBall DotBall)
-            |> Innings.update (UpdateForBall DotBall)
-            |> Innings.update (UpdateForBall DotBall)
-            |> Innings.update (UpdateForBall DotBall)
-            |> Innings.update (UpdateForBall DotBall)
-            |> Innings.update (SendInBowler SampleData.sampleBowler2)
-            |> Innings.update (UpdateForBall DotBall)
-            |> Innings.update (UpdateForBall DotBall)
-            |> Innings.update (UpdateForBall DotBall)
-            |> Innings.update (UpdateForBall DotBall)
-            |> Innings.update (UpdateForBall DotBall)
-            |> Innings.update (UpdateForBall DotBall)
+            |> Innings.update (SendInBatsman SampleData.sampleBatsman1) None
+            |> Innings.update (SendInBatsman SampleData.sampleBatsman2) None
+            |> Innings.update (SendInBowler SampleData.sampleBowler1) None
+            |> Innings.update (UpdateForBall DotBall) None
+            |> Innings.update (UpdateForBall DotBall) None
+            |> Innings.update (UpdateForBall DotBall) None
+            |> Innings.update (UpdateForBall DotBall) None
+            |> Innings.update (UpdateForBall DotBall) None
+            |> Innings.update (UpdateForBall DotBall) None
+            |> Innings.update (SendInBowler SampleData.sampleBowler2) None
+            |> Innings.update (UpdateForBall DotBall) None
+            |> Innings.update (UpdateForBall DotBall) None
+            |> Innings.update (UpdateForBall DotBall) None
+            |> Innings.update (UpdateForBall DotBall) None
+            |> Innings.update (UpdateForBall DotBall) None
+            |> Innings.update (UpdateForBall DotBall) None
         (summary innings) |> should equal EndOver

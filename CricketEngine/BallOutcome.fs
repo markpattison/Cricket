@@ -95,3 +95,10 @@ module BallOutcome =
         match ball with
         | Bowled | HitWicket | LBW | Caught _ | Stumped _ -> true
         | _ -> false
+
+    let restrictForEndMatch toWin ball =
+        match toWin, ball with
+        | Some runsToWin, ScoreRuns runs when runs > runsToWin -> ScoreRuns runsToWin
+        | Some runsToWin, RunOutStriker (runs, _) when runs >= runsToWin -> ScoreRuns runsToWin
+        | Some runsToWin, RunOutNonStriker (runs, _) when runs >= runsToWin -> ScoreRuns runsToWin
+        | _ -> ball
