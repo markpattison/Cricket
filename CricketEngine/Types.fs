@@ -28,4 +28,4 @@ type HowOut =
         | RunOut -> "run out"
         | Stumped(bowler, stumper) -> sprintf "st %s b %s" stumper.Name bowler.Name
 
-
+type Team = TeamA | TeamB

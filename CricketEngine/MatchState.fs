@@ -180,6 +180,30 @@ module MatchState =
         | ABA'Ongoing (_, _, a2) | ABBA'Ongoing (_, _, _, a2) -> a2
         | ABB'Ongoing (_, _, b2) | ABAB'Ongoing (_, _, _, b2) -> b2
 
+    let currentBattingTeam state =
+        match state with
+        | NotStarted | Abandoned | A'Completed _ | A'MatchDrawn _ | AB'CompletedNoFollowOn _ -> failwith "no current innings"
+        | AB'CompletedPossibleFollowOn _ | AB'MatchDrawn _ | ABA'VictoryB _ -> failwith "no current innings"
+        | ABA'Completed _ | ABA'MatchDrawn _ | ABB'VictoryA _ -> failwith "no current innings"
+        | ABB'Completed _ | ABB'MatchDrawn _ | ABAB'VictoryA _ -> failwith "no current innings"
+        | ABAB'VictoryB _ | ABAB'MatchDrawn _ | ABAB'MatchTied _ -> failwith "no current innings"
+        | ABBA'VictoryA _ | ABBA'VictoryB _ | ABBA'MatchDrawn _ -> failwith "no current innings"
+        | ABBA'MatchTied _ -> failwith "no current innings"
+        | A'Ongoing _ | ABA'Ongoing _ | ABBA'Ongoing _ -> TeamA
+        | AB'Ongoing _ | ABB'Ongoing _ | ABAB'Ongoing _ -> TeamB
+
+    let currentBowlingTeam state =
+        match state with
+        | NotStarted | Abandoned | A'Completed _ | A'MatchDrawn _ | AB'CompletedNoFollowOn _ -> failwith "no current innings"
+        | AB'CompletedPossibleFollowOn _ | AB'MatchDrawn _ | ABA'VictoryB _ -> failwith "no current innings"
+        | ABA'Completed _ | ABA'MatchDrawn _ | ABB'VictoryA _ -> failwith "no current innings"
+        | ABB'Completed _ | ABB'MatchDrawn _ | ABAB'VictoryA _ -> failwith "no current innings"
+        | ABAB'VictoryB _ | ABAB'MatchDrawn _ | ABAB'MatchTied _ -> failwith "no current innings"
+        | ABBA'VictoryA _ | ABBA'VictoryB _ | ABBA'MatchDrawn _ -> failwith "no current innings"
+        | ABBA'MatchTied _ -> failwith "no current innings"
+        | A'Ongoing _ | ABA'Ongoing _ | ABBA'Ongoing _ -> TeamB
+        | AB'Ongoing _ | ABB'Ongoing _ | ABAB'Ongoing _ -> TeamA
+
     let totalRunsA state = 
         match state with
         | NotStarted | Abandoned -> 0
