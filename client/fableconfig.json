@@ -1,7 +1,12 @@
 {
-  "sourceMaps": false,
+
+  "sourceMaps": true,
   "outDir": "out",
-  "projFile": [ "../CricketEngine/CricketEngine.fsproj", "../MatchRunner/MatchRunner.fsproj", "./cricket.fsx" ],
+  "projFile": [
+      "../CricketEngine/CricketEngine.fsproj",
+      "../MatchRunner/MatchRunner.fsproj",
+      "Client.fsproj"
+  ],
   "scripts": {
     "postbuild": "node node_modules/webpack/bin/webpack"
   }

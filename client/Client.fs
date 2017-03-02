@@ -1,11 +1,4 @@
-﻿
-#r "node_modules/fable-core/Fable.Core.dll"
-#load "node_modules/fable-arch/Fable.Arch.Html.fs"
-#load "node_modules/fable-arch/Fable.Arch.App.fs"
-#load "node_modules/fable-arch/Fable.Arch.Virtualdom.fs"
-
-#r "../build/CricketEngine.dll"
-#r "../build/MatchRunner.dll"
+﻿module Client
 
 open Fable.Core
 open Fable.Core.JsInterop
