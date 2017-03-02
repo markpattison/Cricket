@@ -173,3 +173,11 @@ $RECYCLE.BIN/
 # tests
 test/
 *TestResult*.xml
+
+# node
+node_modules/
+client/node_modules/
+
+# out
+client/out/*
+client/public/*

@@ -79,9 +79,7 @@ Target "CopyFiles" (fun _ ->
 
 Target "Fable" (fun _ ->
    npm "install" [] "./client"
-   node "node_modules/fable-compiler" [ "--target cricketEngine" ] "./client"
-   node "node_modules/fable-compiler" [ "--target matchRunner" ] "./client"
-   node "node_modules/fable-compiler" [ "--target cricket" ] "./client"
+   node "node_modules/fable-compiler" [ ] "./client"
 )
 
 // Build order
