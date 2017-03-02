@@ -171,7 +171,9 @@ test/
 *TestResult*.xml
 
 # node
-**/node_modules/*
+node_modules/
+client/node_modules/
 
 # out
 client/out/*
+client/public/*
