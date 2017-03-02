@@ -40,6 +40,7 @@ let appReferences =
         ++ "**/*.fsproj"
         -- "**/*Tests.csproj"
         -- "**/*Tests.fsproj"
+        -- "**/*Client.fsproj"
 
 let testReferences =
     !! "**/*Tests.csproj"
@@ -85,9 +86,9 @@ Target "Fable" (fun _ ->
 // Build order
 "Clean"
     ==> "BuildApp"
-//    ==> "BuildTests"
-//    ==> "UnitTests"
-//    ==> "AcceptanceTests"
+    ==> "BuildTests"
+    ==> "UnitTests"
+    ==> "AcceptanceTests"
     ==> "CopyFiles"
     ==> "Fable"
 

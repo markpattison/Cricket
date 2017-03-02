@@ -31,7 +31,8 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "MatchRunner", "MatchRunner\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "client", "client", "{2A151DA9-39B3-4C47-A636-754FE23AF60C}"
 	ProjectSection(SolutionItems) = preProject
-		client\cricket.fsx = client\cricket.fsx
+		client\Client.fs = client\Client.fs
+		client\Client.fsproj = client\Client.fsproj
 		client\fableconfig.json = client\fableconfig.json
 		client\index.html = client\index.html
 		client\package.json = client\package.json
