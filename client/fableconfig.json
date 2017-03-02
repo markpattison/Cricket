@@ -1,28 +1,8 @@
 {
-  "module": "amd",
   "sourceMaps": false,
-  "targets": {
-    "cricketEngine": {
-      "outDir": "out/cricketEngine",
-      "projFile": "../CricketEngine/CricketEngine.fsproj"
-    },
-    "matchRunner": {
-      "outDir": "out/matchRunner",
-      "projFile": "../MatchRunner/MatchRunner.fsproj",
-      "refs": {
-        "CricketEngine": "../cricketEngine"
-      }
-    },
-    "cricket": {
-      "outDir": "out/cricket",
-      "projFile": "./cricket.fsx",
-      "refs": {
-        "CricketEngine": "../cricketEngine",
-        "MatchRunner": "../matchRunner"
-      },
-      "scripts": {
-        "postbuild": "node node_modules/webpack/bin/webpack"
-      }
-    }
+  "outDir": "out",
+  "projFile": [ "../CricketEngine/CricketEngine.fsproj", "../MatchRunner/MatchRunner.fsproj", "./cricket.fsx" ],
+  "scripts": {
+    "postbuild": "node node_modules/webpack/bin/webpack"
   }
 }
