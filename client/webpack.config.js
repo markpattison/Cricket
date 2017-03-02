@@ -3,14 +3,15 @@ var webpack = require("webpack");
 
 var cfg = {
   devtool: "source-map",
-  entry: "./out/client/cricket.js",
+  entry: "./out/Client/Client.js",
   output: {
     path: path.join(__dirname, "./public"),
     filename: "bundle.js"
   },
   module: {
-    preLoaders: [
+    rules: [
       {
+        enforce: "pre",
         test: /\.js$/,
         exclude: /node_modules/,
         loader: "source-map-loader"
