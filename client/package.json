@@ -1,0 +1,21 @@
+{
+  "name": "fable-vdom-sudoku",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "core-js": "^2.4.0",
+    "fable-core": "^0.7.26",
+    "todomvc-app-css": "^2.0.0",
+    "todomvc-common": "^1.0.1",
+    "virtual-dom": "^2.1.1"
+  },
+  "devDependencies": {
+    "fable-compiler": "^0.7.40",
+    "fable-arch": "^0.9.11",
+    "source-map-loader": "^0.1.5",
+    "webpack": "^1.13.1"
+  },
+  "engines": {
+    "fable": "^0.7.40"
+  }
+}

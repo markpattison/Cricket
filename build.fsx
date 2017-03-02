@@ -1,13 +1,38 @@
 // include Fake libs
 #r "packages/FAKE/tools/FakeLib.dll"
 
+open System
+
 open Fake
+open Fake.FileUtils
 open Fake.Testing.NUnit3
 
 // Directories
 let buildDir  = "./build/"
 let testDir   = "./test/"
-let deployDir = "./deploy/"
+let clientBuildDir  = "./client/out/"
+let bundleDir = "./client/public/"
+
+// NPM helpers
+let npm command args workingDir =
+  let args = sprintf "%s %s" command (String.concat " " args)
+  let cmd, args = if EnvironmentHelper.isUnix then "npm", args else "cmd", ("/C npm " + args)
+  let ok =
+    execProcess (fun info ->
+      info.FileName <- cmd
+      info.WorkingDirectory <- workingDir
+      info.Arguments <- args) TimeSpan.MaxValue
+  if not ok then failwith (sprintf "'%s %s' task failed" cmd args)
+
+let node command args workingDir =
+  let args = sprintf "%s %s" command (String.concat " " args)
+  let cmd, args = if EnvironmentHelper.isUnix then "node", args else "cmd", ("/C node " + args)
+  let ok =
+    execProcess (fun info ->
+      info.FileName <- cmd
+      info.WorkingDirectory <- workingDir
+      info.Arguments <- args) TimeSpan.MaxValue
+  if not ok then failwith (sprintf "'%s %s' task failed" cmd args)
 
 // Filesets
 let appReferences = 
@@ -22,7 +47,7 @@ let testReferences =
 
 // Targets
 Target "Clean" (fun _ -> 
-    CleanDirs [buildDir; testDir; deployDir]
+    CleanDirs [buildDir; testDir; clientBuildDir; bundleDir]
 )
 
 Target "BuildApp" (fun _ ->
@@ -47,12 +72,26 @@ Target "AcceptanceTests" (fun _ ->
         |> NUnit3 (fun arg -> { arg with ResultSpecs = [testDir </> "AcceptanceTestResults.xml"] })
 )
 
+Target "CopyFiles" (fun _ ->
+    cp "./client/index.html" bundleDir
+    cp_r "./client/css" bundleDir
+)
+
+Target "Fable" (fun _ ->
+   npm "install" [] "./client"
+   node "node_modules/fable-compiler" [ "--target cricketEngine" ] "./client"
+   node "node_modules/fable-compiler" [ "--target matchRunner" ] "./client"
+   node "node_modules/fable-compiler" [ "--target cricket" ] "./client"
+)
+
 // Build order
 "Clean"
     ==> "BuildApp"
-    ==> "BuildTests"
-    ==> "UnitTests"
-    ==> "AcceptanceTests"
+//    ==> "BuildTests"
+//    ==> "UnitTests"
+//    ==> "AcceptanceTests"
+    ==> "CopyFiles"
+    ==> "Fable"
 
 // start build
 RunTargetOrDefault "AcceptanceTests"

@@ -29,6 +29,22 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "FAKE", "FAKE", "{D37979E3-9
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "MatchRunner", "MatchRunner\MatchRunner.fsproj", "{82E90568-1CAC-4311-8D3C-9C9A24D4F82E}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "client", "client", "{2A151DA9-39B3-4C47-A636-754FE23AF60C}"
+	ProjectSection(SolutionItems) = preProject
+		client\cricket.fsx = client\cricket.fsx
+		client\fableconfig.json = client\fableconfig.json
+		client\index.html = client\index.html
+		client\package.json = client\package.json
+		client\webpack.config.js = client\webpack.config.js
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "css", "css", "{D48E755A-0E74-4BEA-9055-005C284C71DE}"
+	ProjectSection(SolutionItems) = preProject
+		client\css\base.css = client\css\base.css
+		client\css\index.css = client\css\index.css
+		client\css\overrides.css = client\css\overrides.css
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -54,5 +70,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{D48E755A-0E74-4BEA-9055-005C284C71DE} = {2A151DA9-39B3-4C47-A636-754FE23AF60C}
 	EndGlobalSection
 EndGlobal
