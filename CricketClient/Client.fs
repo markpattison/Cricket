@@ -25,10 +25,21 @@ let update model msg =
 // Todo view
 
 let view model =
-    section
-        [attribute "class" "todoapp"]
-        [ h1 [] [text "todos"] ]
-
+    match model.State with
+    | NotStarted ->
+        section
+            [attribute "class" "todoapp"]
+            [ h1 [] [text "Match not started"] ]
+    | Abandoned ->
+        section
+            [attribute "class" "todoapp"]
+            [ h1 [] [text "Match abandoned"] ]
+    | _ ->
+        let summary = model |> Match.summaryStatus
+        let innings = model |> Match.inningsList
+        section
+            [attribute "class" "todoapp"]
+            [ h1 [] [text summary] ]
 
 let initModel = { TeamA = "England"; TeamB = "Australia"; State = NotStarted; Rules = { FollowOnMargin = 200 } }
 

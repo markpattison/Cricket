@@ -274,29 +274,29 @@ module MatchState =
 //    for convenience when writing new functions...
 //        | NotStarted
 //        | Abandoned
-//        | A_Ongoing a1
-//        | A_Completed a1
-//        | A_MatchDrawn a1
-//        | AB_Ongoing (a1, b1)
-//        | AB_CompletedNoFollowOn (a1, b1)
-//        | AB_CompletedPossibleFollowOn (a1, b1)
-//        | AB_MatchDrawn (a1, b1)
-//        | ABA_Ongoing (a1, b1, a2)
-//        | ABA_VictoryB (a1, b1, a2)
-//        | ABA_Completed (a1, b1, a2)
-//        | ABA_MatchDrawn (a1, b1, a2)
-//        | ABB_Ongoing (a1, b1, b2)
-//        | ABB_VictoryA (a1, b1, b2)
-//        | ABB_Completed (a1, b1, b2)
-//        | ABB_MatchDrawn (a1, b1, b2)
-//        | ABAB_Ongoing (a1, b1, a2, b2)
-//        | ABAB_VictoryA (a1, b1, a2, b2)
-//        | ABAB_VictoryB (a1, b1, a2, b2)
-//        | ABAB_MatchDrawn (a1, b1, a2, b2)
-//        | ABAB_MatchTied (a1, b1, a2, b2)
-//        | ABBA_Ongoing (a1, b1, b2, a2)
-//        | ABBA_VictoryA (a1, b1, b2, a2)
-//        | ABBA_VictoryB (a1, b1, b2, a2)
-//        | ABBA_MatchDrawn (a1, b1, b2, a2)
-//        | ABBA_MatchTied (a1, b1, b2, a2)
+//        | A'Ongoing a1
+//        | A'Completed a1
+//        | A'MatchDrawn a1
+//        | AB'Ongoing (a1, b1)
+//        | AB'CompletedNoFollowOn (a1, b1)
+//        | AB'CompletedPossibleFollowOn (a1, b1)
+//        | AB'MatchDrawn (a1, b1)
+//        | ABA'Ongoing (a1, b1, a2)
+//        | ABA'VictoryB (a1, b1, a2)
+//        | ABA'Completed (a1, b1, a2)
+//        | ABA'MatchDrawn (a1, b1, a2)
+//        | ABB'Ongoing (a1, b1, b2)
+//        | ABB'VictoryA (a1, b1, b2)
+//        | ABB'Completed (a1, b1, b2)
+//        | ABB'MatchDrawn (a1, b1, b2)
+//        | ABAB'Ongoing (a1, b1, a2, b2)
+//        | ABAB'VictoryA (a1, b1, a2, b2)
+//        | ABAB'VictoryB (a1, b1, a2, b2)
+//        | ABAB'MatchDrawn (a1, b1, a2, b2)
+//        | ABAB'MatchTied (a1, b1, a2, b2)
+//        | ABBA'Ongoing (a1, b1, b2, a2)
+//        | ABBA'VictoryA (a1, b1, b2, a2)
+//        | ABBA'VictoryB (a1, b1, b2, a2)
+//        | ABBA'MatchDrawn (a1, b1, b2, a2)
+//        | ABBA'MatchTied (a1, b1, b2, a2)
 

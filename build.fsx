@@ -10,8 +10,8 @@ open Fake.Testing.NUnit3
 // Directories
 let buildDir  = "./build/"
 let testDir   = "./test/"
-let clientBuildDir  = "./client/out/"
-let bundleDir = "./client/public/"
+let clientBuildDir  = "./CricketClient/out/"
+let bundleDir = "./CricketClient/public/"
 
 // NPM helpers
 let npm command args workingDir =
@@ -74,13 +74,13 @@ Target "AcceptanceTests" (fun _ ->
 )
 
 Target "CopyFiles" (fun _ ->
-    cp "./client/index.html" bundleDir
-    cp_r "./client/css" bundleDir
+    cp "./CricketClient/index.html" bundleDir
+    cp_r "./CricketClient/css" bundleDir
 )
 
 Target "Fable" (fun _ ->
-   npm "install" [] "./client"
-   node "node_modules/fable-compiler" [ ] "./client"
+   npm "install" [] "./CricketClient"
+   node "node_modules/fable-compiler" [ ] "./CricketClient"
 )
 
 // Build order

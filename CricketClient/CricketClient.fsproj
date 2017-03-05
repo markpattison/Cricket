@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <!--
    !  Every project must have a different GUID.
@@ -6,28 +6,12 @@
    !  The GUID must be upper-case, and it must be wrapped in {}
    !-->
   <PropertyGroup>
-    <ProjectGuid>{4057826A-1B4A-4553-832E-9570A3394346}</ProjectGuid>
+    <ProjectGuid>{d89e2b7f-c690-4d78-bd41-171d859afd88}</ProjectGuid>
   </PropertyGroup>
-
-  <!--
-   !  These are Fable libraries that you are using in your project.
-   !  They must start with ./ or ../ so Fable knows that they're relative paths.
-   !-->
-  <ItemGroup>
-    <Reference Include="node_modules/fable-core/Fable.Core.dll" />
-    <Reference Include="node_modules/fable-arch/Fable.Arch.dll" />
-    <Reference Include="../build/CricketEngine.dll" />
-    <Reference Include="../build/MatchRunner.dll" />
-  </ItemGroup>
-
   <!--
    !  These are the F# files that are a part of your project.
    !  File order is important in F#. Files cannot depend on anything below them.
    !-->
-  <ItemGroup>
-    <Compile Include="Client.fs" />
-  </ItemGroup>
-
   <!-- DO NOT EDIT BELOW THIS POINT UNLESS YOU KNOW WHAT YOU'RE DOING -->
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -40,15 +24,6 @@
     <Tailcalls>false</Tailcalls>
     <WarningLevel>3</WarningLevel>
   </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="mscorlib" />
-    <Reference Include="FSharp.Core, Version=$(TargetFSharpCoreVersion), Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Numerics" />
-  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <Choose>
     <When Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\FSharp\Microsoft.FSharp.Targets')">
@@ -63,4 +38,32 @@
     </Otherwise>
   </Choose>
   <Import Project="$(FSharpTargetsPath)" Condition="Exists('$(FSharpTargetsPath)')" />
+  <ItemGroup>
+    <Compile Include="Client.fs" />
+    <None Include="fableconfig.json" />
+    <None Include="index.html" />
+    <None Include="package.json" />
+    <None Include="webpack.config.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="./node_modules/fable-core/Fable.Core.dll" />
+    <Reference Include="./node_modules/fable-arch/Fable.Arch.dll" />
+    <Reference Include="mscorlib" />
+    <Reference Include="FSharp.Core, Version=$(TargetFSharpCoreVersion), Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Numerics" />
+    <ProjectReference Include="..\CricketEngine\CricketEngine.fsproj">
+      <Name>CricketEngine</Name>
+      <Project>{8a04469c-f09f-4ab2-b6fe-977698dd897b}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\MatchRunner\MatchRunner.fsproj">
+      <Name>MatchRunner</Name>
+      <Project>{82e90568-1cac-4311-8d3c-9c9a24d4f82e}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+  </ItemGroup>
 </Project>
