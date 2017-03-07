@@ -24,7 +24,11 @@ module ``MatchRunner acceptance tests`` =
         let matchState =
             Match.newMatch sampleMatchRules "Team A" "Team B"
             |> Match.updateMatchState StartMatch
+            |> Match.updateMatchState (SendInBatsman batsman1 |> UpdateInnings)
+            |> Match.updateMatchState (SendInBatsman batsman2 |> UpdateInnings)
+            |> Match.updateMatchState (SendInBowler bowler1 |> UpdateInnings)
+            |> Match.updateMatchState (UpdateForBall Bowled |> UpdateInnings)
 
-        let options = Cricket.MatchRunner.MatchRunner.updateForUI matchState
+        //let options = Cricket.MatchRunner.MatchRunner.getOptionsUI matchState
 
         ()

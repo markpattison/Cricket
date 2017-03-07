@@ -20,25 +20,24 @@ type Model =
 type CricketAction =
     | StartMatch
     | StartNextInnings
-    | ContinueMatch
+    | ContinueInnings
     | DoNothing // TODO - remove this
 
 let parseOption option =
     match option with
     | StartMatchUI -> "Start match", fun x -> StartMatch
     | StartNextInningsUI -> "Start next innings", fun x -> StartNextInnings
-    | ContinueInningsUI -> "Continue innings", fun x -> ContinueMatch
+    | ContinueInningsUI -> "Continue innings", fun x -> ContinueInnings
     | MatchOverUI -> "Match over", fun x -> DoNothing
-
 
 let update model msg =
     let updated =
         match msg with
         | StartMatch -> Match.updateMatchState MatchUpdate.StartMatch model
         | StartNextInnings -> Match.updateMatchState MatchUpdate.StartNextInnings model
-        | ContinueMatch -> model
+        | ContinueInnings -> MatchRunner.continueInnings model
         | DoNothing -> model
-    updated, []
+    updated |> MatchRunner.runCaptains, []
 
 let showSummary match' =
     match match'.State with
@@ -63,7 +62,7 @@ let showOption option =
         [ label [] [ text optionText ] ]
 
 let showOptions match' =
-    let options = MatchRunner.updateForUI match'
+    let options = MatchRunner.getOptionsUI match'
     ul [ ]
        [ (showOption options) ]
 

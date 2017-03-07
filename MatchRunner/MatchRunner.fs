@@ -4,7 +4,9 @@ open Cricket.CricketEngine
 
 module MatchRunner =
 
-    let updateOptions match' =
+    let random = new System.Random()
+
+    let getOptions match' =
         let state = match'.State
         let summaryState = state |> MatchState.summaryState
 
@@ -23,24 +25,44 @@ module MatchRunner =
             | MidOver -> ContinueInnings [ (battingTeam, CanDeclare) ]
             | Completed -> failwith "invalid innings state"
 
-    let rec updateWithExclusions exclude match' =
-        let options = updateOptions match'
+    let getOptionsUI match' =
+        let options = getOptions match'
         match options with
-        | ModalMessageToCaptain msg ->
-            let action = SimpleCaptain.replyModal (msg, match')
-            Match.updateMatchState action match' |> updateWithExclusions []
-        | ContinueInnings msgList ->
-            let afterExclusions = List.except exclude msgList
-            match afterExclusions with
-            | [] -> ContinueInningsUI
-            | msg :: _ ->
-                let response = SimpleCaptain.replyOptional (msg, match')
-                match response with
-                | None -> match' |> updateWithExclusions (msg::exclude)
-                | Some action -> Match.updateMatchState action match' |> updateWithExclusions (msg::exclude)
+        | ModalMessageToCaptain _ -> failwith "shouldn't happen"
+        | ContinueInnings _ -> ContinueInningsUI
         | UpdateOptions.StartMatch -> StartMatchUI
         | UpdateOptions.StartNextInnings -> StartNextInningsUI
         | UpdateOptions.MatchOver -> MatchOverUI
 
-    let updateForUI match' =
-        updateWithExclusions [] match'
+    let rec runCaptainsWithExclusions exclude match' =
+        let options = getOptions match'
+        match options with
+        | ModalMessageToCaptain msg ->
+            let action = SimpleCaptain.replyModal (msg, match')
+            Match.updateMatchState action match' |> runCaptainsWithExclusions []
+        | ContinueInnings msgList ->
+            let afterExclusions = List.except exclude msgList
+            match afterExclusions with
+            | [] -> match'
+            | msg :: _ ->
+                let response = SimpleCaptain.replyOptional (msg, match')
+                match response with
+                | None -> match' |> runCaptainsWithExclusions (msg::exclude)
+                | Some action -> Match.updateMatchState action match' |> runCaptainsWithExclusions (msg::exclude)
+        | UpdateOptions.StartMatch -> match'
+        | UpdateOptions.StartNextInnings -> match'
+        | UpdateOptions.MatchOver -> match'
+
+    let runCaptains match' =
+        runCaptainsWithExclusions [] match'
+
+    let continueInnings match' =
+        let ball =
+            match random.Next(0, 100) with
+            | x when x <= 20 -> Bowled
+            | x when x >= 99 -> Six
+            | x when x >= 97 -> Four
+            | x when x >= 95 -> ScoreRuns 2
+            | x when x >= 3 -> ScoreRuns 1
+            | _ -> DotBall
+        Match.updateCurrentInnings (UpdateForBall ball) match'
