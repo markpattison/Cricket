@@ -7,34 +7,40 @@ module MatchRunner =
     let updateOptions match' =
         let state = match'.State
         let summaryState = state |> MatchState.summaryState
-        let battingTeam = state |> MatchState.currentBattingTeam
-        let bowlingTeam = state |> MatchState.currentBowlingTeam
 
         match summaryState with
         | NotYetStarted -> UpdateOptions.StartMatch
         | BetweenInnings -> UpdateOptions.StartNextInnings
-        | AwaitingFollowOnDecision -> ModalMessageToCaptain (TeamA, match', FollowOnDecision)
+        | AwaitingFollowOnDecision -> ModalMessageToCaptain (TeamA, FollowOnDecision)
         | MatchCompleted -> UpdateOptions.MatchOver
         | InningsInProgress summaryInningsState ->
+            let battingTeam = state |> MatchState.currentBattingTeam
+            let bowlingTeam = state |> MatchState.currentBowlingTeam
             match summaryInningsState with
-            | BatsmanRequired n -> ModalMessageToCaptain (battingTeam, match', NewBatsmanRequired n)
-            | BowlerRequiredTo end' -> ModalMessageToCaptain (bowlingTeam, match', NewBowlerRequiredTo end')
-            | EndOver -> ContinueInnings [ (battingTeam, match', CanDeclare); (bowlingTeam, match', EndOfOver) ]
-            | MidOver -> ContinueInnings [ (battingTeam, match', CanDeclare) ]
+            | BatsmanRequired n -> ModalMessageToCaptain (battingTeam,NewBatsmanRequired n)
+            | BowlerRequiredTo end' -> ModalMessageToCaptain (bowlingTeam, NewBowlerRequiredTo end')
+            | EndOver -> ContinueInnings [ (battingTeam, CanDeclare); (bowlingTeam, EndOfOver) ]
+            | MidOver -> ContinueInnings [ (battingTeam, CanDeclare) ]
             | Completed -> failwith "invalid innings state"
 
-    let rec updateForUI match' =
+    let rec updateWithExclusions exclude match' =
         let options = updateOptions match'
         match options with
         | ModalMessageToCaptain msg ->
-            let action = SimpleCaptain.replyModal msg
-            Match.updateMatchState action match' |> updateForUI
+            let action = SimpleCaptain.replyModal (msg, match')
+            Match.updateMatchState action match' |> updateWithExclusions []
         | ContinueInnings msgList ->
-            let actions = msgList |> List.choose SimpleCaptain.replyOptional
-            match actions with
+            let afterExclusions = List.except exclude msgList
+            match afterExclusions with
             | [] -> ContinueInningsUI
-            | [ action ] -> Match.updateMatchState action match' |> updateForUI
-            | action :: _ -> Match.updateMatchState action match' |> updateForUI
+            | msg :: _ ->
+                let response = SimpleCaptain.replyOptional (msg, match')
+                match response with
+                | None -> match' |> updateWithExclusions (msg::exclude)
+                | Some action -> Match.updateMatchState action match' |> updateWithExclusions (msg::exclude)
         | UpdateOptions.StartMatch -> StartMatchUI
         | UpdateOptions.StartNextInnings -> StartNextInningsUI
         | UpdateOptions.MatchOver -> MatchOverUI
+
+    let updateForUI match' =
+        updateWithExclusions [] match'

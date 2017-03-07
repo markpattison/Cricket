@@ -10,36 +10,67 @@ open Fable.Arch.App
 open Fable.Arch.Html
 
 open Cricket.CricketEngine
-
-// Cricket model
+open Cricket.MatchRunner
 
 type Model =
     {
         Match: Match
     }
 
-// Todo update
+type CricketAction =
+    | StartMatch
+    | StartNextInnings
+    | ContinueMatch
+    | DoNothing // TODO - remove this
+
+let parseOption option =
+    match option with
+    | StartMatchUI -> "Start match", fun x -> StartMatch
+    | StartNextInningsUI -> "Start next innings", fun x -> StartNextInnings
+    | ContinueInningsUI -> "Continue innings", fun x -> ContinueMatch
+    | MatchOverUI -> "Match over", fun x -> DoNothing
+
+
 let update model msg =
-    model, []
+    let updated =
+        match msg with
+        | StartMatch -> Match.updateMatchState MatchUpdate.StartMatch model
+        | StartNextInnings -> Match.updateMatchState MatchUpdate.StartNextInnings model
+        | ContinueMatch -> model
+        | DoNothing -> model
+    updated, []
 
-// Todo view
-
-let view model =
-    match model.State with
+let showSummary match' =
+    match match'.State with
     | NotStarted ->
-        section
-            [attribute "class" "todoapp"]
+        div
+            []
             [ h1 [] [text "Match not started"] ]
     | Abandoned ->
-        section
-            [attribute "class" "todoapp"]
+        div
+            []
             [ h1 [] [text "Match abandoned"] ]
     | _ ->
-        let summary = model |> Match.summaryStatus
-        let innings = model |> Match.inningsList
-        section
-            [attribute "class" "todoapp"]
+        let summary = match' |> Match.summaryStatus
+        let innings = match' |> Match.inningsList
+        div
+            []
             [ h1 [] [text summary] ]
+
+let showOption option =
+    let optionText, action = parseOption option
+    li [ onMouseClick action ]
+        [ label [] [ text optionText ] ]
+
+let showOptions match' =
+    let options = MatchRunner.updateForUI match'
+    ul [ ]
+       [ (showOption options) ]
+
+let view model =
+    div
+        []
+        [ showSummary model; showOptions model ]
 
 let initModel = { TeamA = "England"; TeamB = "Australia"; State = NotStarted; Rules = { FollowOnMargin = 200 } }
 
