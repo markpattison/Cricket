@@ -4,7 +4,7 @@
   "projFile": [
       "../CricketEngine/CricketEngine.fsproj",
       "../MatchRunner/MatchRunner.fsproj",
-      "CricketClient.fsproj"
+      "FableCricket.fsproj"
   ],
   "scripts": {
     "postbuild": "node node_modules/webpack/bin/webpack"

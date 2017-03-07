@@ -10,8 +10,8 @@ open Fake.Testing.NUnit3
 // Directories
 let buildDir  = "./build/"
 let testDir   = "./test/"
-let clientBuildDir  = "./CricketClient/out/"
-let bundleDir = "./CricketClient/public/"
+let clientBuildDir  = "./FableCricket/out/"
+let bundleDir = "./FableCricket/public/"
 
 // NPM helpers
 let npm command args workingDir =
@@ -40,7 +40,7 @@ let appReferences =
         ++ "**/*.fsproj"
         -- "**/*Tests.csproj"
         -- "**/*Tests.fsproj"
-        -- "**/*Client.fsproj"
+        -- "**/*Fable*.fsproj"
 
 let testReferences =
     !! "**/*Tests.csproj"
@@ -74,13 +74,13 @@ Target "AcceptanceTests" (fun _ ->
 )
 
 Target "CopyFiles" (fun _ ->
-    cp "./CricketClient/index.html" bundleDir
-    cp_r "./CricketClient/css" bundleDir
+    cp "./FableCricket/index.html" bundleDir
+    cp_r "./FableCricket/css" bundleDir
 )
 
 Target "Fable" (fun _ ->
-   npm "install" [] "./CricketClient"
-   node "node_modules/fable-compiler" [ ] "./CricketClient"
+   npm "install" [] "./FableCricket"
+   node "node_modules/fable-compiler" [ ] "./FableCricket"
 )
 
 // Build order

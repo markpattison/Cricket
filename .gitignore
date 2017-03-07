@@ -175,6 +175,6 @@ node_modules/
 client/node_modules/
 
 # out
-CricketClient/out/*
-CricketClient/public/*
+FableCricket/out/*
+FableCricket/public/*
 .vs/*

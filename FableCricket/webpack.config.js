@@ -3,7 +3,7 @@ var webpack = require("webpack");
 
 var cfg = {
   devtool: "source-map",
-  entry: "./out/CricketClient/Client.js",
+  entry: "./out/FableCricket/Client.js",
   output: {
     path: path.join(__dirname, "./public"),
     filename: "bundle.js"
