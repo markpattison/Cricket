@@ -74,6 +74,9 @@ module Innings =
             BowlerToEnd2 = None;
         }
 
+    let summary (state: Innings) =
+        sprintf "%i/%i%s" state.GetRuns state.GetWickets (if state.IsDeclared then " declared" else "")
+
     let forPlayer player state =
         List.find (fun (p, _) -> p = player) state.Batsmen |> snd
 

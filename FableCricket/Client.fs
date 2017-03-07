@@ -56,6 +56,13 @@ let showSummary match' =
             []
             [ h1 [] [text summary] ]
 
+let showInnings (team, innings) =
+    li [] [ text (team + " " + Innings.summary innings) ]
+
+let showAllInnings match' =
+    let allInnings = match' |> Match.inningsList
+    ul [] (allInnings |> List.map showInnings)
+
 let showOption option =
     let optionText, action = parseOption option
     li [ onMouseClick action ]
@@ -69,7 +76,7 @@ let showOptions match' =
 let view model =
     div
         []
-        [ showSummary model; showOptions model ]
+        [ showSummary model; showAllInnings model; showOptions model ]
 
 let initModel = { TeamA = "England"; TeamB = "Australia"; State = NotStarted; Rules = { FollowOnMargin = 200 } }
 
