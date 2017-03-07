@@ -7,6 +7,7 @@
    !-->
   <PropertyGroup>
     <ProjectGuid>{d89e2b7f-c690-4d78-bd41-171d859afd88}</ProjectGuid>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <!--
    !  These are the F# files that are a part of your project.
@@ -16,7 +17,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <SchemaVersion>2.0</SchemaVersion>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <TargetFSharpCoreVersion>4.4.0.0</TargetFSharpCoreVersion>
     <DebugSymbols>false</DebugSymbols>
     <DebugType>None</DebugType>

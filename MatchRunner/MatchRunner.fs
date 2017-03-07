@@ -2,19 +2,6 @@
 
 open Cricket.CricketEngine
 
-type MessageToCaptain =
-    | FollowOnDecision
-    | NewBatsmanRequired of int
-    | NewBowlerRequiredTo of End
-    | EndOfOver
-    | CanDeclare
-
-type UpdateOptions =
-    | MessageCaptain of (Team * Match * MessageToCaptain)
-    | StartMatch
-    | StartNextInnings
-    | ContinueInnings
-
 module MatchRunner =
 
     let updateOptions match' =
@@ -24,31 +11,30 @@ module MatchRunner =
         let bowlingTeam = state |> MatchState.currentBowlingTeam
 
         match summaryState with
-        | NotYetStarted -> [ StartMatch ]
-        | BetweenInnings -> [ StartNextInnings ]
-        | AwaitingFollowOnDecision -> [ MessageCaptain (TeamA, match', FollowOnDecision) ]
-        | MatchCompleted -> []
+        | NotYetStarted -> UpdateOptions.StartMatch
+        | BetweenInnings -> UpdateOptions.StartNextInnings
+        | AwaitingFollowOnDecision -> ModalMessageToCaptain (TeamA, match', FollowOnDecision)
+        | MatchCompleted -> UpdateOptions.MatchOver
         | InningsInProgress summaryInningsState ->
             match summaryInningsState with
-            | BatsmanRequired n -> [ MessageCaptain (battingTeam, match', NewBatsmanRequired n) ]
-            | BowlerRequiredTo end' -> [ MessageCaptain (bowlingTeam, match', NewBowlerRequiredTo end') ]
-            | EndOver -> [ MessageCaptain (bowlingTeam, match', EndOfOver); MessageCaptain (battingTeam, match', CanDeclare) ]
-            | MidOver -> [ MessageCaptain (battingTeam, match', CanDeclare) ]
+            | BatsmanRequired n -> ModalMessageToCaptain (battingTeam, match', NewBatsmanRequired n)
+            | BowlerRequiredTo end' -> ModalMessageToCaptain (bowlingTeam, match', NewBowlerRequiredTo end')
+            | EndOver -> ContinueInnings [ (battingTeam, match', CanDeclare); (bowlingTeam, match', EndOfOver) ]
+            | MidOver -> ContinueInnings [ (battingTeam, match', CanDeclare) ]
             | Completed -> failwith "invalid innings state"
 
-    let simpleCaptain (team, match', msg) =
-        let innings = match'.State |> MatchState.currentInnings
-        match msg with
-        | FollowOnDecision -> EnforceFollowOn |> Some
-        | NewBatsmanRequired n -> SendInBatsman { Name = sprintf "%s Batsman %i" team n } |> UpdateInnings |> Some
-        | NewBowlerRequiredTo _ | EndOfOver ->
-            let overs = innings.OversCompleted
-            let bowler =
-                match (overs / 8) % 2, overs % 2 with
-                | 0, 0 -> { Name = sprintf "%s Bowler %i" team 10 }
-                | 0, 1 -> { Name = sprintf "%s Bowler %i" team 11 }
-                | 1, 0 -> { Name = sprintf "%s Bowler %i" team 8 }
-                | 1, 1 -> { Name = sprintf "%s Bowler %i" team 9 }
-                | _ -> { Name = "???" }
-            SendInBowler bowler |> UpdateInnings |> Some
-        | CanDeclare -> None
+    let rec updateForUI match' =
+        let options = updateOptions match'
+        match options with
+        | ModalMessageToCaptain msg ->
+            let action = SimpleCaptain.replyModal msg
+            Match.updateMatchState action match' |> updateForUI
+        | ContinueInnings msgList ->
+            let actions = msgList |> List.choose SimpleCaptain.replyOptional
+            match actions with
+            | [] -> ContinueInningsUI
+            | [ action ] -> Match.updateMatchState action match' |> updateForUI
+            | action :: _ -> Match.updateMatchState action match' |> updateForUI
+        | UpdateOptions.StartMatch -> StartMatchUI
+        | UpdateOptions.StartNextInnings -> StartNextInningsUI
+        | UpdateOptions.MatchOver -> MatchOverUI

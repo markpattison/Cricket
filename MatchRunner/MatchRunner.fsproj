@@ -52,6 +52,8 @@
   <Import Project="$(FSharpTargetsPath)" />
   <ItemGroup>
     <None Include="paket.references" />
+    <Compile Include="UpdateOptions.fs" />
+    <Compile Include="SimpleCaptain.fs" />
     <Compile Include="MatchRunner.fs" />
   </ItemGroup>
   <ItemGroup>
