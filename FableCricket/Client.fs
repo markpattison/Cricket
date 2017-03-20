@@ -21,14 +21,6 @@ type CricketAction =
     | StartMatch
     | StartNextInnings
     | ContinueInnings
-    | DoNothing // TODO - remove this
-
-let parseOption option =
-    match option with
-    | StartMatchUI -> "Start match", fun x -> StartMatch
-    | StartNextInningsUI -> "Start next innings", fun x -> StartNextInnings
-    | ContinueInningsUI -> "Continue innings", fun x -> ContinueInnings
-    | MatchOverUI -> "Match over", fun x -> DoNothing
 
 let update model msg =
     let updated =
@@ -36,8 +28,9 @@ let update model msg =
         | StartMatch -> Match.updateMatchState MatchUpdate.StartMatch model
         | StartNextInnings -> Match.updateMatchState MatchUpdate.StartNextInnings model
         | ContinueInnings -> MatchRunner.continueInnings model
-        | DoNothing -> model
     updated |> MatchRunner.runCaptains, []
+
+let row xs = tr [] [ for x in xs -> td [] [x]]
 
 let showSummary match' =
     match match'.State with
@@ -56,12 +49,29 @@ let showSummary match' =
             []
             [ h1 [] [text summary] ]
 
+let showInningsShort (team, innings) =
+    label [] [ text (team + " " + Innings.summary innings) ]
+
+let howOutString (howOut: HowOut option) =
+    match howOut with
+    | None -> "not out"
+    | Some out -> out.ToString()
+
+let oversString (innings: Innings) =
+    match innings.BallsSoFarThisOver with
+    | 0 -> sprintf @"(%i overs)" innings.OversCompleted
+    | n -> sprintf @"(%i.%i overs)" innings.OversCompleted n
+
 let showInnings (team, innings) =
-    li [] [ text (team + " " + Innings.summary innings) ]
+    let showIndividualInnings (p, ii) = row [ text p.Name; text (howOutString ii.HowOut); text (ii.Score.ToString()) ]
+    let totalRow = row [ text "Total"; text (oversString innings); text (innings.GetRuns.ToString()) ]
+    let rows = List.append (innings.Batsmen |> List.map showIndividualInnings) [ totalRow ]
+
+    div [] [ table [] rows; hr [] ]
 
 let showAllInnings match' =
     let allInnings = match' |> Match.inningsList
-    ul [] (allInnings |> List.map showInnings)
+    div [] (allInnings |> List.map showInnings)
 
 let showOption option =
     match option with
