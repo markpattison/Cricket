@@ -63,18 +63,18 @@ module BallOutcome =
 
     let howStrikerOut bowler ball =
         match ball with
-        | Bowled -> Some (HowOut.Bowled bowler)
-        | LBW -> Some (HowOut.LBW bowler)
-        | HitWicket -> Some (HowOut.HitWicket bowler)
-        | Caught (caughtBy, _) -> Some (HowOut.Caught (bowler, caughtBy))
-        | Stumped (stumpedBy) -> Some (HowOut.Stumped (bowler, stumpedBy))
-        | RunOutStriker _ -> Some (HowOut.RunOut)
+        | Bowled -> Some (OutBowled bowler)
+        | LBW -> Some (OutLBW bowler)
+        | HitWicket -> Some (OutHitWicket bowler)
+        | Caught (caughtBy, _) -> Some (OutCaught (bowler, caughtBy))
+        | Stumped (stumpedBy) -> Some (OutStumped (bowler, stumpedBy))
+        | RunOutStriker _ -> Some (RunOut)
         | RunOutNonStriker _ -> None
         | DotBall | ScoreRuns _ | Four | Six -> None
 
     let howNonStrikerOut ball =
         match ball with
-        | RunOutNonStriker _ -> Some (HowOut.RunOut)
+        | RunOutNonStriker _ -> Some (RunOut)
         | _ -> None
 
     let countsAsBallFaced ball =
