@@ -12,6 +12,8 @@ open Fable.Arch.Html
 open Cricket.CricketEngine
 open Cricket.MatchRunner
 
+JsInterop.importAll "core-js"
+
 type Model =
     {
         Match: Match
