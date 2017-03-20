@@ -17,18 +17,23 @@ type Model =
         Match: Match
     }
 
+let initModel = { Match = { TeamA = "England"; TeamB = "Australia"; State = NotStarted; Rules = { FollowOnMargin = 200 } } }
+
 type CricketAction =
     | StartMatch
     | StartNextInnings
     | ContinueInnings
+    | ResetMatch
 
 let update model msg =
-    let updated =
-        match msg with
-        | StartMatch -> Match.updateMatchState MatchUpdate.StartMatch model
-        | StartNextInnings -> Match.updateMatchState MatchUpdate.StartNextInnings model
-        | ContinueInnings -> MatchRunner.continueInnings model
-    updated |> MatchRunner.runCaptains, []
+    let updateMatch f =
+        let updated = model.Match |> f |> MatchRunner.runCaptains
+        { model with Match = updated }, []
+    match msg with
+    | StartMatch -> updateMatch (Match.updateMatchState MatchUpdate.StartMatch)
+    | StartNextInnings -> updateMatch (Match.updateMatchState MatchUpdate.StartNextInnings)
+    | ContinueInnings -> updateMatch (MatchRunner.continueInnings)
+    | ResetMatch -> initModel, []
 
 let row xs = tr [] [ for x in xs -> td [] [x]]
 
@@ -84,12 +89,13 @@ let showOptions match' =
     let option = MatchRunner.getOptionsUI match'
     showOption option
 
+let showReset = button [ onMouseClick (fun x -> ResetMatch) ] [ text "Reset match" ]
+
 let view model =
+    let match' = model.Match
     div
         []
-        [ showSummary model; showAllInnings model; showOptions model ]
-
-let initModel = { TeamA = "England"; TeamB = "Australia"; State = NotStarted; Rules = { FollowOnMargin = 200 } }
+        [ showSummary match'; showAllInnings match'; showOptions match'; br []; showReset ]
 
 createApp initModel view update Virtualdom.createRender
 |> withStartNodeSelector "#app"
