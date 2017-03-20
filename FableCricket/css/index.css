@@ -2,6 +2,8 @@ html,
 body {
 	margin: 0;
 	padding: 0;
+    max-width: none;
+    min-width: none;
 }
 
 button {
@@ -45,6 +47,8 @@ body {
 	background: #fff;
 	margin: 130px 0 40px 0;
 	position: relative;
+    height: 40px;
+    max-width: 800px;
 	box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2),
 	            0 25px 50px 0 rgba(0, 0, 0, 0.1);
 }
@@ -243,7 +247,7 @@ label[for='toggle-all'] {
 .footer {
 	color: #777;
 	padding: 10px 15px;
-	height: 20px;
+    height: 40px;
 	text-align: center;
 	border-top: 1px solid #e6e6e6;
 }

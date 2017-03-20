@@ -52,9 +52,7 @@
   <Import Project="$(FSharpTargetsPath)" />
   <ItemGroup>
     <Compile Include="Client.fs" />
-    <Content Include="css\base.css" />
     <Content Include="css\index.css" />
-    <Content Include="css\overrides.css" />
     <None Include="fableconfig.json" />
     <None Include="index.html" />
     <None Include="package.json" />

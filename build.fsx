@@ -87,8 +87,8 @@ Target "Fable" (fun _ ->
 "Clean"
     ==> "BuildApp"
     ==> "BuildTests"
-    ==> "UnitTests"
-    ==> "AcceptanceTests"
+    //==> "UnitTests"
+    //==> "AcceptanceTests"
     ==> "CopyFiles"
     ==> "Fable"
 

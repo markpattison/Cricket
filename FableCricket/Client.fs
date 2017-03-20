@@ -64,14 +64,15 @@ let showAllInnings match' =
     ul [] (allInnings |> List.map showInnings)
 
 let showOption option =
-    let optionText, action = parseOption option
-    li [ onMouseClick action ]
-        [ label [] [ text optionText ] ]
+    match option with
+    | StartMatchUI -> button [ onMouseClick (fun x -> StartMatch) ] [ text "Start match" ]
+    | StartNextInningsUI -> button [ onMouseClick (fun x -> StartNextInnings) ] [ text "Start next innings" ]
+    | ContinueInningsUI -> button [ onMouseClick (fun x -> ContinueInnings) ] [ text "Continue innings" ]
+    | MatchOverUI -> label [] [ text "Match over" ]
 
 let showOptions match' =
-    let options = MatchRunner.getOptionsUI match'
-    ul [ ]
-       [ (showOption options) ]
+    let option = MatchRunner.getOptionsUI match'
+    showOption option
 
 let view model =
     div
