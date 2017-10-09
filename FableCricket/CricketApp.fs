@@ -32,9 +32,7 @@ let menu currentPage =
         [ str "General" ]
       ul
         [ ClassName "menu-list" ]
-        [ menuItem "Home" Home currentPage
-          menuItem "Counter sample" Counter currentPage
-          menuItem "Cricket match" Cricket currentPage
+        [ menuItem "Cricket match" Cricket currentPage
           menuItem "About" Page.About currentPage ] ]
 
 let root model dispatch =
@@ -42,9 +40,7 @@ let root model dispatch =
   let pageHtml =
     function
     | Page.About -> Info.View.root
-    | Counter -> Counter.View.root model.counter (CounterMsg >> dispatch)
     | Cricket -> Cricket.View.root model.cricket (CricketMsg >> dispatch)
-    | Home -> Home.View.root model.home (HomeMsg >> dispatch)
 
   div
     []
