@@ -5,7 +5,7 @@ open System
 
 open Fake
 open Fake.FileUtils
-open Fake.YarnHelper
+open Fake.NpmHelper
 
 // Filesets
 let appReferences = 
@@ -68,19 +68,19 @@ Target "RunAcceptanceTests" (fun _ ->
     |> Seq.iter (fun proj -> DotNetCli.Test (fun p -> { p with Project = proj; ToolPath = dotnetExePath }))
 )
 
-Target "YarnInstall" (fun _ ->
-    Yarn (fun p ->
+Target "NpmInstall" (fun _ ->
+    Npm (fun p ->
         { p with Command = Install Standard; WorkingDirectory = fableDirectory })
 )
 
 Target "BuildFable" (fun _ ->
     fableReference
-    |> (fun proj -> DotNetCli.RunCommand (fun p -> { p with WorkingDir = fableDirectory; ToolPath = dotnetExePath }) ("fable yarn-build " + proj))
+    |> (fun proj -> DotNetCli.RunCommand (fun p -> { p with WorkingDir = fableDirectory; ToolPath = dotnetExePath }) ("fable npm-build " + proj))
 )
 
 Target "RunFable" (fun _ ->
     fableReference
-    |> (fun proj -> DotNetCli.RunCommand (fun p -> { p with WorkingDir = fableDirectory; ToolPath = dotnetExePath }) ("fable yarn-start " + proj))
+    |> (fun proj -> DotNetCli.RunCommand (fun p -> { p with WorkingDir = fableDirectory; ToolPath = dotnetExePath }) ("fable npm-start " + proj))
 )
 
 // Build order
@@ -91,10 +91,10 @@ Target "RunFable" (fun _ ->
     ==> "BuildTests"
     ==> "RunUnitTests"
     ==> "RunAcceptanceTests"
-    ==> "YarnInstall"
+    ==> "NpmInstall"
 
-"YarnInstall" ==> "BuildFable"
-"YarnInstall" ==> "RunFable"
+"NpmInstall" ==> "BuildFable"
+"NpmInstall" ==> "RunFable"
 
 // start build
 RunTargetOrDefault "BuildFable"
