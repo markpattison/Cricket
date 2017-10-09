@@ -391,3 +391,7 @@ paket-files/
 # JetBrains Rider
 .idea/
 *.sln.iml
+
+# Fable output
+**/bundle.js*
+
