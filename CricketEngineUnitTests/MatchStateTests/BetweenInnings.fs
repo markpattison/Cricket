@@ -54,7 +54,7 @@ type ``MatchState between innings tests`` ()=
 
     [<Test>]
     member _x.``starting the next innings after three innings leaves the state as ABAB_Ongoing`` ()=
-        stateCompletedABA |> updater StartNextInnings |> should equal (ABAB'Ongoing (a1, b1, a2, Innings.create))
+        stateCompletedABA |> updater StartNextInnings |> should equal (ABAB'Ongoing(a1, b1, a2, Innings.create))
 
     [<Test>]
     member _x.``starting the next innings after three innings leaves the state as ABBA_Ongoing`` ()=

@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CricketEngine\CricketEngine.fsproj">
+      <Name>CricketEngine.fsproj</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="TestHelpers.fs" />
+    <Compile Include="SummaryInningsStateTests.fs" />
+    <Compile Include="SummaryMatchStateTests.fs" />
+    <Compile Include="SummaryStatusTests.fs" />
+    <Compile Include="IndividualInningsTests.fs" />
+    <Compile Include="BowlingAnalysisTests.fs" />
+    <Compile Include="InningsTests.fs" />
+    <Compile Include="MatchStateTests/NotStarted.fs" />
+    <Compile Include="MatchStateTests/Finished.fs" />
+    <Compile Include="MatchStateTests/BetweenInnings.fs" />
+    <Compile Include="MatchStateTests/Ongoing.fs" />
+    <Compile Include="Program.fs" />
+  </ItemGroup>
+  <Import Project="..\.paket\Paket.Restore.targets" />
+</Project>

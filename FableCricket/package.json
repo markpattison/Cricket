@@ -1,21 +1,35 @@
 {
-  "name": "fable-vdom-sudoku",
+  "name": "FableCricket",
   "version": "1.0.0",
-  "private": true,
+  "description": "Simple Fable App",
+  "scripts": {
+    "build": "webpack -p",
+    "start": "webpack-dev-server",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
   "dependencies": {
-    "core-js": "^2.4.1",
-    "fable-core": "^0.7.28",
-    "todomvc-app-css": "^2.0.6",
-    "todomvc-common": "^1.0.3",
-    "virtual-dom": "^2.1.1"
+    "babel-runtime": "^6.26.0",
+    "react": "^15.6.2",
+    "react-dom": "^15.6.2",
+    "remotedev": "^0.2.7"
   },
   "devDependencies": {
-    "fable-compiler": "^0.7.48",
-    "fable-arch": "^0.10.1",
-    "source-map-loader": "^0.1.6",
-    "webpack": "^2.2.1"
-  },
-  "engines": {
-    "fable": "^0.7.40"
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-es2015": "^6.24.1",
+    "bulma": "^0.5.2",
+    "css-loader": "^0.28.7",
+    "fable-loader": "^1.1.2",
+    "fable-utils": "^1.0.6",
+    "loglevel": "^1.5.0",
+    "node-sass": "^4.5.3",
+    "sass-loader": "^6.0.6",
+    "style-loader": "^0.18.2",
+    "webpack": "^3.6.0",
+    "webpack-dev-server": "^2.8.2"
   }
 }

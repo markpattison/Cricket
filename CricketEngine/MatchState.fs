@@ -159,7 +159,7 @@ module MatchState =
         | AB'Ongoing (_, b1) -> Innings.summaryState b1 |> InningsInProgress
         | ABA'Ongoing (_, _, a2) -> Innings.summaryState a2 |> InningsInProgress
         | ABB'Ongoing (_, _, b2) -> Innings.summaryState b2 |> InningsInProgress
-        | ABAB'Ongoing (_, _, _, b2) -> Innings.summaryState b2 |> InningsInProgress
+        | ABAB'Ongoing(_, _, _, b2) -> Innings.summaryState b2 |> InningsInProgress
         | ABBA'Ongoing (_, _, _, a2) -> Innings.summaryState a2 |> InningsInProgress
         | A'Completed _
             | AB'CompletedNoFollowOn _
@@ -178,7 +178,7 @@ module MatchState =
         | A'Ongoing a1 -> a1
         | AB'Ongoing (_, b1) -> b1
         | ABA'Ongoing (_, _, a2) | ABBA'Ongoing (_, _, _, a2) -> a2
-        | ABB'Ongoing (_, _, b2) | ABAB'Ongoing (_, _, _, b2) -> b2
+        | ABB'Ongoing (_, _, b2) | ABAB'Ongoing(_, _, _, b2) -> b2
 
     let currentBattingTeam state =
         match state with

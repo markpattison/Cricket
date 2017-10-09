@@ -9,9 +9,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="UpdateOptions.fs" />
-    <Compile Include="SimpleCaptain.fs" />
-    <Compile Include="MatchRunner.fs" />
+    <Compile Include="AcceptanceTests.fs" />
+    <Compile Include="MatchRunnerTests.fs" />
+    <Compile Include="Program.fs" />
   </ItemGroup>
   <Import Project="..\.paket\Paket.Restore.targets" />
 </Project>

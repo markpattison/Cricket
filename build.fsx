@@ -5,34 +5,9 @@ open System
 
 open Fake
 open Fake.FileUtils
-open Fake.Testing.NUnit3
+open Fake.YarnHelper
 
 // Directories
-let buildDir  = "./build/"
-let testDir   = "./test/"
-let clientBuildDir  = "./FableCricket/out/"
-let bundleDir = "./FableCricket/public/"
-
-// NPM helpers
-let npm command args workingDir =
-  let args = sprintf "%s %s" command (String.concat " " args)
-  let cmd, args = if EnvironmentHelper.isUnix then "npm", args else "cmd", ("/C npm " + args)
-  let ok =
-    execProcess (fun info ->
-      info.FileName <- cmd
-      info.WorkingDirectory <- workingDir
-      info.Arguments <- args) TimeSpan.MaxValue
-  if not ok then failwith (sprintf "'%s %s' task failed" cmd args)
-
-let node command args workingDir =
-  let args = sprintf "%s %s" command (String.concat " " args)
-  let cmd, args = if EnvironmentHelper.isUnix then "node", args else "cmd", ("/C node " + args)
-  let ok =
-    execProcess (fun info ->
-      info.FileName <- cmd
-      info.WorkingDirectory <- workingDir
-      info.Arguments <- args) TimeSpan.MaxValue
-  if not ok then failwith (sprintf "'%s %s' task failed" cmd args)
 
 // Filesets
 let appReferences = 
@@ -42,55 +17,78 @@ let appReferences =
         -- "**/*Tests.fsproj"
         -- "**/*Fable*.fsproj"
 
-let testReferences =
-    !! "**/*Tests.csproj"
-        ++ "**/*Tests.fsproj"
+let fableDirectory = "FableCricket"
+let fableReferences =   !! (fableDirectory + "/*.fsproj")
+let fableReference = fableReferences |> Seq.exactlyOne
+
+let unitTestReferences =
+    !! "**/*UnitTests.csproj"
+        ++ "**/*UnitTests.fsproj"
+
+let acceptanceTestReferences =
+    !! "**/*AcceptanceTests.csproj"
+        ++ "**/*AcceptanceTests.fsproj"
 
 // Targets
-Target "Clean" (fun _ -> 
-    CleanDirs [buildDir; testDir; clientBuildDir; bundleDir]
+Target "Clean" (fun _ ->
+    [ appReferences; unitTestReferences; acceptanceTestReferences ]
+    |> Seq.concat
+    |> Seq.iter (fun proj -> DotNetCli.RunCommand id ("clean " + proj))
+)
+
+Target "Restore" (fun _ ->
+    [ appReferences; unitTestReferences; acceptanceTestReferences; fableReferences ]
+    |> Seq.concat
+    |> Seq.iter (fun proj -> DotNetCli.Restore (fun p -> { p with Project = proj }))
 )
 
 Target "BuildApp" (fun _ ->
     appReferences
-        |> MSBuildRelease buildDir "Build"
-        |> Log "AppBuild-Output: "
+    |> Seq.iter (fun proj -> DotNetCli.Build (fun p -> { p with Project = proj }))
 )
 
 Target "BuildTests" (fun _ ->
-    testReferences
-        |> MSBuildDebug testDir "Build"
-        |> Log "TestBuild-Output: "
+    [ unitTestReferences; acceptanceTestReferences ]
+    |> Seq.concat
+    |> Seq.iter (fun proj -> DotNetCli.Build (fun p -> { p with Project = proj }))
 )
 
-Target "UnitTests" (fun _ ->
-    !! (testDir + "/*UnitTests.dll")
-        |> NUnit3 (fun arg -> { arg with ResultSpecs = [testDir </> "UnitTestResults.xml"] })
+Target "RunUnitTests" (fun _ ->
+    unitTestReferences
+    |> Seq.iter (fun proj -> DotNetCli.Test (fun p -> { p with Project = proj }))
 )
 
-Target "AcceptanceTests" (fun _ ->
-    !! (testDir + "/*AcceptanceTests.dll")
-        |> NUnit3 (fun arg -> { arg with ResultSpecs = [testDir </> "AcceptanceTestResults.xml"] })
+Target "RunAcceptanceTests" (fun _ ->
+    acceptanceTestReferences
+    |> Seq.iter (fun proj -> DotNetCli.Test (fun p -> { p with Project = proj }))
 )
 
-Target "CopyFiles" (fun _ ->
-    cp "./FableCricket/index.html" bundleDir
-    cp_r "./FableCricket/css" bundleDir
+Target "YarnInstall" (fun _ ->
+    Yarn (fun p ->
+        { p with Command = Install Standard; WorkingDirectory = fableDirectory })
 )
 
-Target "Fable" (fun _ ->
-   npm "install" [] "./FableCricket"
-   node "node_modules/fable-compiler" [ ] "./FableCricket"
+Target "BuildFable" (fun _ ->
+    fableReference
+    |> (fun proj -> DotNetCli.RunCommand (fun p -> { p with WorkingDir = fableDirectory }) ("fable yarn-build " + proj))
+)
+
+Target "RunFable" (fun _ ->
+    fableReference
+    |> (fun proj -> DotNetCli.RunCommand (fun p -> { p with WorkingDir = fableDirectory }) ("fable yarn-start " + proj))
 )
 
 // Build order
 "Clean"
+    ==> "Restore"
     ==> "BuildApp"
     ==> "BuildTests"
-    ==> "UnitTests"
-    ==> "AcceptanceTests"
-    ==> "CopyFiles"
-    ==> "Fable"
+    ==> "RunUnitTests"
+    ==> "RunAcceptanceTests"
+    ==> "YarnInstall"
+
+"YarnInstall" ==> "BuildFable"
+"YarnInstall" ==> "RunFable"
 
 // start build
-RunTargetOrDefault "AcceptanceTests"
+RunTargetOrDefault "BuildFable"
