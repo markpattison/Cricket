@@ -88,8 +88,6 @@ module Innings =
         |> List.map (fun (player, indInnings) ->
             (player, if player = batsman then f indInnings else indInnings))
 
-    let private tempBowler = { Name = "testBowler" } // TODO
-
     let private addBowlerIfNeeded bowler bowlers =
         if List.exists (fun (p, _) -> p = bowler) bowlers then
             bowlers

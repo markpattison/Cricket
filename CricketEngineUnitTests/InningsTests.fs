@@ -164,7 +164,8 @@ type InningsIndividualsUpdatedCorrectly ()=
         let updated = Innings.update (UpdateForBall ball) None testInnings
         let striker = (if currentEnd = End1 then innings.BatsmanAtEnd1 else innings.BatsmanAtEnd2).Value
         let testIndividualInnings = innings |> Innings.forPlayer striker
-        let expectedIndividualInnings = IndividualInnings.update SampleData.sampleBowler ball testIndividualInnings
+        let bowler = match currentEnd with | End1 -> SampleData.sampleBowler1 | End2 -> SampleData.sampleBowler2
+        let expectedIndividualInnings = IndividualInnings.update bowler ball testIndividualInnings
 
         updated |> Innings.forPlayer striker |> should equal expectedIndividualInnings
 

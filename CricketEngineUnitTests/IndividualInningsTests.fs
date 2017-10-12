@@ -46,12 +46,12 @@ type IndividualInningsHowOutTests ()=
             Four, None;
             ScoreRuns 4, None;
             Six, None;
-            Bowled, Some (OutBowled SampleData.sampleBowler);
-            LBW, Some (OutLBW SampleData.sampleBowler);
-            HitWicket, Some (OutHitWicket SampleData.sampleBowler);
-            Caught (SampleData.sampleFielder, false), Some (OutCaught (SampleData.sampleBowler, SampleData.sampleFielder));
-            Caught (SampleData.sampleFielder, true), Some (OutCaught (SampleData.sampleBowler, SampleData.sampleFielder));
-            Stumped SampleData.sampleFielder, Some (OutStumped (SampleData.sampleBowler, SampleData.sampleFielder));
+            Bowled, Some (OutBowled SampleData.sampleBowler1);
+            LBW, Some (OutLBW SampleData.sampleBowler1);
+            HitWicket, Some (OutHitWicket SampleData.sampleBowler1);
+            Caught (SampleData.sampleFielder, false), Some (OutCaught (SampleData.sampleBowler1, SampleData.sampleFielder));
+            Caught (SampleData.sampleFielder, true), Some (OutCaught (SampleData.sampleBowler1, SampleData.sampleFielder));
+            Stumped SampleData.sampleFielder, Some (OutStumped (SampleData.sampleBowler1, SampleData.sampleFielder));
             RunOutStriker (0, false), Some (RunOut);
             RunOutStriker (1, true), Some (RunOut);
             RunOutNonStriker (0, false), None;

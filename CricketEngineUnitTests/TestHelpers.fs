@@ -41,15 +41,12 @@ module SampleData =
             BowlerToEnd2 = Some sampleBowler2;
         }
 
-    let sampleBowler =
-        { Name = "testBowler" }
-
     let sampleFielder =
         { Name = "testFielder" }
 
-    let sampleIndividualData = sampleIndividualInnings, sampleBowler, sampleFielder
-    let sampleInningsData = sampleInnings, sampleBowler, sampleFielder
-    let sampleBowlingData = sampleBowlingAnalysis, sampleBowler, sampleFielder
+    let sampleIndividualData = sampleIndividualInnings, sampleBowler1, sampleFielder
+    let sampleInningsData = sampleInnings, sampleBowler1, sampleFielder
+    let sampleBowlingData = sampleBowlingAnalysis, sampleBowler1, sampleFielder
 
 module TestHelpers =
 
