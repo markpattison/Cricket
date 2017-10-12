@@ -36,7 +36,7 @@ let oversString (innings: Innings) =
     | n -> sprintf @"(%i.%i overs)" innings.OversCompleted n
 
 let showInnings (team, innings) =
-  let showIndividualInnings (p, ii) = tr [] [ td[][str p.Name]; td[][str (howOutString ii.HowOut)]; td[][str (ii.Score.ToString())] ]
+  let showIndividualInnings (p: Player, ii) = tr [] [ td[][str p.Name]; td[][str (howOutString ii.HowOut)]; td[][str (ii.Score.ToString())] ]
   let totalRow = tr [] [ td [][str "Total"]; td[][str (oversString innings)]; td[][str (innings.GetRuns.ToString())] ]
   let rows = List.append (innings.Batsmen |> List.map showIndividualInnings) [ totalRow ]
 

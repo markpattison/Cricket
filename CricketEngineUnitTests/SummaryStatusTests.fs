@@ -8,7 +8,7 @@ open TestHelpers
 
 module ``SummaryStatus tests`` =
 
-    let summary state = Match.summaryStatus { TeamA = "TeamA"; TeamB = "TeamB"; State = state; Rules = sampleMatchRules }
+    let summary state = Match.summaryStatus { TeamA = { Name = "TeamA"; Players = [| |] }; TeamB = { Name = "TeamB"; Players = [| |] }; State = state; Rules = sampleMatchRules }
 
     [<Test>]
     let ``match not started`` ()=

@@ -9,12 +9,17 @@ module ``MatchRunner acceptance tests`` =
 
     let sampleMatchRules = { FollowOnMargin = 200; }
 
-    let batsman1 = { Name = "batsman 1" }
-    let batsman2 = { Name = "batsman 2" }
-    let batsman3 = { Name = "batsman 3" }
+    let teamA =
+        {
+            Name = "Team A"
+            Players = [| 1 .. 11 |] |> Array.map (fun n -> { Name = sprintf "batsman %i" n })
+        }
 
-    let bowler1 = { Name = "bowler 1" }
-    let bowler2 = { Name = "bowler 2" }
+    let teamB =
+        {
+            Name = "Team B"
+            Players = [| 1 .. 11 |] |> Array.map (fun n -> { Name = sprintf "bowler %i" n })
+        }
 
     let dot = Match.updateCurrentInnings (UpdateForBall DotBall)
     let score1 = Match.updateCurrentInnings (UpdateForBall (ScoreRuns 1))
@@ -22,11 +27,11 @@ module ``MatchRunner acceptance tests`` =
     [<Test>]
     let ``start first innings`` ()=
         let matchState =
-            Match.newMatch sampleMatchRules "Team A" "Team B"
+            Match.newMatch sampleMatchRules teamA teamB
             |> Match.updateMatchState StartMatch
-            |> Match.updateMatchState (SendInBatsman batsman1 |> UpdateInnings)
-            |> Match.updateMatchState (SendInBatsman batsman2 |> UpdateInnings)
-            |> Match.updateMatchState (SendInBowler bowler1 |> UpdateInnings)
+            |> Match.updateMatchState (SendInBatsman teamA.Players.[0] |> UpdateInnings)
+            |> Match.updateMatchState (SendInBatsman teamA.Players.[1] |> UpdateInnings)
+            |> Match.updateMatchState (SendInBowler teamB.Players.[0] |> UpdateInnings)
             |> Match.updateMatchState (UpdateForBall Bowled |> UpdateInnings)
 
         //let options = Cricket.MatchRunner.MatchRunner.getOptionsUI matchState

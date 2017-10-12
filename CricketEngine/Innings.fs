@@ -148,7 +148,7 @@ module Innings =
             state with
                 Batsmen =
                     state.Batsmen
-                    |> updateBatsmen (IndividualInnings.update tempBowler ballOutcome) striker
+                    |> updateBatsmen (IndividualInnings.update bowler ballOutcome) striker
                     |> updateBatsmen (IndividualInnings.updateNonStriker ballOutcome) nonStriker;
                 Bowlers =
                     state.Bowlers

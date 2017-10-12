@@ -4,8 +4,8 @@ open Formatting
 
 type Match =
     {
-        TeamA: string;
-        TeamB: string;
+        TeamA: Team;
+        TeamB: Team;
         State: MatchState;
         Rules: MatchRules;
     }
@@ -26,8 +26,8 @@ module Match =
         | _ -> ScoresLevel
 
     let summaryStatus match' =
-        let teamA = match'.TeamA
-        let teamB = match'.TeamB
+        let teamA = match'.TeamA.Name
+        let teamB = match'.TeamB.Name
         let leadA = MatchState.leadA match'.State
         let leadB = MatchState.leadB match'.State
         match match'.State with
@@ -66,8 +66,8 @@ module Match =
         | _ -> failwith "Unexpected match state"
 
     let inningsList match' =
-        let teamA = match'.TeamA
-        let teamB = match'.TeamB
+        let teamA = match'.TeamA.Name
+        let teamB = match'.TeamB.Name
         match match'.State with
         | NotStarted -> []
         | Abandoned -> []

@@ -12,8 +12,8 @@ type OptionalMessageToCaptain =
     | CanDeclare
 
 type UpdateOptions =
-    | ModalMessageToCaptain of (Team * ModalMessageToCaptain)
-    | ContinueInnings of (Team * OptionalMessageToCaptain) list
+    | ModalMessageToCaptain of (TeamChoice * ModalMessageToCaptain)
+    | ContinueInnings of (TeamChoice * OptionalMessageToCaptain) list
     | StartMatch
     | StartNextInnings
     | MatchOver

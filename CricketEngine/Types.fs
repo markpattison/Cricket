@@ -3,6 +3,9 @@
 type Player =
     { Name: string }
 
+type Team =
+    { Name: string; Players: Player [] }
+
 type HowOut =
     | OutBowled of BowledBy: Player
     | TimedOut
@@ -28,4 +31,4 @@ type HowOut =
         | RunOut -> "run out"
         | OutStumped(bowler, stumper) -> sprintf "st %s b %s" stumper.Name bowler.Name
 
-type Team = TeamA | TeamB
+type TeamChoice = TeamA | TeamB

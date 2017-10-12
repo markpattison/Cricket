@@ -9,12 +9,17 @@ module ``Acceptance tests`` =
 
     let sampleMatchRules = { FollowOnMargin = 200; }
 
-    let batsman1 = { Name = "batsman 1" }
-    let batsman2 = { Name = "batsman 2" }
-    let batsman3 = { Name = "batsman 3" }
+    let teamA =
+        {
+            Name = "Team A"
+            Players = [| 1 .. 11 |] |> Array.map (fun n -> { Name = sprintf "batsman %i" n })
+        }
 
-    let bowler1 = { Name = "bowler 1" }
-    let bowler2 = { Name = "bowler 2" }
+    let teamB =
+        {
+            Name = "Team B"
+            Players = [| 1 .. 11 |] |> Array.map (fun n -> { Name = sprintf "bowler %i" n })
+        }
 
     let dot = Match.updateCurrentInnings (UpdateForBall DotBall)
     let score1 = Match.updateCurrentInnings (UpdateForBall (ScoreRuns 1))
@@ -22,21 +27,21 @@ module ``Acceptance tests`` =
     [<Test>]
     let ``start first innings`` ()=
         let matchState =
-            Match.newMatch sampleMatchRules "Team A" "Team B"
+            Match.newMatch sampleMatchRules teamA teamB
             |> Match.updateMatchState StartMatch
-            |> Match.updateCurrentInnings (SendInBatsman batsman1)
-            |> Match.updateCurrentInnings (SendInBatsman batsman2)
+            |> Match.updateCurrentInnings (SendInBatsman teamA.Players.[0])
+            |> Match.updateCurrentInnings (SendInBatsman teamA.Players.[1])
 
         Match.summaryStatus matchState |> should equal "Team A are 0 for 0 in their first innings"
 
     [<Test>]
     let ``one Boycott over`` ()=
         let matchState =
-            Match.newMatch sampleMatchRules "Team A" "Team B"
+            Match.newMatch sampleMatchRules teamA teamB
             |> Match.updateMatchState StartMatch
-            |> Match.updateCurrentInnings (SendInBatsman batsman1)
-            |> Match.updateCurrentInnings (SendInBatsman batsman2)
-            |> Match.updateCurrentInnings (SendInBowler bowler1)
+            |> Match.updateCurrentInnings (SendInBatsman teamA.Players.[0])
+            |> Match.updateCurrentInnings (SendInBatsman teamA.Players.[1])
+            |> Match.updateCurrentInnings (SendInBowler teamB.Players.[0])
             |> dot
             |> dot
             |> dot
@@ -46,14 +51,14 @@ module ``Acceptance tests`` =
 
         let expected =
             {
-                TeamA = "Team A";
-                TeamB = "Team B";
+                TeamA = teamA;
+                TeamB = teamB;
                 Rules = sampleMatchRules;
                 State = A'Ongoing
                     {
                         Batsmen =
                             [
-                                batsman1, 
+                                teamA.Players.[0], 
                                 {
                                     Score = 1;
                                     HowOut = None;
@@ -61,7 +66,7 @@ module ``Acceptance tests`` =
                                     Fours = 0;
                                     Sixes = 0;
                                 };
-                                batsman2, 
+                                teamA.Players.[1], 
                                 {
                                     Score = 0;
                                     HowOut = None;
@@ -72,7 +77,7 @@ module ``Acceptance tests`` =
                             ];
                         Bowlers =
                             [
-                                bowler1,
+                                teamB.Players.[0],
                                 {
                                     Balls = 6;
                                     Maidens = 0;
@@ -81,12 +86,12 @@ module ``Acceptance tests`` =
                                 }
                             ]
                         IsDeclared = false;
-                        BatsmanAtEnd1 = Some batsman2;
-                        BatsmanAtEnd2 = Some batsman1;
+                        BatsmanAtEnd1 = Some teamA.Players.[1];
+                        BatsmanAtEnd2 = Some teamA.Players.[0];
                         EndFacingNext = End2;
                         OversCompleted = 1;
                         BallsThisOver = [];
-                        BowlerToEnd1 = Some bowler1;
+                        BowlerToEnd1 = Some teamB.Players.[0];
                         BowlerToEnd2 = None
                     }
             }
@@ -96,27 +101,27 @@ module ``Acceptance tests`` =
     [<Test>]
     let ``non-striker run out`` ()=
         let matchState =
-            Match.newMatch sampleMatchRules "Team A" "Team B"
+            Match.newMatch sampleMatchRules teamA teamB
             |> Match.updateMatchState StartMatch
-            |> Match.updateCurrentInnings (SendInBatsman batsman1)
-            |> Match.updateCurrentInnings (SendInBatsman batsman2)
-            |> Match.updateCurrentInnings (SendInBowler bowler1)
+            |> Match.updateCurrentInnings (SendInBatsman teamA.Players.[0])
+            |> Match.updateCurrentInnings (SendInBatsman teamA.Players.[1])
+            |> Match.updateCurrentInnings (SendInBowler teamB.Players.[0])
             |> dot
             |> score1
             |> score1
             |> Match.updateCurrentInnings (UpdateForBall (RunOutNonStriker (1, false)))
-            |> Match.updateCurrentInnings (SendInBatsman batsman3)
+            |> Match.updateCurrentInnings (SendInBatsman teamA.Players.[2])
 
         let expected =
             {
-                TeamA = "Team A";
-                TeamB = "Team B";
+                TeamA = teamA;
+                TeamB = teamB;
                 Rules = sampleMatchRules;
                 State = A'Ongoing
                     {
                         Batsmen =
                             [
-                                batsman1, 
+                                teamA.Players.[0], 
                                 {
                                     Score = 2;
                                     HowOut = None;
@@ -124,7 +129,7 @@ module ``Acceptance tests`` =
                                     Fours = 0;
                                     Sixes = 0;
                                 };
-                                batsman2, 
+                                teamA.Players.[1], 
                                 {
                                     Score = 1;
                                     HowOut = Some RunOut;
@@ -132,7 +137,7 @@ module ``Acceptance tests`` =
                                     Fours = 0;
                                     Sixes = 0;
                                 };
-                                batsman3, 
+                                teamA.Players.[2], 
                                 {
                                     Score = 0;
                                     HowOut = None;
@@ -143,7 +148,7 @@ module ``Acceptance tests`` =
                             ];
                         Bowlers =
                             [
-                                bowler1,
+                                teamB.Players.[0],
                                 {
                                     Balls = 4;
                                     Maidens = 0;
@@ -152,12 +157,12 @@ module ``Acceptance tests`` =
                                 }
                             ]
                         IsDeclared = false;
-                        BatsmanAtEnd1 = Some batsman3;
-                        BatsmanAtEnd2 = Some batsman1;
+                        BatsmanAtEnd1 = Some teamA.Players.[2];
+                        BatsmanAtEnd2 = Some teamA.Players.[0];
                         EndFacingNext = End1;
                         OversCompleted = 0;
                         BallsThisOver = [ DotBall; ScoreRuns 1; ScoreRuns 1; RunOutNonStriker (1, false) ]
-                        BowlerToEnd1 = Some bowler1;
+                        BowlerToEnd1 = Some teamB.Players.[0];
                         BowlerToEnd2 = None
                     }
             }
@@ -167,7 +172,7 @@ module ``Acceptance tests`` =
     [<Test>]
     let ``four declarations`` ()=
         let matchState =
-            Match.newMatch sampleMatchRules "Team A" "Team B"
+            Match.newMatch sampleMatchRules teamA teamB
             |> Match.updateMatchState StartMatch
             |> Match.updateCurrentInnings Declare
             |> Match.updateMatchState StartNextInnings
