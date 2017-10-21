@@ -14,4 +14,4 @@ let root =
         [ str "This is a simple cricket game built with F# + Fable + Elmish + React." ]
       p
         [ ]
-        [ str "Version 0.2.0" ] ]
+        [ str ("Version " + App.Version.VersionNumber) ] ]

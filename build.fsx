@@ -41,6 +41,20 @@ Target "Clean" (fun _ ->
     |> Seq.iter (fun proj -> DotNetCli.RunCommand id ("clean " + proj))
 )
 
+Target "UpdateVersionNumber" (fun _ ->
+    let release =
+        ReadFile "RELEASE_NOTES.md"
+        |> ReleaseNotesHelper.parseReleaseNotes
+    let revisionFromCI = environVarOrNone "BUILD_BUILDID"
+    let version =
+        match revisionFromCI with
+        | None -> release.AssemblyVersion
+        | Some s -> sprintf "%s.%s" release.AssemblyVersion s
+    let versionFiles = !! "**/Version.fs"
+    FileHelper.RegexReplaceInFilesWithEncoding @"VersionNumber = "".*""" (sprintf @"VersionNumber = ""%s""" version) System.Text.Encoding.UTF8 versionFiles
+    TraceHelper.trace (sprintf @"Version = %s" version)
+)
+
 Target "Restore" (fun _ ->
     [ appReferences; unitTestReferences; acceptanceTestReferences; fableReferences ]
     |> Seq.concat
@@ -86,6 +100,7 @@ Target "RunFable" (fun _ ->
 // Build order
 "InstallDotNetCore"
     ==> "Clean"
+    ==> "UpdateVersionNumber"
     ==> "Restore"
     ==> "BuildApp"
     ==> "BuildTests"

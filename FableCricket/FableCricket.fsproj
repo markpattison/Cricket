@@ -11,6 +11,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Version.fs" />
     <Compile Include="Global.fs" />
     <Compile Include="Info/View.fs" />
     <Compile Include="Counter/Types.fs" />
