@@ -1,4 +1,9 @@
-## New in 0.2.1 (Release 2017/10/21)
+## New in 0.2.2 (Released 2017/10/21)
+* Option to continue until the end of an over.
+* Only allow match to be reset once it is completed.
+* Slightly more realistic scores.
+
+## New in 0.2.1 (Released 2017/10/21)
 * Automatically update version number.
 
 ## New in 0.2.0 (Released 2017/10/21)

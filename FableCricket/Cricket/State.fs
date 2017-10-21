@@ -58,5 +58,6 @@ let update msg model =
     match msg with
     | StartMatch -> updateMatch (Match.updateMatchState MatchUpdate.StartMatch)
     | StartNextInnings -> updateMatch (Match.updateMatchState MatchUpdate.StartNextInnings)
-    | ContinueInnings -> updateMatch (MatchRunner.continueInnings)
+    | ContinueInningsBall -> updateMatch (MatchRunner.continueInningsBall)
+    | ContinueInningsOver -> updateMatch (MatchRunner.continueInningsOver)
     | ResetMatch -> init ()

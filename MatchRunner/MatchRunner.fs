@@ -29,10 +29,10 @@ module MatchRunner =
         let options = getOptions match'
         match options with
         | ModalMessageToCaptain _ -> failwith "shouldn't happen"
-        | ContinueInnings _ -> ContinueInningsUI
-        | UpdateOptions.StartMatch -> StartMatchUI
-        | UpdateOptions.StartNextInnings -> StartNextInningsUI
-        | UpdateOptions.MatchOver -> MatchOverUI
+        | ContinueInnings _ -> [ ContinueInningsBallUI; ContinueInningsOverUI ]
+        | UpdateOptions.StartMatch -> [ StartMatchUI ]
+        | UpdateOptions.StartNextInnings -> [ StartNextInningsUI ]
+        | UpdateOptions.MatchOver -> [ MatchOverUI ]
 
     let rec runCaptainsWithExclusions exclude match' =
         let options = getOptions match'
@@ -56,13 +56,24 @@ module MatchRunner =
     let runCaptains match' =
         runCaptainsWithExclusions [] match'
 
-    let continueInnings match' =
+    let continueInningsBall match' =
         let ball =
             match random.Next(0, 100) with
-            | x when x <= 20 -> Bowled
+            | x when x <= 5 -> Bowled
+            | x when x <= 7 -> LBW
+            | x when x <= 8 -> RunOutStriker (0, false)
             | x when x >= 99 -> Six
             | x when x >= 97 -> Four
             | x when x >= 95 -> ScoreRuns 2
             | x when x >= 3 -> ScoreRuns 1
             | _ -> DotBall
-        Match.updateCurrentInnings (UpdateForBall ball) match'
+        match'
+        |> Match.updateCurrentInnings (UpdateForBall ball)
+        |> runCaptains
+    
+    let rec continueInningsOver match' =
+        let updated = continueInningsBall match'
+        match updated.State |> MatchState.summaryState with
+        | InningsInProgress MidOver -> continueInningsOver updated
+        | _ -> updated
+

@@ -21,6 +21,7 @@ type UpdateOptions =
 type UpdateOptionsForUI =
     | StartMatchUI
     | StartNextInningsUI
-    | ContinueInningsUI
+    | ContinueInningsBallUI
+    | ContinueInningsOverUI
     | MatchOverUI
 

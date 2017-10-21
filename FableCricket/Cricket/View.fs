@@ -83,14 +83,13 @@ let showOption (option: UpdateOptionsForUI) dispatch =
   match option with
   | StartMatchUI -> simpleButton "Start match" StartMatch dispatch
   | StartNextInningsUI -> simpleButton "Start next innings" StartNextInnings dispatch
-  | ContinueInningsUI -> simpleButton "Continue innings" ContinueInnings dispatch
-  | MatchOverUI -> div [] [ str "Match over" ]
+  | ContinueInningsBallUI -> simpleButton "Continue (ball)" ContinueInningsBall dispatch
+  | ContinueInningsOverUI -> simpleButton "Continue (over)" ContinueInningsOver dispatch
+  | MatchOverUI -> simpleButton "Reset match" ResetMatch dispatch
 
 let showOptions match' dispatch =
-  let option = MatchRunner.getOptionsUI match'
-  showOption option dispatch
-
-let showReset dispatch = simpleButton "Reset match" ResetMatch dispatch
+  let options = MatchRunner.getOptionsUI match'
+  div [ ClassName "level" ] [ div [ ClassName "level-left" ] (options |> List.map (fun option -> div [ ClassName "level-left" ] [ showOption option dispatch ])) ]
 
 // main render method
 
@@ -102,5 +101,4 @@ let root model dispatch =
       showOptions match' dispatch
       showSummaryStatus match'
       showAllInnings match'
-      showReset dispatch
     ]

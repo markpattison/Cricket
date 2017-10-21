@@ -10,5 +10,6 @@ type Model =
 type Msg =
     | StartMatch
     | StartNextInnings
-    | ContinueInnings
+    | ContinueInningsBall
+    | ContinueInningsOver
     | ResetMatch
