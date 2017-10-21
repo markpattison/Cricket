@@ -11,4 +11,7 @@ let root =
         [ str "About FableCricket" ]
       p
         [ ]
-        [ str "This is a simple cricket game built with F# + Fable + Elmish + React." ] ]
+        [ str "This is a simple cricket game built with F# + Fable + Elmish + React." ]
+      p
+        [ ]
+        [ str "Version 0.2.0" ] ]

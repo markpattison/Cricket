@@ -16,3 +16,13 @@ module Formatting =
 
     let formatWicketsLeft wickets =
         formatWickets (10 - wickets)
+    
+    let formatOversFromBalls (totalBalls: int) =
+        let overs = totalBalls / 6
+        let balls = totalBalls % 6
+        sprintf "%i.%i" overs balls
+
+    let formatInningsNumber inningsNumber =
+        match inningsNumber with
+        | FirstInnings -> "1st innings"
+        | SecondInnings -> "2nd innings"

@@ -73,27 +73,27 @@ module Match =
         | Abandoned -> []
         | A'Ongoing a1
             | A'Completed a1
-            | A'MatchDrawn a1 -> [ (teamA, a1) ]
+            | A'MatchDrawn a1 -> [ (teamA, FirstInnings, a1) ]
         | AB'Ongoing (a1, b1)
             | AB'CompletedNoFollowOn (a1, b1)
             | AB'CompletedPossibleFollowOn (a1, b1)
-            | AB'MatchDrawn (a1, b1) -> [ (teamA, a1); (teamB, b1) ]
+            | AB'MatchDrawn (a1, b1) -> [ (teamA, FirstInnings, a1); (teamB, FirstInnings, b1) ]
         | ABA'Ongoing (a1, b1, a2)
             | ABA'VictoryB (a1, b1, a2)
             | ABA'Completed (a1, b1, a2)
-            | ABA'MatchDrawn (a1, b1, a2) -> [ (teamA, a1); (teamB, b1); (teamA, a2) ]
+            | ABA'MatchDrawn (a1, b1, a2) -> [ (teamA, FirstInnings, a1); (teamB, FirstInnings, b1); (teamA, SecondInnings, a2) ]
         | ABB'Ongoing (a1, b1, b2)
             | ABB'VictoryA (a1, b1, b2)
             | ABB'Completed (a1, b1, b2)
-            | ABB'MatchDrawn (a1, b1, b2) -> [ (teamA, a1); (teamB, b1); (teamB, b2) ]
+            | ABB'MatchDrawn (a1, b1, b2) -> [ (teamA, FirstInnings, a1); (teamB, FirstInnings, b1); (teamB, SecondInnings, b2) ]
         | ABAB'Ongoing (a1, b1, a2, b2)
             | ABAB'VictoryA (a1, b1, a2, b2)
             | ABAB'VictoryB (a1, b1, a2, b2)
             | ABAB'MatchDrawn (a1, b1, a2, b2)
-            | ABAB'MatchTied (a1, b1, a2, b2) -> [ (teamA, a1); (teamB, b1); (teamA, a2); (teamB, b2) ]
+            | ABAB'MatchTied (a1, b1, a2, b2) -> [ (teamA, FirstInnings, a1); (teamB, FirstInnings, b1); (teamA, SecondInnings, a2); (teamB, SecondInnings, b2) ]
         | ABBA'Ongoing (a1, b1, b2, a2)
             | ABBA'VictoryA (a1, b1, b2, a2)
             | ABBA'VictoryB (a1, b1, b2, a2)
             | ABBA'MatchDrawn (a1, b1, b2, a2)
-            | ABBA'MatchTied (a1, b1, b2, a2) -> [ (teamA, a1); (teamB, b1); (teamB, b2); (teamA, a2) ]
+            | ABBA'MatchTied (a1, b1, b2, a2) -> [ (teamA, FirstInnings, a1); (teamB, FirstInnings, b1); (teamB, SecondInnings, b2); (teamA, SecondInnings, a2) ]
 

@@ -1,6 +1,6 @@
 {
   "name": "FableCricket",
-  "version": "1.0.0",
+  "version": "0.2.0",
   "description": "Simple Fable App",
   "scripts": {
     "build": "webpack -p",

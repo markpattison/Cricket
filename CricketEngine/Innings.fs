@@ -75,7 +75,10 @@ module Innings =
         }
 
     let summary (state: Innings) =
-        sprintf "%i/%i%s" state.GetRuns state.GetWickets (if state.IsDeclared then " declared" else "")
+        match state.GetWickets, state.IsDeclared with
+        | 10, _ -> sprintf "%i all out" state.GetRuns
+        | w, true -> sprintf "%i/%i declared" state.GetRuns w
+        | w, false -> sprintf "%i/%i" state.GetRuns w
 
     let forPlayer player state =
         List.find (fun (p, _) -> p = player) state.Batsmen |> snd

@@ -32,3 +32,5 @@ type HowOut =
         | OutStumped(bowler, stumper) -> sprintf "st %s b %s" stumper.Name bowler.Name
 
 type TeamChoice = TeamA | TeamB
+
+type InningsNumber = FirstInnings | SecondInnings
