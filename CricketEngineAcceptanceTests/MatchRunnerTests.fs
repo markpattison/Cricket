@@ -12,13 +12,13 @@ module ``MatchRunner acceptance tests`` =
     let teamA =
         {
             Name = "Team A"
-            Players = [| 1 .. 11 |] |> Array.map (fun n -> { Name = sprintf "batsman %i" n })
+            Players = [| 1 .. 11 |] |> Array.map (fun n -> { Name = sprintf "batsman %i" n; ID = n })
         }
 
     let teamB =
         {
             Name = "Team B"
-            Players = [| 1 .. 11 |] |> Array.map (fun n -> { Name = sprintf "bowler %i" n })
+            Players = [| 1 .. 11 |] |> Array.map (fun n -> { Name = sprintf "bowler %i" n; ID = 20 + n })
         }
 
     let dot = Match.updateCurrentInnings (UpdateForBall DotBall)

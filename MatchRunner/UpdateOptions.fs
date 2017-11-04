@@ -13,7 +13,7 @@ type OptionalMessageToCaptain =
 
 type UpdateOptions =
     | ModalMessageToCaptain of (TeamChoice * ModalMessageToCaptain)
-    | ContinueInnings of (TeamChoice * OptionalMessageToCaptain) list
+    | ContinueInnings
     | StartMatch
     | StartNextInnings
     | MatchOver
@@ -25,3 +25,6 @@ type UpdateOptionsForUI =
     | ContinueInningsOverUI
     | MatchOverUI
 
+type OptionalMessageResult =
+    | StateChanged of Match
+    | StateUnchanged

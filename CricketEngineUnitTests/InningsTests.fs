@@ -266,8 +266,8 @@ type SendInNewBatsmanTests ()=
     let inningsWithNoBatsmanAtEnd2 = { innings with BatsmanAtEnd2 = None }
     let inningsWithNoBatsmen = { innings with BatsmanAtEnd1 = None; BatsmanAtEnd2 = None }
 
-    let testBatsman = { Name = "sentInBatsman" }
-    let testBatsman2 = { Name = "sentInBatsman2" }
+    let testBatsman = { Name = "sentInBatsman"; ID = 10 }
+    let testBatsman2 = { Name = "sentInBatsman2"; ID = 11 }
 
     [<Test>]
     member _x.``cannot send in a new batsman to an already-started innings with no batsmen`` ()=
@@ -367,7 +367,7 @@ type BowlingAnalysesUpdatedCorrectly ()=
     [<Test>]
     member _x.``new bowling analysis is created correctly`` ([<ValueSource("TestData")>] testData) =
         let ball = testData
-        let newBowler = { Name = "new bowler" }
+        let newBowler = { Name = "new bowler"; ID = 12 }
         let testInnings = { innings with EndFacingNext = End1 } |> Innings.update (SendInBowler newBowler) None
         let updated = Innings.update (UpdateForBall ball) None testInnings
         let expectedBowlingAnalysis = BowlingAnalysis.update ball BowlingAnalysis.create
@@ -376,7 +376,7 @@ type BowlingAnalysesUpdatedCorrectly ()=
 
     [<Test>]
     member _x.``bowling analysis is correct after a maiden over`` ()=
-        let newBowler = { Name = "new bowler" }
+        let newBowler = { Name = "new bowler"; ID = 13 }
         let testInnings = { innings with EndFacingNext = End1 } |> Innings.update (SendInBowler newBowler) None
         let updated =
             testInnings
@@ -397,7 +397,7 @@ type SendInNewBowlerTests ()=
 
     let innings, _, _ = SampleData.sampleInningsData
 
-    let newBowler = { Name = "new bowler" }
+    let newBowler = { Name = "new bowler"; ID = 14 }
 
     [<Test>]
     member _x.``new bowler added correctly for new over to end 1`` ()=

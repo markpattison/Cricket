@@ -15,17 +15,17 @@ let init () : Model * Cmd<Msg> =
                     Name = "England"
                     Players =
                         [|
-                            { Name = "GA Gooch" }
-                            { Name = "MA Atherton" }
-                            { Name = "DI Gower" }
-                            { Name = "AJ Lamb" }
-                            { Name = "RA Smith" }
-                            { Name = "JE Morris" }
-                            { Name = "RC Russell" }
-                            { Name = "CC Lewis" }
-                            { Name = "EE Hemmings" }
-                            { Name = "ARC Fraser" }
-                            { Name = "DE Malcolm" }
+                            { Name = "GA Gooch"; ID = 1 }
+                            { Name = "MA Atherton"; ID = 2 }
+                            { Name = "DI Gower"; ID = 3 }
+                            { Name = "AJ Lamb"; ID = 4 }
+                            { Name = "RA Smith"; ID = 5 }
+                            { Name = "JE Morris"; ID = 6 }
+                            { Name = "RC Russell"; ID = 7 }
+                            { Name = "CC Lewis"; ID = 8 }
+                            { Name = "EE Hemmings"; ID = 9 }
+                            { Name = "ARC Fraser"; ID = 10 }
+                            { Name = "DE Malcolm"; ID = 11 }
                         |]
                 }
             TeamB =
@@ -33,17 +33,17 @@ let init () : Model * Cmd<Msg> =
                     Name = "India"
                     Players =
                         [|
-                            { Name = "RJ Shastri" }
-                            { Name = "NS Sidhu" }
-                            { Name = "SV Manjrekar" }
-                            { Name = "DB Vengsarkar" }
-                            { Name = "M Azharuddin" }
-                            { Name = "SR Tendulkar" }
-                            { Name = "M Prabhakar" }
-                            { Name = "N Kapil Dev" }
-                            { Name = "KS More" }
-                            { Name = "SK Sharma" }
-                            { Name = "ND Hirwani" }
+                            { Name = "RJ Shastri"; ID = 12 }
+                            { Name = "NS Sidhu"; ID = 13 }
+                            { Name = "SV Manjrekar"; ID = 14 }
+                            { Name = "DB Vengsarkar"; ID = 15 }
+                            { Name = "M Azharuddin"; ID = 16 }
+                            { Name = "SR Tendulkar"; ID = 17 }
+                            { Name = "M Prabhakar"; ID = 18 }
+                            { Name = "N Kapil Dev"; ID = 19 }
+                            { Name = "KS More"; ID = 20 }
+                            { Name = "SK Sharma"; ID = 21 }
+                            { Name = "ND Hirwani"; ID = 22 }
                         |]
                 }
             State = NotStarted
@@ -53,11 +53,10 @@ let init () : Model * Cmd<Msg> =
 
 let update msg model =
     let updateMatch f =
-        let updated = model.Match |> f |> MatchRunner.runCaptains
-        { model with Match = updated }, []
+        { model with Match = model.Match |> f }, []
     match msg with
-    | StartMatch -> updateMatch (Match.updateMatchState MatchUpdate.StartMatch)
-    | StartNextInnings -> updateMatch (Match.updateMatchState MatchUpdate.StartNextInnings)
+    | StartMatch -> updateMatch (MatchRunner.updateMatchState MatchUpdate.StartMatch)
+    | StartNextInnings -> updateMatch (MatchRunner.updateMatchState MatchUpdate.StartNextInnings)
     | ContinueInningsBall -> updateMatch (MatchRunner.continueInningsBall)
     | ContinueInningsOver -> updateMatch (MatchRunner.continueInningsOver)
     | ResetMatch -> init ()

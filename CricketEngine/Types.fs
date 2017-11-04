@@ -1,7 +1,15 @@
 ﻿namespace Cricket.CricketEngine
 
+[<CustomEquality; NoComparison>]
 type Player =
-    { Name: string }
+    { ID: int; Name: string }
+
+    override _this.Equals(obj2) =
+        match obj2 with
+        | :? Player as player2 -> (_this.ID = player2.ID)
+        | _ -> false
+    
+    override _this.GetHashCode() = _this.ID
 
 type Team =
     { Name: string; Players: Player [] }

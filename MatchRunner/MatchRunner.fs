@@ -6,7 +6,19 @@ module MatchRunner =
 
     let random = new System.Random()
 
-    let getOptions match' =
+    let private optionalCanDeclare battingTeam match' =
+        let response = SimpleCaptain.replyOptional (battingTeam, CanDeclare) match'
+        match response with
+        | None -> match'
+        | Some update -> Match.updateMatchState update match'
+
+    let private optionalCanChangeBowler bowlingTeam match' =
+        let response = SimpleCaptain.replyOptional (bowlingTeam, EndOfOver) match'
+        match response with
+        | None -> match'
+        | Some update -> Match.updateMatchState update match'
+
+    let private getOption match' =
         let state = match'.State
         let summaryState = state |> MatchState.summaryState
 
@@ -19,42 +31,44 @@ module MatchRunner =
             let battingTeam = state |> MatchState.currentBattingTeam
             let bowlingTeam = state |> MatchState.currentBowlingTeam
             match summaryInningsState with
-            | BatsmanRequired n -> ModalMessageToCaptain (battingTeam,NewBatsmanRequired n)
+            | BatsmanRequired n -> ModalMessageToCaptain (battingTeam, NewBatsmanRequired n)
             | BowlerRequiredTo end' -> ModalMessageToCaptain (bowlingTeam, NewBowlerRequiredTo end')
-            | EndOver -> ContinueInnings [ (battingTeam, CanDeclare); (bowlingTeam, EndOfOver) ]
-            | MidOver -> ContinueInnings [ (battingTeam, CanDeclare) ]
+            | EndOver | MidOver -> ContinueInnings
             | Completed -> failwith "invalid innings state"
 
     let getOptionsUI match' =
-        let options = getOptions match'
-        match options with
+        let option = getOption match'
+        match option with
         | ModalMessageToCaptain _ -> failwith "shouldn't happen"
         | ContinueInnings _ -> [ ContinueInningsBallUI; ContinueInningsOverUI ]
         | UpdateOptions.StartMatch -> [ StartMatchUI ]
         | UpdateOptions.StartNextInnings -> [ StartNextInningsUI ]
         | UpdateOptions.MatchOver -> [ MatchOverUI ]
 
-    let rec runCaptainsWithExclusions exclude match' =
-        let options = getOptions match'
-        match options with
-        | ModalMessageToCaptain msg ->
-            let action = SimpleCaptain.replyModal (msg, match')
-            Match.updateMatchState action match' |> runCaptainsWithExclusions []
-        | ContinueInnings msgList ->
-            let afterExclusions = List.except exclude msgList
-            match afterExclusions with
-            | [] -> match'
-            | msg :: _ ->
-                let response = SimpleCaptain.replyOptional (msg, match')
-                match response with
-                | None -> match' |> runCaptainsWithExclusions (msg::exclude)
-                | Some action -> Match.updateMatchState action match' |> runCaptainsWithExclusions (msg::exclude)
-        | UpdateOptions.StartMatch -> match'
-        | UpdateOptions.StartNextInnings -> match'
-        | UpdateOptions.MatchOver -> match'
+    let rec runCaptains match' =
+        let state = match'.State
+        let summaryState = state |> MatchState.summaryState
 
-    let runCaptains match' =
-        runCaptainsWithExclusions [] match'
+        match summaryState with
+        | NotYetStarted -> match'
+        | BetweenInnings -> match'
+        | AwaitingFollowOnDecision ->
+            let update = SimpleCaptain.replyModal (TeamA, FollowOnDecision) match'
+            Match.updateMatchState update match' |> runCaptains
+        | MatchCompleted -> match'
+        | InningsInProgress summaryInningsState ->
+            let battingTeam = state |> MatchState.currentBattingTeam
+            let bowlingTeam = state |> MatchState.currentBowlingTeam
+            match summaryInningsState with
+            | BatsmanRequired n ->
+                let update = SimpleCaptain.replyModal (battingTeam, NewBatsmanRequired n) match'
+                Match.updateMatchState update match' |> runCaptains
+            | BowlerRequiredTo end' ->
+                let update = SimpleCaptain.replyModal (bowlingTeam, NewBowlerRequiredTo end') match'
+                Match.updateMatchState update match' |> runCaptains
+            | EndOver -> match' |> optionalCanChangeBowler bowlingTeam |> optionalCanDeclare battingTeam
+            | MidOver -> match' |> optionalCanDeclare battingTeam
+            | Completed -> failwith "invalid innings state"
 
     let continueInningsBall match' =
         let ball =
@@ -77,3 +91,7 @@ module MatchRunner =
         | InningsInProgress MidOver -> continueInningsOver updated
         | _ -> updated
 
+    let updateMatchState update match' =
+        match'
+        |> Match.updateMatchState update
+        |> runCaptains

@@ -1,3 +1,6 @@
+## New in 0.2.3 (Released 2017/10/30)
+* Fixes for IE11 compatability.
+
 ## New in 0.2.2 (Released 2017/10/21)
 * Option to continue until the end of an over.
 * Only allow match to be reset once it is completed.

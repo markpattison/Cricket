@@ -21,11 +21,11 @@ module SampleData =
             Wickets = 2;
         }
 
-    let sampleBatsman1 = { Name = "testBatsman 1" }
-    let sampleBatsman2 = { Name = "testBatsman 2" }
+    let sampleBatsman1 = { Name = "testBatsman 1"; ID = 1 }
+    let sampleBatsman2 = { Name = "testBatsman 2"; ID = 2 }
 
-    let sampleBowler1 = { Name = "testBowler 1" }
-    let sampleBowler2 = { Name = "testBowler 2" }
+    let sampleBowler1 = { Name = "testBowler 1"; ID = 3 }
+    let sampleBowler2 = { Name = "testBowler 2"; ID = 4 }
 
     let sampleInnings =
         {
@@ -42,7 +42,7 @@ module SampleData =
         }
 
     let sampleFielder =
-        { Name = "testFielder" }
+        { Name = "testFielder"; ID = 5 }
 
     let sampleIndividualData = sampleIndividualInnings, sampleBowler1, sampleFielder
     let sampleInningsData = sampleInnings, sampleBowler1, sampleFielder
@@ -114,7 +114,7 @@ module TestHelpers =
     let rec createInnings score wickets =
         match wickets with
         | 0 -> { SampleData.sampleInnings with Batsmen = [ (SampleData.sampleBatsman1, { IndividualInnings.create with Score = score}); (SampleData.sampleBatsman2, IndividualInnings.create) ] }
-        | n -> { SampleData.sampleInnings with Batsmen = ({ Name = sprintf "testBatsman %i" (n + 1) }, { IndividualInnings.create with HowOut = Some HowOut.RunOut }) :: (createInnings score (n - 1)).Batsmen }
+        | n -> { SampleData.sampleInnings with Batsmen = ({ Name = sprintf "testBatsman %i" (n + 1); ID = 20 + n }, { IndividualInnings.create with HowOut = Some HowOut.RunOut }) :: (createInnings score (n - 1)).Batsmen }
 
     let (%/) runs wickets = createInnings runs wickets
     let (%/%) runs wickets = { (createInnings runs wickets) with IsDeclared = true }

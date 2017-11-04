@@ -4,7 +4,7 @@ open Cricket.CricketEngine
 
 module SimpleCaptain =
 
-    let replyModal ((teamChoice, msg), match') =
+    let replyModal (teamChoice, msg) match' =
         let team =
             match teamChoice with
             | TeamA -> match'.TeamA
@@ -21,10 +21,10 @@ module SimpleCaptain =
                 | 0, 1 -> team.Players.[10]
                 | 1, 0 -> team.Players.[7]
                 | 1, 1 -> team.Players.[8]
-                | _ -> { Name = "???" }
+                | _ -> failwith "shouldn't happen"
             SendInBowler bowler |> UpdateInnings
 
-    let replyOptional ((teamChoice, msg), match') =
+    let replyOptional (teamChoice, msg) match' =
         let team =
             match teamChoice with
             | TeamA -> match'.TeamA
