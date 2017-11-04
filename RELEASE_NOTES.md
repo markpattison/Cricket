@@ -1,4 +1,4 @@
-## New in 0.2.3 (Released 2017/10/30)
+## New in 0.2.3 (Released 2017/11/04)
 * Fixes for IE11 compatability.
 
 ## New in 0.2.2 (Released 2017/10/21)

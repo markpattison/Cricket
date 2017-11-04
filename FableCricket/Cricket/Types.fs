@@ -5,6 +5,7 @@ open Cricket.CricketEngine
 type Model =
     {
         Match: Match
+        InningsExpanded: bool list
     }
 
 type Msg =
@@ -13,3 +14,4 @@ type Msg =
     | ContinueInningsBall
     | ContinueInningsOver
     | ResetMatch
+    | ToggleInningsExpanded of int

@@ -23,8 +23,8 @@ let simpleButton txt action dispatch =
 let showSummaryStatus match' =
   let summary = match' |> Match.summaryStatus
   div
-    [ ClassName "content" ]
-    [ h1 [] [ str summary ]]
+    [ ClassName "subtitle is-5" ]
+    [ str summary ]
 
 let howOutString (howOut: HowOut option) =
     match howOut with
@@ -46,13 +46,13 @@ let showIndividualInnings (p: Player, ii) =
     td [] [str (ii.Sixes.ToString())]
   ]
 
-let showBatting (team, innings) =
+let showBatting innings =
   let headerRow = thead [] [ tr [ ClassName "has-text-weight-bold" ] [ td [] [str "Batsmen"]; td [] []; td [] [str "R"]; td [] [str "B"]; td [] [str "4"]; td [] [str "6"] ] ]
-  let allIndividualInnings = innings.Batsmen |> List.map showIndividualInnings
-  let totalRow = tr [ ClassName "has-text-weight-bold" ] [ td [] [str "Total"]; td[] [str (oversString innings)]; td[] [str (innings.GetRuns.ToString())] ]
-  let rows = List.concat [ [ headerRow ]; allIndividualInnings; [ totalRow ] ]
+  let allIndividualInnings = tbody [] (innings.Batsmen |> List.map showIndividualInnings)
+  let totalRow = tfoot [] [ tr [ ClassName "has-text-weight-bold" ] [ td [] [str "Total"]; td[] [str (oversString innings)]; td[] [str (innings.GetRuns.ToString())] ] ]
+  let rows = [ headerRow ; allIndividualInnings; totalRow ]
 
-  div [] [ table [ ClassName "table is-narrow" ] rows ]
+  div [] [ table [ ClassName "table is-fullwidth" ] rows ]
 
 let showIndividualBowling (p: Player, bowling) =
   tr [] [
@@ -63,21 +63,47 @@ let showIndividualBowling (p: Player, bowling) =
     td [] [str (bowling.Wickets.ToString())]
   ]
 
-let showBowling (team, innings) =
+let showBowling innings =
   let headerRow = thead [] [ tr [ ClassName "has-text-weight-bold" ] [ td [] [str "Bowling"]; td [] [str "O"]; td [] [str "M"]; td [] [str "R"]; td [] [str "W"] ] ]
-  let allBowling = innings.Bowlers |> List.map showIndividualBowling
-  let rows = List.concat [ [ headerRow ]; allBowling ]
+  let allBowling = tbody [] (innings.Bowlers |> List.map showIndividualBowling)
+  let rows = [ headerRow ; allBowling ]
 
-  div [] [ table [ ClassName "table is-narrow" ] rows ]
+  div [] [ table [ ClassName "table is-fullwidth" ] rows ]
 
-let showInnings (team, inningsNumber, innings) =
+let showInnings ((team, inningsNumber, innings), expanded) index dispatch =
   let teamInnings = sprintf "%s %s" team (formatInningsNumber inningsNumber)
   let score = Innings.summary innings
-  div [ ClassName "box" ] [ div [ ClassName "level" ] [ h2 [ ClassName "level-left" ] [str teamInnings]; h2 [ ClassName "level-right" ] [str score] ]; showBatting (team, innings); showBowling (team, innings) ]
+  div [ ClassName "box" ]
+    [
+      yield div
+        [
+          ClassName "level subtitle is-5";
+          OnClick (fun _ -> (ToggleInningsExpanded index) |> dispatch)
+        ]
+        [
+          div [ ClassName "level-left" ]
+            [
+              div [ ClassName "level-item" ]
+                [
+                  span
+                    [ ClassName "icon" ]
+                    [ i [ ClassName (if expanded then "fa fa-caret-down" else "fa fa-caret-right") ] [] ]
+                  str teamInnings
+                ]
+            ]
+          div [ ClassName "level-right" ]
+            [
+              p [ ClassName "level-item" ]
+                [ str score ]
+            ]            
+        ]
+      if expanded then yield! [ showBatting innings; showBowling innings ]
+    ]
 
-let showAllInnings match' =
+let showAllInnings match' inningsExpanded dispatch =
   let allInnings = match' |> Match.inningsList
-  div [] (allInnings |> List.map showInnings)
+  let withExpanded = List.zip allInnings inningsExpanded
+  div [] (withExpanded |> List.mapi (fun i innings -> showInnings innings i dispatch))
 
 let showOption (option: UpdateOptionsForUI) dispatch =
   match option with
@@ -96,9 +122,9 @@ let showOptions match' dispatch =
 let root model dispatch =
   let match' = model.Match
   div
-    [ ClassName "content" ]
+    []
     [
       showOptions match' dispatch
       showSummaryStatus match'
-      showAllInnings match'
+      showAllInnings match' model.InningsExpanded dispatch
     ]
