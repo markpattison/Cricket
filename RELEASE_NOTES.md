@@ -1,3 +1,6 @@
+## New in 0.3.0 (Released 2017/11/05)
+* Make each innings collapsable.
+
 ## New in 0.2.3 (Released 2017/11/04)
 * Fixes for IE11 compatability.
 
