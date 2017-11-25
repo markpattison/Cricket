@@ -1,6 +1,6 @@
 ﻿namespace Cricket.CricketEngine
 
-[<CustomEquality; NoComparison>]
+[<CustomEquality; CustomComparison>]
 type Player =
     { ID: int; Name: string }
 
@@ -10,6 +10,12 @@ type Player =
         | _ -> false
     
     override _this.GetHashCode() = _this.ID
+
+    interface System.IComparable with
+        member _this.CompareTo otherObj =
+            match otherObj with
+            | :? Player as otherPlayer -> _this.ID - otherPlayer.ID
+            | _ -> 0
 
 type Team =
     { Name: string; Players: Player [] }

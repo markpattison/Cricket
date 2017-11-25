@@ -5,6 +5,7 @@ open Cricket.CricketEngine
 type Model =
     {
         Match: Match
+        PlayerRecords: Map<Player, PlayerRecord>
         InningsExpanded: bool list
     }
 

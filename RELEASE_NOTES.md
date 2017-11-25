@@ -1,3 +1,6 @@
+## New in 0.4.0 (Released ??)
+* Show cumulative averages
+
 ## New in 0.3.0 (Released 2017/11/05)
 * Make each innings collapsable.
 

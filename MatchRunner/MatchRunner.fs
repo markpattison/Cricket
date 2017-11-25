@@ -34,7 +34,7 @@ module MatchRunner =
             | BatsmanRequired n -> ModalMessageToCaptain (battingTeam, NewBatsmanRequired n)
             | BowlerRequiredTo end' -> ModalMessageToCaptain (bowlingTeam, NewBowlerRequiredTo end')
             | EndOver | MidOver -> ContinueInnings
-            | Completed -> failwith "invalid innings state"
+            | SummaryInningsState.Completed -> failwith "invalid innings state"
 
     let getOptionsUI match' =
         let option = getOption match'
@@ -68,7 +68,7 @@ module MatchRunner =
                 Match.updateMatchState update match' |> runCaptains
             | EndOver -> match' |> optionalCanChangeBowler bowlingTeam |> optionalCanDeclare battingTeam
             | MidOver -> match' |> optionalCanDeclare battingTeam
-            | Completed -> failwith "invalid innings state"
+            | SummaryInningsState.Completed -> failwith "invalid innings state"
 
     let continueInningsBall match' =
         let ball =

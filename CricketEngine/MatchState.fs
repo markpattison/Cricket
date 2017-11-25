@@ -36,6 +36,11 @@ type SummaryMatchState =
     | AwaitingFollowOnDecision
     | MatchCompleted
 
+type StateForPlayerRecords =
+    | NoMatch
+    | InProgress
+    | Completed
+
 type MatchUpdate =
     | StartMatch
     | AbandonMatch
@@ -159,12 +164,42 @@ module MatchState =
         | AB'Ongoing (_, b1) -> Innings.summaryState b1 |> InningsInProgress
         | ABA'Ongoing (_, _, a2) -> Innings.summaryState a2 |> InningsInProgress
         | ABB'Ongoing (_, _, b2) -> Innings.summaryState b2 |> InningsInProgress
-        | ABAB'Ongoing(_, _, _, b2) -> Innings.summaryState b2 |> InningsInProgress
+        | ABAB'Ongoing (_, _, _, b2) -> Innings.summaryState b2 |> InningsInProgress
         | ABBA'Ongoing (_, _, _, a2) -> Innings.summaryState a2 |> InningsInProgress
         | A'Completed _
             | AB'CompletedNoFollowOn _
             | ABA'Completed _
             | ABB'Completed _ -> BetweenInnings
+
+    let summaryStateForPlayerRecords state =
+        match state with
+        | NotStarted
+            | Abandoned -> NoMatch
+        | A'MatchDrawn _
+            | AB'MatchDrawn _
+            | ABBA'VictoryA _
+            | ABB'VictoryA _
+            | ABA'MatchDrawn _
+            | ABA'VictoryB _ 
+            | ABBA'VictoryB _
+            | ABBA'MatchDrawn _
+            | ABBA'MatchTied _
+            | ABAB'MatchDrawn _
+            | ABAB'MatchTied _
+            | ABAB'VictoryB _
+            | ABAB'VictoryA _
+            | ABB'MatchDrawn _ -> Completed
+        | AB'CompletedPossibleFollowOn _
+            | A'Ongoing _
+            | AB'Ongoing _
+            | ABA'Ongoing _
+            | ABB'Ongoing _
+            | ABAB'Ongoing _
+            | ABBA'Ongoing _
+            | A'Completed _
+            | AB'CompletedNoFollowOn _
+            | ABA'Completed _
+            | ABB'Completed _ -> InProgress
 
     let currentInnings state =
         match state with

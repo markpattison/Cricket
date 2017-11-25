@@ -50,6 +50,7 @@ let init () : Model * Cmd<Msg> =
                 State = NotStarted
                 Rules = { FollowOnMargin = 200 }
             }
+        PlayerRecords = Map.empty
         InningsExpanded = []
     }, []
 
