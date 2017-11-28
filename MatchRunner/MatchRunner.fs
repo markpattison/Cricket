@@ -73,9 +73,9 @@ module MatchRunner =
     let continueInningsBall match' =
         let ball =
             match random.Next(0, 100) with
-            | x when x <= 5 -> Bowled
-            | x when x <= 7 -> LBW
-            | x when x <= 8 -> RunOutStriker (0, false)
+            | x when x <= 2 -> Bowled
+            | x when x <= 4 -> LBW
+            | x when x <= 5 -> RunOutStriker (0, false)
             | x when x >= 99 -> Six
             | x when x >= 97 -> Four
             | x when x >= 95 -> ScoreRuns 2

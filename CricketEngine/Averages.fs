@@ -32,7 +32,7 @@ type BowlingRecord =
         BestInnings: BestBowling
         BestMatch: BestBowling
         FiveWicketInnings: int
-        TenWicketMatch: int
+        TenWicketMatches: int
     }
 
 type PlayerRecord =
@@ -44,6 +44,95 @@ type PlayerRecord =
         Catches: int
         Stumpings: int
     }
+
+[<CustomEquality; CustomComparison>]
+type BattingAverage =
+    {
+        Player: Player
+        InProgress: bool
+        Matches: int
+        Innings: int
+        NotOuts: int
+        Runs: int
+        HighScore: HighScore
+        Average: float option
+        BallsFaced: int
+        StrikeRate: float option
+        Hundreds: int
+        Fifties: int
+        Ducks: int
+        Fours: int
+        Sixes: int
+    }
+
+    override _this.Equals(obj2) =
+        match obj2 with
+        | :? BattingAverage as otherRecord -> (_this.Player.ID = otherRecord.Player.ID)
+        | _ -> false
+    
+    override _this.GetHashCode() = _this.Player.ID
+    
+    interface System.IComparable with
+        member _this.CompareTo otherObj =
+            match otherObj with
+            | :? BattingAverage as otherRecord ->
+                match _this.Average, otherRecord.Average with
+                | Some thisAve, Some otherAve ->
+                    if thisAve > otherAve then
+                        -1
+                    elif thisAve < otherAve then
+                        1
+                    else
+                        otherRecord.Runs - _this.Runs
+                | Some _, None -> -1
+                | None, Some _ -> 1
+                | None, None -> otherRecord.Runs - _this.Runs
+            | _ -> 0
+
+[<CustomEquality; CustomComparison>]
+type BowlingAverage =
+    {
+        Player: Player
+        InProgress: bool
+        Matches: int
+        Innings: int
+        BallsBowled: int
+        Maidens: int
+        RunsConceded: int
+        Wickets: int
+        BestInnings: BestBowling
+        BestMatch: BestBowling
+        Average: float option
+        Economy: float option
+        StrikeRate: float option
+        FiveWicketInnings: int
+        TenWicketMatches: int
+        Catches: int
+        Stumpings: int
+    }
+
+    override _this.Equals(obj2) =
+        match obj2 with
+        | :? BattingAverage as otherRecord -> (_this.Player.ID = otherRecord.Player.ID)
+        | _ -> false
+    override _this.GetHashCode() = _this.Player.ID
+
+    interface System.IComparable with
+        member _this.CompareTo otherObj =
+            match otherObj with
+            | :? BowlingAverage as otherRecord ->
+                match _this.Average, otherRecord.Average with
+                | Some thisAve, Some otherAve ->
+                    if thisAve < otherAve then
+                        -1
+                    elif thisAve > otherAve then
+                        1
+                    else
+                        _this.RunsConceded - otherRecord.RunsConceded
+                | Some _, None -> -1
+                | None, Some _ -> 1
+                | None, None -> _this.RunsConceded - otherRecord.RunsConceded
+            | _ -> 0
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix )>]
 module Averages =
@@ -72,7 +161,7 @@ module Averages =
             BestInnings = NoBestBowling
             BestMatch = NoBestBowling
             FiveWicketInnings = 0
-            TenWicketMatch = 0
+            TenWicketMatches = 0
         }
 
     let create =
@@ -123,7 +212,7 @@ module Averages =
             BestInnings = updateBestBowling bowling.BestInnings analysis.Wickets analysis.RunsConceded
             BestMatch = bowling.BestMatch // have to update this at match level
             FiveWicketInnings = bowling.FiveWicketInnings + oneIf (analysis.Wickets >= 5)
-            TenWicketMatch = bowling.TenWicketMatch // have to update this at match level
+            TenWicketMatches = bowling.TenWicketMatches // have to update this at match level
         }
     
     let private updatePlayerForAllMatchInnings player playerRecord mtch isInProgress =
@@ -145,7 +234,7 @@ module Averages =
         let bowlingRecordUpdatedForMatch =
             { playerRecord.Bowling with
                 BestMatch = (updateBestBowling playerRecord.Bowling.BestMatch matchWickets matchRunsCondeded)
-                TenWicketMatch = playerRecord.Bowling.TenWicketMatch + oneIf (matchWickets >= 10)
+                TenWicketMatches = playerRecord.Bowling.TenWicketMatches + oneIf (matchWickets >= 10)
             }            
         let catches =
             allBatting
@@ -179,7 +268,6 @@ module Averages =
         | false, Completed
             -> updatePlayerForAllMatchInnings player playerRecord mtch false
     
-
     let updatePlayersForMatch playerRecords mtch =
         match MatchState.summaryStateForPlayerRecords mtch.State with
         | NoMatch -> playerRecords
@@ -200,3 +288,69 @@ module Averages =
                     updatePlayerForMatch player record mtch
                 else
                     record)
+
+    let createBattingAverage (player, playerRecord) =
+        let batting = playerRecord.Batting
+        let outs = batting.BattingInnings - batting.NotOuts
+        {
+            Player = player
+            InProgress = playerRecord.MatchInProgress
+            BattingAverage.Matches = playerRecord.Matches
+            Innings = batting.BattingInnings
+            NotOuts = batting.NotOuts
+            Runs = batting.Runs
+            HighScore = batting.HighScore
+            Average = if outs = 0 then None else Some (float batting.Runs / float outs)
+            BallsFaced = batting.BallsFaced
+            StrikeRate = if batting.BallsFaced = 0 then None else Some (100.0 * float batting.Runs / float batting.BallsFaced)
+            Hundreds = batting.Hundreds
+            Fifties = batting.Fifties
+            Ducks = batting.Ducks
+            Fours = batting.Fours
+            Sixes = batting.Sixes
+        }
+    
+    let createBowlingAverage (player, playerRecord) =
+        let bowling = playerRecord.Bowling
+        {
+            Player = player
+            InProgress = playerRecord.MatchInProgress
+            Matches = playerRecord.Matches
+            Innings = bowling.BowlingInnings
+            BallsBowled = bowling.BallsBowled
+            Maidens = bowling.Maidens
+            RunsConceded = bowling.RunsConceded
+            Wickets = bowling.Wickets
+            BestInnings = bowling.BestInnings
+            BestMatch = bowling.BestMatch
+            Average = if bowling.Wickets = 0 then None else Some (float bowling.RunsConceded / float bowling.Wickets)
+            Economy = if bowling.BallsBowled = 0 then None else Some (6.0 * float bowling.RunsConceded / float bowling.BallsBowled)
+            StrikeRate = if bowling.Wickets = 0 then None else Some (float bowling.BallsBowled / float bowling.Wickets)
+            FiveWicketInnings = bowling.FiveWicketInnings
+            TenWicketMatches = bowling.TenWicketMatches
+            Catches = playerRecord.Catches
+            Stumpings = playerRecord.Stumpings
+        }
+    
+    let blank = "-"
+
+    let formatHighScore highScore =
+        match highScore with
+        | NoHighScore -> blank
+        | HighScore (score, true) -> sprintf "%i" score
+        | HighScore (score, false) -> sprintf "%i*" score
+    
+    let formatAverage average =
+        match average with
+        | None -> blank
+        | Some ave -> sprintf "%.2f" ave
+    
+    let formatBestBowling bestBowling =
+        match bestBowling with
+        | NoBestBowling -> blank
+        | BestBowling (wickets, runs) -> sprintf "%i/%i" wickets runs
+    
+    let formatMatches matches isInProgress =
+        match isInProgress with
+        | false -> sprintf "%i" matches
+        | true -> sprintf "%i*" matches

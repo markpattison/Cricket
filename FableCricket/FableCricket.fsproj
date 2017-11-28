@@ -23,10 +23,12 @@
     <Compile Include="Cricket/Types.fs" />
     <Compile Include="Cricket/State.fs" />
     <Compile Include="Cricket/View.fs" />
+    <Compile Include="Averages/View.fs" />
     <Compile Include="Navbar/View.fs" />
     <Compile Include="Types.fs" />
     <Compile Include="State.fs" />
     <Compile Include="CricketApp.fs" />
+
   </ItemGroup>
   <Import Project="..\.paket\Paket.Restore.targets" />
 </Project>

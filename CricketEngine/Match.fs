@@ -1,6 +1,7 @@
 ﻿namespace Cricket.CricketEngine
 
 open Formatting
+open MatchState
 
 type Match =
     {
@@ -20,10 +21,13 @@ module Match =
         { TeamA = teamA; TeamB = teamB; State = NotStarted; Rules = rules }
 
     let private (|ALeads|ScoresLevel|BLeads|) state =
-        match (MatchState.leadA state) with
+        match (leadA state) with
         | x when x > 0 -> ALeads
         | x when x < 0 -> BLeads
         | _ -> ScoresLevel
+
+    let isCompleted match' =
+        summaryStateForPlayerRecords match'.State = Completed
 
     let summaryStatus match' =
         let teamA = match'.TeamA.Name

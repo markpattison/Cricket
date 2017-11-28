@@ -78,7 +78,7 @@ let showInnings ((team, inningsNumber, innings), expanded) index dispatch =
       yield div
         [
           ClassName "level subtitle is-5";
-          OnClick (fun _ -> (ToggleInningsExpanded index) |> dispatch)
+          OnClick (fun _ -> (ToggleInningsExpandedMessage index) |> dispatch)
         ]
         [
           div [ ClassName "level-left" ]
@@ -107,18 +107,17 @@ let showAllInnings match' inningsExpanded dispatch =
 
 let showOption (option: UpdateOptionsForUI) dispatch =
   match option with
-  | StartMatchUI -> simpleButton "Start match" StartMatch dispatch
-  | StartNextInningsUI -> simpleButton "Start next innings" StartNextInnings dispatch
-  | ContinueInningsBallUI -> simpleButton "Continue (ball)" ContinueInningsBall dispatch
-  | ContinueInningsOverUI -> simpleButton "Continue (over)" ContinueInningsOver dispatch
-  | MatchOverUI -> simpleButton "Reset match" ResetMatch dispatch
+  | StartMatchUI -> simpleButton "Start match" StartMatchMessage dispatch
+  | StartNextInningsUI -> simpleButton "Start next innings" StartNextInningsMessage dispatch
+  | ContinueInningsBallUI -> simpleButton "Continue (ball)" ContinueInningsBallMessage dispatch
+  | ContinueInningsOverUI -> simpleButton "Continue (over)" ContinueInningsOverMessage dispatch
+  | MatchOverUI -> simpleButton "Reset match" ResetMatchMessage dispatch
 
 let showOptions match' dispatch =
   let options = MatchRunner.getOptionsUI match'
   div [ ClassName "level" ] [ div [ ClassName "level-left" ] (options |> List.map (fun option -> div [ ClassName "level-left" ] [ showOption option dispatch ])) ]
 
 // main render method
-
 let root model dispatch =
   let match' = model.Match
   div

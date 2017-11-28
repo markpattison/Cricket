@@ -9,8 +9,9 @@ open Types
 
 let pageParser: Parser<Page->Page,Page> =
   oneOf [
-    map About (s "about")
-    map Cricket (s "cricket")
+    map AboutPage (s "about")
+    map AveragesPage (s "averages")
+    map CricketPage (s "cricket")
   ]
 
 let urlUpdate (result: Option<Page>) model =
@@ -25,7 +26,7 @@ let init result =
   let (cricket, cricketCmd) = Cricket.State.init()
   let (model, cmd) =
     urlUpdate result
-      { currentPage = Cricket
+      { currentPage = CricketPage
         cricket = cricket }
   model, Cmd.batch [ cmd
                      Cmd.map CricketMsg cricketCmd ]

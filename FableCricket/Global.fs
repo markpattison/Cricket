@@ -1,10 +1,12 @@
 module Global
 
 type Page =
-  | Cricket
-  | About
+  | CricketPage
+  | AveragesPage
+  | AboutPage
 
 let toHash page =
   match page with
-  | About -> "#about"
-  | Cricket -> "#cricket"
+  | AboutPage -> "#about"
+  | AveragesPage -> "#averages"
+  | CricketPage -> "#cricket"

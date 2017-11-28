@@ -15,6 +15,7 @@ importAll "./sass/main.sass"
 
 open Fable.Helpers.React
 open Fable.Helpers.React.Props
+open Cricket.CricketEngine
 
 let menuItem label page currentPage =
     li
@@ -32,15 +33,17 @@ let menu currentPage =
         [ str "General" ]
       ul
         [ ClassName "menu-list" ]
-        [ menuItem "Cricket match" Cricket currentPage
-          menuItem "About" Page.About currentPage ] ]
+        [ menuItem "Scorecard" CricketPage currentPage
+          menuItem "Averages" AveragesPage currentPage
+          menuItem "About" AboutPage currentPage ] ]
 
 let root model dispatch =
 
   let pageHtml =
     function
-    | Page.About -> Info.View.root
-    | Cricket -> Cricket.View.root model.cricket (CricketMsg >> dispatch)
+    | AboutPage -> Info.View.root
+    | AveragesPage -> Averages.View.root model.cricket
+    | CricketPage -> Cricket.View.root model.cricket (CricketMsg >> dispatch)
 
   div
     []

@@ -6,13 +6,14 @@ type Model =
     {
         Match: Match
         PlayerRecords: Map<Player, PlayerRecord>
+        LivePlayerRecords: Map<Player, PlayerRecord>
         InningsExpanded: bool list
     }
 
 type Msg =
-    | StartMatch
-    | StartNextInnings
-    | ContinueInningsBall
-    | ContinueInningsOver
-    | ResetMatch
-    | ToggleInningsExpanded of int
+    | StartMatchMessage
+    | StartNextInningsMessage
+    | ContinueInningsBallMessage
+    | ContinueInningsOverMessage
+    | ResetMatchMessage
+    | ToggleInningsExpandedMessage of int
