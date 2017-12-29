@@ -1,10 +1,7 @@
 // include Fake libs
 #r "packages/FAKE/tools/FakeLib.dll"
 
-open System
-
 open Fake
-open Fake.FileUtils
 open Fake.NpmHelper
 
 // Filesets
