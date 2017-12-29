@@ -108,7 +108,7 @@ module ``SummaryStatus tests`` =
     [<Test>]
     let ``ABA victory B`` ()=
         let state = ABA'VictoryB (100 %/ 10, 110 %/ 10, 5 %/ 10)
-        (summary state) |> should equal "TeamB won by 5 runs"
+        (summary state) |> should equal "TeamB won by an innings and 5 runs"
 
     [<Test>]
     let ``ABA completed`` ()=

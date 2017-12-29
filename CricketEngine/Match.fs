@@ -54,7 +54,7 @@ module Match =
         | ABA'Ongoing (_, _, a2) & BLeads -> sprintf "%s trail by %s with %s remaining in their second innings" teamA (formatRuns leadB) (formatWicketsLeft a2.GetWickets)
         | ABA'Ongoing (_, _, a2) & ScoresLevel -> sprintf "%s are level with %s remaining in their second innings" teamA (formatWicketsLeft a2.GetWickets)
         | ABA'Ongoing (_, _, a2) & ALeads -> sprintf "%s lead by %s with %s remaining in their second innings" teamA (formatRuns leadA) (formatWicketsLeft a2.GetWickets)
-        | ABA'VictoryB _ -> sprintf "%s won by %s" teamB (formatRuns leadB)
+        | ABA'VictoryB _ -> sprintf "%s won by an innings and %s" teamB (formatRuns leadB)
         | ABA'Completed _ -> sprintf "%s need %s to win in their second innings" teamB (leadA + 1 |> formatRuns)
         | ABB'Ongoing (_, _, b2) & ALeads -> sprintf "%s trail by %s with %s remaining in their second innings" teamB (formatRuns leadA) (formatWicketsLeft b2.GetWickets)
         | ABB'Ongoing (_, _, b2) & ScoresLevel -> sprintf "%s are level with %s remaining in their second innings" teamB (formatWicketsLeft b2.GetWickets)
