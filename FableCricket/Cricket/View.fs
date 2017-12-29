@@ -49,7 +49,7 @@ let showIndividualInnings (p: Player, ii) =
 let showBatting innings =
   let headerRow = thead [] [ tr [ ClassName "has-text-weight-bold" ] [ td [] [str "Batsmen"]; td [] []; td [] [str "R"]; td [] [str "B"]; td [] [str "4"]; td [] [str "6"] ] ]
   let allIndividualInnings = tbody [] (innings.Batsmen |> List.map showIndividualInnings)
-  let totalRow = tfoot [] [ tr [ ClassName "has-text-weight-bold" ] [ td [] [str "Total"]; td[] [str (oversString innings)]; td[] [str (innings.GetRuns.ToString())] ] ]
+  let totalRow = tfoot [] [ tr [ ClassName "has-text-weight-bold" ] [ td [] [str "Total"]; td[] [str (oversString innings)]; td[] [str (Innings.summary innings)] ] ]
   let rows = [ headerRow ; allIndividualInnings; totalRow ]
 
   div [] [ table [ ClassName "table is-fullwidth" ] rows ]
