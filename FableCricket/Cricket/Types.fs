@@ -8,6 +8,7 @@ type Model =
         PlayerRecords: Map<Player, PlayerRecord>
         LivePlayerRecords: Map<Player, PlayerRecord>
         InningsExpanded: bool list
+        Series: Series
     }
 
 type Msg =

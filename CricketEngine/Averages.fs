@@ -134,7 +134,7 @@ type BowlingAverage =
                 | None, None -> _this.RunsConceded - otherRecord.RunsConceded
             | _ -> 0
 
-[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix )>]
+[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Averages =
 
     let createBatting =

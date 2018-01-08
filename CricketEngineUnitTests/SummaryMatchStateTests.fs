@@ -23,7 +23,7 @@ module ``SummaryMatchState tests`` =
     [<Test>]
     let ``abandoned`` ()=
         let state = Abandoned
-        (summary state) |> should equal MatchCompleted
+        (summary state) |> should equal (MatchCompleted NoResult)
 
     [<Test>]
     let ``A ongoing`` ()=
@@ -43,7 +43,7 @@ module ``SummaryMatchState tests`` =
     [<Test>]
     let ``A match drawn`` ()=
         let state = A'MatchDrawn sampleEmptyInnings
-        (summary state) |> should equal MatchCompleted
+        (summary state) |> should equal (MatchCompleted Draw)
 
     [<Test>]
     let ``AB ongoing B, behind`` ()=
@@ -93,7 +93,7 @@ module ``SummaryMatchState tests`` =
     [<Test>]
     let ``AB match drawn`` ()=
         let state = AB'MatchDrawn (sampleEmptyInnings, sampleEmptyInnings)
-        (summary state) |> should equal MatchCompleted
+        (summary state) |> should equal (MatchCompleted Draw)
 
     [<Test>]
     let ``ABA ongoing, A ahead`` ()=
@@ -113,7 +113,7 @@ module ``SummaryMatchState tests`` =
     [<Test>]
     let ``ABA victory B`` ()=
         let state = ABA'VictoryB (100 %/ 10, 110 %/ 10, 5 %/ 10)
-        (summary state) |> should equal MatchCompleted
+        (summary state) |> should equal (MatchCompleted WinTeamB)
 
     [<Test>]
     let ``ABA completed`` ()=
@@ -123,7 +123,7 @@ module ``SummaryMatchState tests`` =
     [<Test>]
     let ``ABA match drawn`` ()=
         let state = ABA'MatchDrawn (sampleEmptyInnings, sampleEmptyInnings, sampleEmptyInnings)
-        (summary state) |> should equal MatchCompleted
+        (summary state) |> should equal (MatchCompleted Draw)
 
     [<Test>]
     let ``ABB ongoing, B ahead`` ()=
@@ -143,7 +143,7 @@ module ``SummaryMatchState tests`` =
     [<Test>]
     let ``ABB victory A`` ()=
         let state = ABB'VictoryA (100 %/ 10, 30 %/ 10, 30 %/ 10)
-        (summary state) |> should equal MatchCompleted
+        (summary state) |> should equal (MatchCompleted WinTeamA)
 
     [<Test>]
     let ``ABB completed, B ahead`` ()=
@@ -158,7 +158,7 @@ module ``SummaryMatchState tests`` =
     [<Test>]
     let ``ABB match drawn`` ()=
         let state = ABB'MatchDrawn (sampleEmptyInnings, sampleEmptyInnings, sampleEmptyInnings)
-        (summary state) |> should equal MatchCompleted
+        (summary state) |> should equal (MatchCompleted Draw)
 
     [<Test>]
     let ``ABAB ongoing, B level`` ()=
@@ -173,22 +173,22 @@ module ``SummaryMatchState tests`` =
     [<Test>]
     let ``ABAB victory A`` ()=
         let state = ABAB'VictoryA (100 %/ 10, 100 %/ 10, 70 %/ 10, 68 %/ 10)
-        (summary state) |> should equal MatchCompleted
+        (summary state) |> should equal (MatchCompleted WinTeamA)
 
     [<Test>]
     let ``ABAB victory B`` ()=
         let state = ABAB'VictoryB (100 %/ 10, 100 %/ 10, 70 %/ 10, 71 %/ 9)
-        (summary state) |> should equal MatchCompleted
+        (summary state) |> should equal (MatchCompleted WinTeamB)
 
     [<Test>]
     let ``ABAB match drawn`` ()=
         let state = ABAB'MatchDrawn (sampleEmptyInnings, sampleEmptyInnings, sampleEmptyInnings, sampleEmptyInnings)
-        (summary state) |> should equal MatchCompleted
+        (summary state) |> should equal (MatchCompleted Draw)
 
     [<Test>]
     let ``ABAB match tied`` ()=
         let state = ABAB'MatchTied (100 %/ 10, 100 %/ 10, 70 %/ 10, 70 %/ 10)
-        (summary state) |> should equal MatchCompleted
+        (summary state) |> should equal (MatchCompleted Tie)
 
     [<Test>]
     let ``ABBA ongoing, A level`` ()=
@@ -203,19 +203,19 @@ module ``SummaryMatchState tests`` =
     [<Test>]
     let ``ABBA victory A`` ()=
         let state = ABBA'VictoryA (100 %/ 10, 70 %/ 10, 70 %/ 10, 101 %/ 8)
-        (summary state) |> should equal MatchCompleted
+        (summary state) |> should equal (MatchCompleted WinTeamA)
 
     [<Test>]
     let ``ABBA victory B`` ()=
         let state = ABBA'VictoryB (100 %/ 10, 70 %/ 10, 70 %/ 10, 30 %/ 7)
-        (summary state) |> should equal MatchCompleted
+        (summary state) |> should equal (MatchCompleted WinTeamB)
 
     [<Test>]
     let ``ABBA match drawn`` ()=
         let state = ABBA'MatchDrawn (sampleEmptyInnings, sampleEmptyInnings, sampleEmptyInnings, sampleEmptyInnings)
-        (summary state) |> should equal MatchCompleted
+        (summary state) |> should equal (MatchCompleted Draw)
 
     [<Test>]
     let ``ABBA match tied`` ()=
         let state = ABAB'MatchTied (100 %/ 10, 70 %/ 10, 70 %/ 10, 100 %/ 10)
-        (summary state) |> should equal MatchCompleted
+        (summary state) |> should equal (MatchCompleted Tie)

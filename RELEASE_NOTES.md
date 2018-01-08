@@ -1,3 +1,8 @@
+## New in 0.4.1 (Released 2018/01/08)
+* Correct match summary when team batting second wins by an innings.
+* Show wickets/all out/declared in scorecard total.
+* Show series score.
+
 ## New in 0.4.0 (Released 2017/11/28)
 * Show cumulative averages.
 * Reduce frequency of wickets.

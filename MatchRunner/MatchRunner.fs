@@ -26,7 +26,7 @@ module MatchRunner =
         | NotYetStarted -> UpdateOptions.StartMatch
         | BetweenInnings -> UpdateOptions.StartNextInnings
         | AwaitingFollowOnDecision -> ModalMessageToCaptain (TeamA, FollowOnDecision)
-        | MatchCompleted -> UpdateOptions.MatchOver
+        | MatchCompleted _ -> UpdateOptions.MatchOver
         | InningsInProgress summaryInningsState ->
             let battingTeam = state |> MatchState.currentBattingTeam
             let bowlingTeam = state |> MatchState.currentBowlingTeam
@@ -55,7 +55,7 @@ module MatchRunner =
         | AwaitingFollowOnDecision ->
             let update = SimpleCaptain.replyModal (TeamA, FollowOnDecision) match'
             Match.updateMatchState update match' |> runCaptains
-        | MatchCompleted -> match'
+        | MatchCompleted _ -> match'
         | InningsInProgress summaryInningsState ->
             let battingTeam = state |> MatchState.currentBattingTeam
             let bowlingTeam = state |> MatchState.currentBowlingTeam

@@ -29,12 +29,14 @@ type MatchState =
     | ABBA'MatchDrawn of Innings * Innings * Innings * Innings
     | ABBA'MatchTied of Innings * Innings * Innings * Innings
 
+type MatchResult = NoResult | WinTeamA | WinTeamB | Draw | Tie
+
 type SummaryMatchState =
     | NotYetStarted
     | InningsInProgress of SummaryInningsState
     | BetweenInnings
     | AwaitingFollowOnDecision
-    | MatchCompleted
+    | MatchCompleted of MatchResult
 
 type StateForPlayerRecords =
     | NoMatch
@@ -144,21 +146,21 @@ module MatchState =
     let summaryState state =
         match state with
         | NotStarted -> NotYetStarted
-        | Abandoned
-            | A'MatchDrawn _
+        | Abandoned -> MatchCompleted NoResult
+        | A'MatchDrawn _
             | AB'MatchDrawn _
-            | ABBA'VictoryA _
-            | ABB'VictoryA _
-            | ABA'MatchDrawn _
-            | ABA'VictoryB _ 
-            | ABBA'VictoryB _
             | ABBA'MatchDrawn _
-            | ABBA'MatchTied _
-            | ABAB'MatchDrawn _
-            | ABAB'MatchTied _
-            | ABAB'VictoryB _
-            | ABAB'VictoryA _
-            | ABB'MatchDrawn _ -> MatchCompleted
+            | ABA'MatchDrawn _
+            | ABB'MatchDrawn _
+            | ABAB'MatchDrawn _ -> MatchCompleted Draw
+        | ABBA'MatchTied _
+            | ABAB'MatchTied _ -> MatchCompleted Tie
+        | ABBA'VictoryA _
+            | ABB'VictoryA _
+            | ABAB'VictoryA _ -> MatchCompleted WinTeamA
+        | ABA'VictoryB _ 
+            | ABBA'VictoryB _
+            | ABAB'VictoryB _ -> MatchCompleted WinTeamB
         | AB'CompletedPossibleFollowOn _ -> AwaitingFollowOnDecision
         | A'Ongoing a1 -> Innings.summaryState a1 |> InningsInProgress
         | AB'Ongoing (_, b1) -> Innings.summaryState b1 |> InningsInProgress

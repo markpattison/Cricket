@@ -56,6 +56,7 @@ let init () : Model * Cmd<Msg> =
         PlayerRecords = Map.empty
         LivePlayerRecords = Map.empty
         InningsExpanded = []
+        Series = Series.create "England" "India"
     }, []
 
 let checkForNewInnings model =
@@ -75,11 +76,21 @@ let update msg model =
             let nowCompleted = Match.isCompleted updatedMatch
             let justCompleted = nowCompleted && not alreadyCompleted
             let updatedRecords = Averages.updatePlayersForMatch model.PlayerRecords updatedMatch
+            let updatedSeries =
+                if justCompleted then
+                    let result =
+                        match MatchState.summaryState updatedMatch.State with
+                        | MatchCompleted result -> result
+                        | _ -> NoResult
+                    Series.update model.Series result BatFirst.Team1 // TODO change this if not always Team1 batting first
+                else
+                    model.Series
             {
                 model with
                     Match = updatedMatch
                     PlayerRecords = if justCompleted then updatedRecords else model.PlayerRecords
                     LivePlayerRecords = updatedRecords
+                    Series = updatedSeries
             }
             |> checkForNewInnings
         updated, []
