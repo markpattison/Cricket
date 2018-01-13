@@ -11,6 +11,7 @@
   <ItemGroup>
     <Compile Include="UpdateOptions.fs" />
     <Compile Include="SimpleCaptain.fs" />
+    <Compile Include="RandomBall.fs" />
     <Compile Include="MatchRunner.fs" />
   </ItemGroup>
   <Import Project="..\.paket\Paket.Restore.targets" />

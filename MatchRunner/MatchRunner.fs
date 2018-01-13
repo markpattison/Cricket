@@ -71,16 +71,11 @@ module MatchRunner =
             | SummaryInningsState.Completed -> failwith "invalid innings state"
 
     let continueInningsBall match' =
-        let ball =
-            match random.Next(0, 100) with
-            | x when x <= 2 -> Bowled
-            | x when x <= 4 -> LBW
-            | x when x <= 5 -> RunOutStriker (0, false)
-            | x when x >= 99 -> Six
-            | x when x >= 97 -> Four
-            | x when x >= 95 -> ScoreRuns 2
-            | x when x >= 3 -> ScoreRuns 1
-            | _ -> DotBall
+        let innings = match'.State |> MatchState.currentInnings
+        let batsman = innings |> Innings.batsmanFacingNext
+        let bowler = innings |> Innings.bowlerBowlingNext
+
+        let ball = RandomBall.ball batsman bowler
         match'
         |> Match.updateCurrentInnings (UpdateForBall ball)
         |> runCaptains

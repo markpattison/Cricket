@@ -57,6 +57,10 @@ type InningsUpdate =
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix )>]
 module Innings =
 
+    type ReadyForBall =
+        | Ready of striker : Player * nonStriker : Player * bowler : Player
+        | NotReady of string
+
     let (|InningsOngoing|InningsCompleted|) (innings: Innings) =
         if innings.IsCompleted then InningsCompleted innings else InningsOngoing innings
 
@@ -79,6 +83,24 @@ module Innings =
         | 10, _ -> sprintf "%i all out" state.GetRuns
         | w, true -> sprintf "%i/%i declared" state.GetRuns w
         | w, false -> sprintf "%i/%i" state.GetRuns w
+
+    let private readyForBall (state: Innings) =
+        match state.IsCompleted, state.EndFacingNext, state.BatsmanAtEnd1, state.BatsmanAtEnd2, state.BowlerToEnd1, state.BowlerToEnd2 with
+        | false, End1, Some bat1, Some bat2, Some bowl1, _ -> Ready(striker = bat1, nonStriker = bat2, bowler = bowl1)
+        | false, End2, Some bat1, Some bat2, _, Some bowl2 -> Ready(striker = bat2, nonStriker = bat1, bowler = bowl2)
+        | false, _, None, _, _, _ | false, _, _, None, _, _ -> NotReady "batsman missing"
+        | false, End1, _, _, None, _ | false, End2, _, _, _, None -> NotReady "bowler missing"
+        | true, _, _, _, _, _ -> NotReady "innings over"
+
+    let batsmanFacingNext (state: Innings) =
+        match state |> readyForBall with
+        | Ready (striker = s) -> s
+        | NotReady msg -> failwith msg
+    
+    let bowlerBowlingNext (state: Innings) =
+        match state |> readyForBall with
+        | Ready (bowler = b) -> b
+        | NotReady msg -> failwith msg
 
     let forPlayer player state =
         List.find (fun (p, _) -> p = player) state.Batsmen |> snd
@@ -115,11 +137,10 @@ module Innings =
         let countsAsBallFaced = BallOutcome.countsAsBallFaced ballOutcome
         let overCompleted = countsAsBallFaced && state.BallsSoFarThisOver = 5
 
-        let striker, nonStriker =
-            match state.EndFacingNext, state.BatsmanAtEnd1, state.BatsmanAtEnd2 with
-            | End1, Some bat1, Some bat2 -> bat1, bat2
-            | End2, Some bat1, Some bat2 -> bat2, bat1
-            | _ -> failwith "cannot bowl ball without two batsmen"
+        let striker, nonStriker, bowler =
+            match state |> readyForBall with
+            | Ready (striker = s; nonStriker = ns; bowler = b) -> s, ns, b
+            | NotReady msg -> failwith msg
 
         let whoOut = BallOutcome.whoOut ballOutcome
 
@@ -136,12 +157,6 @@ module Innings =
             match state.EndFacingNext with
             | End1 -> batsmanAtFacingEnd, batsmanAtNonFacingEnd
             | End2 -> batsmanAtNonFacingEnd, batsmanAtFacingEnd
-
-        let bowler =
-            match state.EndFacingNext, state.BowlerToEnd1, state.BowlerToEnd2 with
-            | End1, Some bowl, _ -> bowl
-            | End2, _, Some bowl -> bowl
-            | _ -> failwith "cannot bowl ball without bowler"
 
         let ballsThisOver = state.BallsThisOver @ [ ballOutcome ]
 
