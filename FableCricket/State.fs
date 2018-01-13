@@ -1,11 +1,11 @@
-module App.State
+module FableCricket.App.State
 
 open Elmish
 open Elmish.Browser.Navigation
 open Elmish.Browser.UrlParser
 open Fable.Import.Browser
-open Global
-open Types
+open FableCricket.Global
+open FableCricket.App.Types
 
 let pageParser: Parser<Page->Page,Page> =
   oneOf [
@@ -23,7 +23,7 @@ let urlUpdate (result: Option<Page>) model =
       { model with currentPage = page }, []
 
 let init result =
-  let (cricket, cricketCmd) = Cricket.State.init()
+  let (cricket, cricketCmd) = FableCricket.LiveMatch.State.init()
   let (model, cmd) =
     urlUpdate result
       { currentPage = CricketPage
@@ -34,5 +34,5 @@ let init result =
 let update msg model =
   match msg with
   | CricketMsg msg ->
-      let (cricket, cricketCmd) = Cricket.State.update msg model.cricket
+      let (cricket, cricketCmd) = FableCricket.LiveMatch.State.update msg model.cricket
       { model with cricket = cricket }, Cmd.map CricketMsg cricketCmd

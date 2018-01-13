@@ -1,4 +1,4 @@
-module Cricket.Types
+module FableCricket.LiveMatch.Types
 
 open Cricket.CricketEngine
 

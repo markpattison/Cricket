@@ -1,11 +1,11 @@
-module App.Types
+module FableCricket.App.Types
 
-open Global
+open FableCricket.Global
 
 type Msg =
-  | CricketMsg of Cricket.Types.Msg
+  | CricketMsg of FableCricket.LiveMatch.Types.Msg
 
 type Model = {
     currentPage: Page
-    cricket: Cricket.Types.Model
+    cricket: FableCricket.LiveMatch.Types.Model
   }

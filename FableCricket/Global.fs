@@ -1,4 +1,4 @@
-module Global
+module FableCricket.Global
 
 type Page =
   | CricketPage

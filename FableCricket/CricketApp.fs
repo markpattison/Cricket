@@ -1,15 +1,13 @@
-module App.View
+module FableCricket.App.View
 
 open Elmish
 open Elmish.Browser.Navigation
 open Elmish.Browser.UrlParser
-open Fable.Core
 open Fable.Core.JsInterop
-open Fable.Import
-open Fable.Import.Browser
-open Types
-open App.State
-open Global
+open FableCricket
+open FableCricket.App.Types
+open FableCricket.App.State
+open FableCricket.Global
 
 importAll "./sass/main.sass"
 
@@ -43,7 +41,7 @@ let root model dispatch =
     function
     | AboutPage -> Info.View.root
     | AveragesPage -> Averages.View.root model.cricket
-    | CricketPage -> Cricket.View.root model.cricket (CricketMsg >> dispatch)
+    | CricketPage -> LiveMatch.View.root model.cricket (CricketMsg >> dispatch)
 
   div
     []

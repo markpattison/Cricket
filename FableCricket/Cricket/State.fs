@@ -1,4 +1,4 @@
-module Cricket.State
+module FableCricket.LiveMatch.State
 
 open Cricket.CricketEngine
 open Cricket.MatchRunner

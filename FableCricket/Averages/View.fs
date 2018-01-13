@@ -1,13 +1,10 @@
-module Averages.View
+module FableCricket.Averages.View
 
 open Fable.Helpers.React
 open Fable.Helpers.React.Props
 
-
 open Cricket.CricketEngine
 open Cricket.CricketEngine.Formatting
-
-open Cricket.Types
 open Cricket.CricketEngine.Averages
 
 let showIndividualBatting (batting: BattingAverage) =
@@ -83,7 +80,7 @@ let showSeriesSummary series =
     div [ ClassName "level" ] [ str summary ]
 
 // main render method
-let root model =
+let root (model: FableCricket.LiveMatch.Types.Model) =
     div []
         [
            showSeriesSummary model.Series

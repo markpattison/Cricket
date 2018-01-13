@@ -1,7 +1,9 @@
-module Info.View
+module FableCricket.Info.View
 
 open Fable.Helpers.React
 open Fable.Helpers.React.Props
+
+open FableCricket
 
 let root =
   div

@@ -1,4 +1,4 @@
-module Cricket.View
+module FableCricket.LiveMatch.View
 
 open Fable.Helpers.React
 open Fable.Helpers.React.Props
