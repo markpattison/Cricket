@@ -2,7 +2,10 @@
 
 [<CustomEquality; CustomComparison>]
 type Player =
-    { ID: int; Name: string }
+    {
+        ID: int
+        Name: string
+    }
 
     override _this.Equals(obj2) =
         match obj2 with

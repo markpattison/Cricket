@@ -4,7 +4,7 @@ open Cricket.CricketEngine
 
 module MatchRunner =
 
-    let random = new System.Random()
+    let random = System.Random()
 
     let private optionalCanDeclare battingTeam match' =
         let response = SimpleCaptain.replyOptional (battingTeam, CanDeclare) match'
@@ -40,7 +40,7 @@ module MatchRunner =
         let option = getOption match'
         match option with
         | ModalMessageToCaptain _ -> failwith "shouldn't happen"
-        | ContinueInnings _ -> [ ContinueInningsBallUI; ContinueInningsOverUI ]
+        | ContinueInnings _ -> [ ContinueInningsBallUI; ContinueInningsOverUI(*; ContinueInningsInningsUI*) ]
         | UpdateOptions.StartMatch -> [ StartMatchUI ]
         | UpdateOptions.StartNextInnings -> [ StartNextInningsUI ]
         | UpdateOptions.MatchOver -> [ MatchOverUI ]
@@ -70,20 +70,26 @@ module MatchRunner =
             | MidOver -> match' |> optionalCanDeclare battingTeam
             | SummaryInningsState.Completed -> failwith "invalid innings state"
 
-    let continueInningsBall match' =
+    let continueInningsBall attributes match' =
         let innings = match'.State |> MatchState.currentInnings
         let batsman = innings |> Innings.batsmanFacingNext
         let bowler = innings |> Innings.bowlerBowlingNext
 
-        let ball = RandomBall.ball batsman bowler
+        let ball = RandomBall.ball attributes batsman bowler
         match'
         |> Match.updateCurrentInnings (UpdateForBall ball)
         |> runCaptains
     
-    let rec continueInningsOver match' =
-        let updated = continueInningsBall match'
+    let rec continueInningsOver attributes match' =
+        let updated = continueInningsBall attributes match'
         match updated.State |> MatchState.summaryState with
-        | InningsInProgress MidOver -> continueInningsOver updated
+        | InningsInProgress MidOver -> continueInningsOver attributes updated
+        | _ -> updated
+
+    let rec continueInningsInnings attributes match' =
+        let updated = continueInningsBall attributes match'
+        match updated.State |> MatchState.summaryState with
+        | InningsInProgress _ -> continueInningsInnings attributes updated
         | _ -> updated
 
     let updateMatchState update match' =

@@ -1,3 +1,6 @@
+## New in 0.4.2 (Released 2018/01/14)
+* Calibrated batting and bowling skill levels
+
 ## New in 0.4.1 (Released 2018/01/08)
 * Correct match summary when team batting second wins by an innings.
 * Show wickets/all out/declared in scorecard total.

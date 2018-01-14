@@ -1,6 +1,7 @@
 module FableCricket.LiveMatch.Types
 
 open Cricket.CricketEngine
+open Cricket.MatchRunner
 
 type Model =
     {
@@ -9,6 +10,7 @@ type Model =
         LivePlayerRecords: Map<Player, PlayerRecord>
         InningsExpanded: bool list
         Series: Series
+        PlayerAttributes: PlayerAttributes
     }
 
 type Msg =
@@ -16,5 +18,6 @@ type Msg =
     | StartNextInningsMessage
     | ContinueInningsBallMessage
     | ContinueInningsOverMessage
+    | ContinueInningsInningsMessage
     | ResetMatchMessage
     | ToggleInningsExpandedMessage of int

@@ -23,6 +23,7 @@ type UpdateOptionsForUI =
     | StartNextInningsUI
     | ContinueInningsBallUI
     | ContinueInningsOverUI
+    | ContinueInningsInningsUI
     | MatchOverUI
 
 type OptionalMessageResult =

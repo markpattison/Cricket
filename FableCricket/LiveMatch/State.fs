@@ -7,43 +7,52 @@ open Elmish
 
 open Types
 
+let players =
+    [
+        "GA Gooch",      1.00, 0.50
+        "MA Atherton",   1.05, 0.60
+        "DI Gower",      1.00, 0.50
+        "AJ Lamb",       0.90, 0.50
+        "RA Smith",      0.95, 0.50
+        "JE Morris",     0.90, 0.50
+        "RC Russell",    0.85, 0.50
+        "CC Lewis",      0.80, 0.70
+        "EE Hemmings",   0.70, 0.65
+        "ARC Fraser",    0.65, 0.75
+        "DE Malcolm",    0.60, 0.70
+        "RJ Shastri",    0.95, 0.70
+        "NS Sidhu",      0.90, 0.70
+        "SV Manjrekar",  1.00, 0.70
+        "DB Vengsarkar", 0.90, 0.70
+        "M Azharuddin",  1.00, 0.70
+        "SR Tendulkar",  1.05, 0.70
+        "M Prabhakar",   0.90, 0.70
+        "N Kapil Dev",   0.85, 0.75
+        "KS More",       0.80, 0.70
+        "SK Sharma",     0.70, 0.65
+        "ND Hirwani",    0.65, 0.70
+    ]
+
 let newMatch =
     {
         TeamA =
             {
                 Name = "England"
                 Players =
-                    [|
-                        { Name = "GA Gooch"; ID = 1 }
-                        { Name = "MA Atherton"; ID = 2 }
-                        { Name = "DI Gower"; ID = 3 }
-                        { Name = "AJ Lamb"; ID = 4 }
-                        { Name = "RA Smith"; ID = 5 }
-                        { Name = "JE Morris"; ID = 6 }
-                        { Name = "RC Russell"; ID = 7 }
-                        { Name = "CC Lewis"; ID = 8 }
-                        { Name = "EE Hemmings"; ID = 9 }
-                        { Name = "ARC Fraser"; ID = 10 }
-                        { Name = "DE Malcolm"; ID = 11 }
-                    |]
+                    players
+                    |> List.take 11
+                    |> List.mapi (fun n (name, _, _) -> { Name = name; ID = n })
+                    |> List.toArray
             }
         TeamB =
             {
                 Name = "India"
                 Players =
-                    [|
-                        { Name = "RJ Shastri"; ID = 12 }
-                        { Name = "NS Sidhu"; ID = 13 }
-                        { Name = "SV Manjrekar"; ID = 14 }
-                        { Name = "DB Vengsarkar"; ID = 15 }
-                        { Name = "M Azharuddin"; ID = 16 }
-                        { Name = "SR Tendulkar"; ID = 17 }
-                        { Name = "M Prabhakar"; ID = 18 }
-                        { Name = "N Kapil Dev"; ID = 19 }
-                        { Name = "KS More"; ID = 20 }
-                        { Name = "SK Sharma"; ID = 21 }
-                        { Name = "ND Hirwani"; ID = 22 }
-                    |]
+                    players
+                    |> List.skip 11
+                    |> List.take 11
+                    |> List.mapi (fun n (name, _, _) -> { Name = name; ID = 11 + n })
+                    |> List.toArray
             }
         State = NotStarted
         Rules = { FollowOnMargin = 200 }
@@ -57,6 +66,13 @@ let init () : Model * Cmd<Msg> =
         LivePlayerRecords = Map.empty
         InningsExpanded = []
         Series = Series.create "England" "India"
+        PlayerAttributes =
+            {
+                Attributes =
+                    players
+                    |> List.mapi (fun n (_, bat, bowl) -> n, { BattingSkill = bat; BowlingSkill = bowl })
+                    |> Map.ofList
+            }
     }, []
 
 let checkForNewInnings model =
@@ -95,8 +111,9 @@ let update msg model =
             |> checkForNewInnings
         updated, []
     match msg with
-    | ContinueInningsBallMessage -> updateMatch (MatchRunner.continueInningsBall)
-    | ContinueInningsOverMessage -> updateMatch (MatchRunner.continueInningsOver)
+    | ContinueInningsBallMessage -> updateMatch (MatchRunner.continueInningsBall model.PlayerAttributes)
+    | ContinueInningsOverMessage -> updateMatch (MatchRunner.continueInningsOver model.PlayerAttributes)
+    | ContinueInningsInningsMessage -> updateMatch (MatchRunner.continueInningsInnings model.PlayerAttributes)
     | StartMatchMessage -> updateMatch (MatchRunner.updateMatchState MatchUpdate.StartMatch)
     | StartNextInningsMessage -> updateMatch (MatchRunner.updateMatchState MatchUpdate.StartNextInnings)
     | ResetMatchMessage -> { model with Match = newMatch; InningsExpanded = [] }, []

@@ -6,15 +6,34 @@ module RandomBall =
 
     let random = System.Random()
 
-    let ball batsman bowler =
-        match random.Next(0, 100) with
-        | x when x <= 2 -> Bowled
-        | x when x <= 4 -> LBW
-        | x when x <= 5 -> RunOutStriker (0, false)
-        | x when x >= 99 -> Six
-        | x when x >= 97 -> Four
-        | x when x >= 95 -> ScoreRuns 2
-        | x when x >= 3 -> ScoreRuns 1
+    let twoNormalSamples mu1 sigma1 mu2 sigma2 =
+        // Box-Muller
+        let u = random.NextDouble()
+        let v = random.NextDouble()
+        let c = sqrt (-2.0 * log u)
+        let x = c * cos (2.0 * System.Math.PI * v)
+        let y = c * sin (2.0 * System.Math.PI * v)
+        (mu1 + sigma1 * x, mu2 + sigma2 * y)
+
+    let ball attributes batsman bowler =
+        let batSkill = PlayerAttributes.battingSkill attributes batsman
+        let bowlSkill = PlayerAttributes.bowlingSkill attributes bowler
+
+        let batSigma = 1.291 - 0.339 * batSkill
+        let bowlSigma = 1.191 - 0.314 * bowlSkill
+
+        let xBat, xBowl = twoNormalSamples batSkill batSigma bowlSkill bowlSigma
+
+        let xBall = xBat - xBowl
+
+        match xBall with
+        | x when x <= -3.00 -> Bowled
+        | x when x <= -2.80 -> LBW
+        | x when x <= -2.70 -> RunOutStriker (0, false)
+        | x when x >=  3.20 -> Six
+        | x when x >=  2.40 -> Four
+        | x when x >=  2.00 -> ScoreRuns 2
+        | x when x >=  0.90 -> ScoreRuns 1
         | _ -> DotBall
 
 

@@ -108,6 +108,7 @@ let showOption (option: UpdateOptionsForUI) dispatch =
   | StartNextInningsUI -> simpleButton "Start next innings" StartNextInningsMessage dispatch
   | ContinueInningsBallUI -> simpleButton "Continue (ball)" ContinueInningsBallMessage dispatch
   | ContinueInningsOverUI -> simpleButton "Continue (over)" ContinueInningsOverMessage dispatch
+  | ContinueInningsInningsUI -> simpleButton "Continue (innings)" ContinueInningsInningsMessage dispatch
   | MatchOverUI -> simpleButton "Reset match" ResetMatchMessage dispatch
 
 let showOptions match' dispatch =
