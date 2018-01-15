@@ -44,17 +44,7 @@ type InningsUpdate =
     | SendInBowler of Player
     | UpdateForBall of BallOutcome
 
-//    member _this.GetFacingBatsman =
-//        let indexOfFacingBatsman =
-//            match _this.IsDeclared, _this.GetWickets, _this.EndFacingNext with
-//            | true, _, _ | _, 10, _ -> failwith "innings over"
-//            | _, _, End1 -> _this.IndexOfBatsmanAtEnd1
-//            | _, _, End2 -> _this.IndexOfBatsmanAtEnd2
-//        match indexOfFacingBatsman with
-//        | None -> failwith "facing batsman not found"
-//        | Some n -> _this.Individuals.Item n
-
-[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix )>]
+[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Innings =
 
     type ReadyForBall =

@@ -32,7 +32,7 @@ type WhoOut =
     | NonStriker
     | Nobody
 
-[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix )>]
+[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module BallOutcome =
     let getRuns ball =
         match ball with

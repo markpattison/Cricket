@@ -8,7 +8,7 @@ type BowlingAnalysis =
         Wickets: int;
     }
 
-[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix )>]
+[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module BowlingAnalysis =
 
     let create =

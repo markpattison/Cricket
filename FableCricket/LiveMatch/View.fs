@@ -68,7 +68,7 @@ let showBowling innings =
   div [] [ table [ ClassName "table is-fullwidth" ] rows ]
 
 let showInnings ((team, inningsNumber, innings), expanded) index dispatch =
-  let teamInnings = sprintf "%s %s" team (formatInningsNumber inningsNumber)
+  let teamInnings = sprintf "%s %s" team.Name (formatInningsNumber inningsNumber)
   let score = Innings.summary innings
   div [ ClassName "box" ]
     [

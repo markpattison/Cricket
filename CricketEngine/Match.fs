@@ -14,6 +14,7 @@ type Match =
 module Match =
     
     let updateMatchState update match' = { match' with State = MatchState.update match'.Rules update match'.State }
+    
     let updateCurrentInnings update = updateMatchState (UpdateInnings update)
 
     let newMatch rules teamA teamB =
@@ -22,15 +23,15 @@ module Match =
     let isCompleted match' =
         summaryStateForPlayerRecords match'.State = Completed
 
-    let teamName match' team =
-        match team with
-        | TeamA -> match'.TeamA.Name
-        | TeamB -> match'.TeamB.Name
+    let private team match' t =
+        match t with
+        | TeamA -> match'.TeamA
+        | TeamB -> match'.TeamB
 
     let summaryStatus match' =
-        MatchState.summaryStatus (teamName match' TeamA) (teamName match' TeamB) match'.State
+        MatchState.summaryStatus (team match' TeamA) (team match' TeamB) match'.State
 
     let inningsList match' =
         match'.State
         |> MatchState.inningsList
-        |> List.map (fun (team, inningsNumber, innings) -> (teamName match' team, inningsNumber, innings))
+        |> List.map (fun (t, inningsNumber, innings) -> (team match' t, inningsNumber, innings))
