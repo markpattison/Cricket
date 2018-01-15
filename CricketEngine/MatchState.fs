@@ -241,24 +241,24 @@ module MatchState =
         | A'Ongoing _ | ABA'Ongoing _ | ABBA'Ongoing _ -> TeamB
         | AB'Ongoing _ | ABB'Ongoing _ | ABAB'Ongoing _ -> TeamA
 
-    let totalRunsA state = 
+    let totalRunsAB state = 
         match state with
-        | NotStarted | Abandoned -> 0
+        | NotStarted | Abandoned -> 0, 0
         | A'Ongoing a1
             | A'Completed a1
-            | A'MatchDrawn a1 -> a1.GetRuns
+            | A'MatchDrawn a1 -> a1.GetRuns, 0
         | AB'Ongoing(a1, b1)
             | AB'CompletedNoFollowOn(a1, b1)
             | AB'CompletedPossibleFollowOn(a1, b1)
-            | AB'MatchDrawn(a1, b1) -> a1.GetRuns
+            | AB'MatchDrawn(a1, b1) -> a1.GetRuns, b1.GetRuns
         | ABA'Ongoing(a1, b1, a2)
             | ABA'VictoryB(a1, b1, a2)
             | ABA'Completed(a1, b1, a2)
-            | ABA'MatchDrawn(a1, b1, a2) -> a1.GetRuns + a2.GetRuns
+            | ABA'MatchDrawn(a1, b1, a2) -> a1.GetRuns + a2.GetRuns, b1.GetRuns
         | ABB'Ongoing(a1, b1, b2)
             | ABB'VictoryA(a1, b1, b2)
             | ABB'Completed(a1, b1, b2)
-            | ABB'MatchDrawn(a1, b1, b2) -> a1.GetRuns
+            | ABB'MatchDrawn(a1, b1, b2) -> a1.GetRuns, b1.GetRuns + b2.GetRuns
         | ABAB'Ongoing(a1, b1, a2, b2)
             | ABAB'VictoryA(a1, b1, a2, b2)
             | ABAB'VictoryB(a1, b1, a2, b2)
@@ -268,42 +268,15 @@ module MatchState =
             | ABBA'VictoryA(a1, b1, b2, a2)
             | ABBA'VictoryB(a1, b1, b2, a2)
             | ABBA'MatchDrawn(a1, b1, b2, a2)
-            | ABBA'MatchTied(a1, b1, b2, a2) -> a1.GetRuns + a2.GetRuns
-
-    let totalRunsB state = 
-        match state with
-        | NotStarted | Abandoned -> 0
-        | A'Ongoing a1
-            | A'Completed a1
-            | A'MatchDrawn a1 -> 0
-        | AB'Ongoing(a1, b1)
-            | AB'CompletedNoFollowOn(a1, b1)
-            | AB'CompletedPossibleFollowOn(a1, b1)
-            | AB'MatchDrawn(a1, b1) -> b1.GetRuns
-        | ABA'Ongoing(a1, b1, a2)
-            | ABA'VictoryB(a1, b1, a2)
-            | ABA'Completed(a1, b1, a2)
-            | ABA'MatchDrawn(a1, b1, a2) -> b1.GetRuns
-        | ABB'Ongoing(a1, b1, b2)
-            | ABB'VictoryA(a1, b1, b2)
-            | ABB'Completed(a1, b1, b2)
-            | ABB'MatchDrawn(a1, b1, b2) -> b1.GetRuns + b2.GetRuns
-        | ABAB'Ongoing(a1, b1, a2, b2)
-            | ABAB'VictoryA(a1, b1, a2, b2)
-            | ABAB'VictoryB(a1, b1, a2, b2)
-            | ABAB'MatchDrawn(a1, b1, a2, b2)
-            | ABAB'MatchTied(a1, b1, a2, b2)
-            | ABBA'Ongoing(a1, b1, b2, a2)
-            | ABBA'VictoryA(a1, b1, b2, a2)
-            | ABBA'VictoryB(a1, b1, b2, a2)
-            | ABBA'MatchDrawn(a1, b1, b2, a2)
-            | ABBA'MatchTied(a1, b1, b2, a2) -> b1.GetRuns + b2.GetRuns
+            | ABBA'MatchTied(a1, b1, b2, a2) -> a1.GetRuns + a2.GetRuns, b1.GetRuns + b2.GetRuns
 
     let leadA state =
-        (totalRunsA state) - (totalRunsB state)
+        let runsA, runsB = totalRunsAB state
+        runsA - runsB
 
     let leadB state =
-        (totalRunsB state) - (totalRunsA state)
+        let runsA, runsB = totalRunsAB state
+        runsB - runsA
 
 
 
