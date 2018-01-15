@@ -3,6 +3,10 @@ module FableCricket.LiveMatch.View
 open Fable.Helpers.React
 open Fable.Helpers.React.Props
 
+open Fulma.Elements
+open Fulma.Extra.FontAwesome
+open Fulma.Layouts
+
 open Cricket.CricketEngine
 open Cricket.CricketEngine.Formatting
 open Cricket.MatchRunner
@@ -10,17 +14,14 @@ open Cricket.MatchRunner
 open Types
 
 let simpleButton txt action dispatch =
-  div
-    [ ClassName "column is-narrow" ]
-    [ a
-        [ ClassName "button"
-          OnClick (fun _ -> action |> dispatch) ]
-        [ str txt ] ]
+  Button.button_a
+    [ Button.onClick (fun _ -> action |> dispatch) ]
+    [ str txt ]
 
 let showSummaryStatus match' =
   let summary = match' |> Match.summaryStatus
-  div
-    [ ClassName "subtitle is-5" ]
+  Heading.h5
+    [ Heading.isSubtitle ]
     [ str summary ]
 
 let howOutString (howOut: HowOut option) =
@@ -37,7 +38,7 @@ let showIndividualInnings (p: Player, ii) =
   tr [] [
     td [] [str p.Name]
     td [] [str (howOutString ii.HowOut)]
-    td [ ClassName "has-text-weight-bold" ] [str (ii.Score.ToString())]
+    td [ ClassName "has-text-weight-bold" ]  [ str (ii.Score.ToString()) ]
     td [] [str (ii.BallsFaced.ToString())]
     td [] [str (ii.Fours.ToString())]
     td [] [str (ii.Sixes.ToString())]
@@ -65,12 +66,12 @@ let showBowling innings =
   let allBowling = tbody [] (innings.Bowlers |> List.map showIndividualBowling)
   let rows = [ headerRow ; allBowling ]
 
-  div [] [ table [ ClassName "table is-fullwidth" ] rows ]
+  Table.table [ Table.isFullwidth ] rows
 
 let showInnings ((team, inningsNumber, innings), expanded) index dispatch =
   let teamInnings = sprintf "%s %s" team.Name (formatInningsNumber inningsNumber)
   let score = Innings.summary innings
-  div [ ClassName "box" ]
+  Box.box' []
     [
       yield div
         [
@@ -82,9 +83,9 @@ let showInnings ((team, inningsNumber, innings), expanded) index dispatch =
             [
               div [ ClassName "level-item" ]
                 [
-                  span
-                    [ ClassName "icon" ]
-                    [ i [ ClassName (if expanded then "fa fa-caret-down" else "fa fa-caret-right") ] [] ]
+                  Icon.faIcon
+                    []
+                    [ Fa.icon (if expanded then Fa.I.CaretDown else Fa.I.CaretRight) ]
                   str teamInnings
                 ]
             ]

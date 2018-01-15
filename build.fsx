@@ -11,6 +11,7 @@ let appReferences =
         -- "**/*Tests.csproj"
         -- "**/*Tests.fsproj"
         -- "**/*Fable*.fsproj"
+        -- "packages/**/*.*"
 
 let fableDirectory = "FableCricket"
 let fableReferences =   !! (fableDirectory + "/*.fsproj")

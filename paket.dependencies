@@ -4,6 +4,7 @@ framework: auto-detect
 
 nuget FSharp.Core
 nuget FSUnit
+nuget Fulma
 nuget NUnit
 nuget NUnit3TestAdapter
 nuget Microsoft.NET.Test.Sdk
