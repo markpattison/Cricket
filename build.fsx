@@ -6,24 +6,23 @@ open Fake.NpmHelper
 
 // Filesets
 let appReferences = 
-    !! "**/*.csproj"
-        ++ "**/*.fsproj"
-        -- "**/*Tests.csproj"
-        -- "**/*Tests.fsproj"
-        -- "**/*Fable*.fsproj"
-        -- "packages/**/*.*"
+    // !! "src/**/*.csproj"
+    //     ++ "src/**/*.fsproj"
+    //     -- "src/**/*Tests.csproj"
+    //     -- "src/**/*Tests.fsproj"
+    //     -- "src/**/*Fable*.fsproj"
+    !! "src/CricketEngine/CricketEngine.fsproj"
+        ++ "src/MatchRunner/MatchRunner.fsproj"
 
-let fableDirectory = "FableCricket"
+let fableDirectory = "src/FableCricket"
 let fableReferences =   !! (fableDirectory + "/*.fsproj")
 let fableReference = fableReferences |> Seq.exactlyOne
 
 let unitTestReferences =
-    !! "**/*UnitTests.csproj"
-        ++ "**/*UnitTests.fsproj"
+    !! "src/CricketEngineUnitTests/CricketEngineUnitTests.fsproj"
 
 let acceptanceTestReferences =
-    !! "**/*AcceptanceTests.csproj"
-        ++ "**/*AcceptanceTests.fsproj"
+    !! "src/CricketEngineAcceptanceTests/CricketEngineAcceptanceTests.fsproj"
 
 let dotnetcliVersion = "2.1.3"
 let mutable dotnetExePath = "dotnet"
