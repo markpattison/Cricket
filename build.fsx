@@ -56,28 +56,28 @@ Target "UpdateVersionNumber" (fun _ ->
 Target "Restore" (fun _ ->
     [ appReferences; unitTestReferences; acceptanceTestReferences; fableReferences ]
     |> Seq.concat
-    |> Seq.iter (fun proj -> DotNetCli.Restore (fun p -> { p with Project = proj; ToolPath = dotnetExePath }))
+    |> Seq.iter (fun proj -> DotNetCli.Restore (fun p -> { p with Project = proj; ToolPath = dotnetExePath; AdditionalArgs = [ "--no-dependencies" ] }))
 )
 
 Target "BuildApp" (fun _ ->
     appReferences
-    |> Seq.iter (fun proj -> DotNetCli.Build (fun p -> { p with Project = proj; ToolPath = dotnetExePath }))
+    |> Seq.iter (fun proj -> DotNetCli.Build (fun p -> { p with Project = proj; ToolPath = dotnetExePath; AdditionalArgs = [ "--no-dependencies  --no-restore" ] }))
 )
 
 Target "BuildTests" (fun _ ->
     [ unitTestReferences; acceptanceTestReferences ]
     |> Seq.concat
-    |> Seq.iter (fun proj -> DotNetCli.Build (fun p -> { p with Project = proj; ToolPath = dotnetExePath }))
+    |> Seq.iter (fun proj -> DotNetCli.Build (fun p -> { p with Project = proj; ToolPath = dotnetExePath; AdditionalArgs = [ "--no-dependencies  --no-restore" ] }))
 )
 
 Target "RunUnitTests" (fun _ ->
     unitTestReferences
-    |> Seq.iter (fun proj -> DotNetCli.Test (fun p -> { p with Project = proj; ToolPath = dotnetExePath }))
+    |> Seq.iter (fun proj -> DotNetCli.Test (fun p -> { p with Project = proj; ToolPath = dotnetExePath; AdditionalArgs = [ "--no-build  --no-restore" ] }))
 )
 
 Target "RunAcceptanceTests" (fun _ ->
     acceptanceTestReferences
-    |> Seq.iter (fun proj -> DotNetCli.Test (fun p -> { p with Project = proj; ToolPath = dotnetExePath }))
+    |> Seq.iter (fun proj -> DotNetCli.Test (fun p -> { p with Project = proj; ToolPath = dotnetExePath; AdditionalArgs = [ "--no-build  --no-restore" ] }))
 )
 
 Target "NpmInstall" (fun _ ->
