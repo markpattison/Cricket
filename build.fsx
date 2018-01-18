@@ -6,17 +6,12 @@ open Fake.NpmHelper
 
 // Filesets
 let appReferences = 
-    // !! "src/**/*.csproj"
-    //     ++ "src/**/*.fsproj"
-    //     -- "src/**/*Tests.csproj"
-    //     -- "src/**/*Tests.fsproj"
-    //     -- "src/**/*Fable*.fsproj"
-    !! "src/CricketEngine/CricketEngine.fsproj"
-        ++ "src/MatchRunner/MatchRunner.fsproj"
+    !! "src/MatchRunner/MatchRunner.fsproj"
+    ++ "src/CricketEngine/CricketEngine.fsproj"
 
 let fableDirectory = "src/FableCricket"
-let fableReferences =   !! (fableDirectory + "/*.fsproj")
-let fableReference = fableReferences |> Seq.exactlyOne
+let fableReferences =
+    !! "src/FableCricket/FableCricket.fsproj"
 
 let unitTestReferences =
     !! "src/CricketEngineUnitTests/CricketEngineUnitTests.fsproj"
@@ -85,13 +80,13 @@ Target "NpmInstall" (fun _ ->
 )
 
 Target "BuildFable" (fun _ ->
-    fableReference
-    |> (fun proj -> DotNetCli.RunCommand (fun p -> { p with WorkingDir = fableDirectory; ToolPath = dotnetExePath }) ("fable npm-build " + proj))
+    fableReferences
+    |> Seq.iter (fun proj -> DotNetCli.RunCommand (fun p -> { p with WorkingDir = fableDirectory; ToolPath = dotnetExePath }) ("fable npm-build " + proj))
 )
 
 Target "RunFable" (fun _ ->
-    fableReference
-    |> (fun proj -> DotNetCli.RunCommand (fun p -> { p with WorkingDir = fableDirectory; ToolPath = dotnetExePath }) ("fable npm-start " + proj))
+    fableReferences
+    |> Seq.iter (fun proj -> DotNetCli.RunCommand (fun p -> { p with WorkingDir = fableDirectory; ToolPath = dotnetExePath }) ("fable npm-start " + proj))
 )
 
 // Build order
