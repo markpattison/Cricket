@@ -6,8 +6,8 @@ open Fake.NpmHelper
 
 // Filesets
 let appReferences = 
-    !! "src/MatchRunner/MatchRunner.fsproj"
-    ++ "src/CricketEngine/CricketEngine.fsproj"
+    !! "src/CricketEngine/CricketEngine.fsproj"
+    ++ "src/MatchRunner/MatchRunner.fsproj"
 
 let fableDirectory = "src/FableCricket"
 let fableReferences =
@@ -66,12 +66,12 @@ Target "BuildTests" (fun _ ->
 
 Target "RunUnitTests" (fun _ ->
     unitTestReferences
-    |> Seq.iter (fun proj -> DotNetCli.Test (fun p -> { p with Project = proj; ToolPath = dotnetExePath; AdditionalArgs = [ "--no-build  --no-restore" ] }))
+    |> Seq.iter (fun proj -> DotNetCli.Test (fun p -> { p with Project = proj; ToolPath = dotnetExePath; AdditionalArgs = [ "--no-build  --no-restore --logger:trx" ] }))
 )
 
 Target "RunAcceptanceTests" (fun _ ->
     acceptanceTestReferences
-    |> Seq.iter (fun proj -> DotNetCli.Test (fun p -> { p with Project = proj; ToolPath = dotnetExePath; AdditionalArgs = [ "--no-build  --no-restore" ] }))
+    |> Seq.iter (fun proj -> DotNetCli.Test (fun p -> { p with Project = proj; ToolPath = dotnetExePath; AdditionalArgs = [ "--no-build  --no-restore --logger:trx" ] }))
 )
 
 Target "NpmInstall" (fun _ ->
