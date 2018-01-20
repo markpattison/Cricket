@@ -44,11 +44,29 @@ let showIndividualInnings (p: Player, ii) =
     td [] [str (ii.Sixes.ToString())]
   ]
 
+let showFallOfWickets innings =
+  if List.isEmpty innings.FallOfWickets then
+    None
+  else
+    let wicketText =
+      innings.FallOfWickets
+      |> List.map (fun fow -> sprintf "%i-%i (%s, %i.%i overs)" fow.Wicket fow.Runs fow.BatsmanOut.Name fow.Overs fow.BallsWithinOver)
+      |> String.concat ", "
+    Some ("Fall of wickets: " + wicketText)
+
 let showBatting innings =
-  let headerRow = thead [] [ tr [ ClassName "has-text-weight-bold" ] [ td [] [str "Batsmen"]; td [] []; td [] [str "R"]; td [] [str "B"]; td [] [str "4"]; td [] [str "6"] ] ]
+  let header = thead [] [ tr [ ClassName "has-text-weight-bold" ] [ td [] [str "Batsmen"]; td [] []; td [] [str "R"]; td [] [str "B"]; td [] [str "4"]; td [] [str "6"] ] ]
   let allIndividualInnings = tbody [] (innings.Batsmen |> List.map showIndividualInnings)
-  let totalRow = tfoot [] [ tr [ ClassName "has-text-weight-bold" ] [ td [] [str "Total"]; td[] [str (oversString innings)]; td[] [str (Innings.summary innings)] ] ]
-  let rows = [ headerRow ; allIndividualInnings; totalRow ]
+  
+  let totalRow = tr [ ClassName "has-text-weight-bold" ] [ td [] [str "Total"]; td[] [str (oversString innings)]; td[] [str (Innings.summary innings)]; td[] []; td[] []; td[] [] ]
+  let fallOfWicketsRow =
+    showFallOfWickets innings
+    |> Option.map (fun s -> tr [ ClassName "is-size-7" ] [ td [ ColSpan 6.0 ] [str s] ])
+    |> Option.toList
+  
+  let footer = tfoot [] ([ totalRow ] @ fallOfWicketsRow)
+
+  let rows = [ header; footer; allIndividualInnings ]
 
   div [] [ table [ ClassName "table is-fullwidth" ] rows ]
 
@@ -114,7 +132,7 @@ let showOption (option: UpdateOptionsForUI) dispatch =
 
 let showOptions match' dispatch =
   let options = MatchRunner.getOptionsUI match'
-  div [ ClassName "level" ] [ div [ ClassName "level-left" ] (options |> List.map (fun option -> div [ ClassName "level-left" ] [ showOption option dispatch ])) ]
+  div [ ClassName "level" ] [ div [ ClassName "buttons level-left" ] (options |> List.map (fun option -> showOption option dispatch)) ]
 
 // main render method
 let root model dispatch =
