@@ -39,6 +39,7 @@ module SampleData =
             BallsThisOver = [];
             BowlerToEnd1 = Some sampleBowler1;
             BowlerToEnd2 = Some sampleBowler2;
+            FallOfWickets = []
         }
 
     let sampleFielder =

@@ -11,16 +11,17 @@ type End =
 
 type Innings =
     {
-        Batsmen: (Player * IndividualInnings) list;
-        Bowlers: (Player * BowlingAnalysis) list;
-        IsDeclared: bool;
-        BatsmanAtEnd1: Player option;
-        BatsmanAtEnd2: Player option;
-        EndFacingNext: End;
-        OversCompleted: int;
-        BallsThisOver: BallOutcome list;
-        BowlerToEnd1: Player option;
+        Batsmen: (Player * IndividualInnings) list
+        Bowlers: (Player * BowlingAnalysis) list
+        IsDeclared: bool
+        BatsmanAtEnd1: Player option
+        BatsmanAtEnd2: Player option
+        EndFacingNext: End
+        OversCompleted: int
+        BallsThisOver: BallOutcome list
+        BowlerToEnd1: Player option
         BowlerToEnd2: Player option
+        FallOfWickets: FallOfWicket list
     }
     member _this.GetRuns =
         _this.Batsmen |> List.sumBy (fun (_, ii) -> ii.Score)
@@ -56,16 +57,17 @@ module Innings =
 
     let create =
         {
-            Batsmen = [];
-            Bowlers = [];
-            IsDeclared = false;
-            BatsmanAtEnd1 = None;
-            BatsmanAtEnd2 = None;
-            EndFacingNext = End1;
-            OversCompleted = 0;
-            BallsThisOver = [];
-            BowlerToEnd1 = None;
-            BowlerToEnd2 = None;
+            Batsmen = []
+            Bowlers = []
+            IsDeclared = false
+            BatsmanAtEnd1 = None
+            BatsmanAtEnd2 = None
+            EndFacingNext = End1
+            OversCompleted = 0
+            BallsThisOver = []
+            BowlerToEnd1 = None
+            BowlerToEnd2 = None
+            FallOfWickets = []
         }
 
     let summary (state: Innings) =
@@ -143,6 +145,11 @@ module Innings =
             | Nobody, false -> Some striker, Some nonStriker
             | Nobody, true -> Some nonStriker, Some striker
 
+        let updatedBatsmen =
+            state.Batsmen
+            |> updateBatsmen (IndividualInnings.update bowler ballOutcome) striker
+            |> updateBatsmen (IndividualInnings.updateNonStriker ballOutcome) nonStriker
+
         let (batsmanAtEnd1, batsmanAtEnd2) =
             match state.EndFacingNext with
             | End1 -> batsmanAtFacingEnd, batsmanAtNonFacingEnd
@@ -150,24 +157,35 @@ module Innings =
 
         let ballsThisOver = state.BallsThisOver @ [ ballOutcome ]
 
-        {
-            state with
-                Batsmen =
-                    state.Batsmen
-                    |> updateBatsmen (IndividualInnings.update bowler ballOutcome) striker
-                    |> updateBatsmen (IndividualInnings.updateNonStriker ballOutcome) nonStriker;
-                Bowlers =
-                    state.Bowlers
-                    |> addBowlerIfNeeded bowler
-                    |> updateBowlers ballOutcome bowler
-                    |> updateBowlersForEndOverIfNeeded overCompleted ballsThisOver bowler
-                BatsmanAtEnd1 = batsmanAtEnd1;
-                BatsmanAtEnd2 = batsmanAtEnd2;
-                EndFacingNext = if overCompleted then state.EndFacingNext.OtherEnd else state.EndFacingNext;
-                OversCompleted = if overCompleted then state.OversCompleted + 1 else state.OversCompleted;
-                BallsThisOver = if overCompleted then [] else ballsThisOver;
-        }
-
+        let interimState =
+            {
+                state with
+                    Batsmen =
+                        state.Batsmen
+                        |> updateBatsmen (IndividualInnings.update bowler ballOutcome) striker
+                        |> updateBatsmen (IndividualInnings.updateNonStriker ballOutcome) nonStriker
+                    Bowlers =
+                        state.Bowlers
+                        |> addBowlerIfNeeded bowler
+                        |> updateBowlers ballOutcome bowler
+                        |> updateBowlersForEndOverIfNeeded overCompleted ballsThisOver bowler
+                    BatsmanAtEnd1 = batsmanAtEnd1;
+                    BatsmanAtEnd2 = batsmanAtEnd2;
+                    EndFacingNext = if overCompleted then state.EndFacingNext.OtherEnd else state.EndFacingNext;
+                    OversCompleted = if overCompleted then state.OversCompleted + 1 else state.OversCompleted;
+                    BallsThisOver = if overCompleted then [] else ballsThisOver;
+            }
+        
+        let newWicket =
+            match whoOut, striker, nonStriker with
+            | Striker, batsmanOut, _ | NonStriker, _, batsmanOut ->
+                Some { Wicket = 1 + state.GetWickets; Runs = updatedBatsmen |> List.sumBy (fun (_, ii) -> ii.Score); BatsmanOut = batsmanOut; Overs = state.OversCompleted; BallsWithinOver = 1 + state.BallsSoFarThisOver }
+            | Nobody, _, _ -> None
+        
+        match newWicket with
+            | Some w -> { interimState with FallOfWickets = state.FallOfWickets @ [ w ] }
+            | None -> interimState
+        
     let private sendInBatsman (nextBatsman: Player) state =
         let nextIndex = List.length state.Batsmen
         match state.BatsmanAtEnd1, state.BatsmanAtEnd2, nextIndex with

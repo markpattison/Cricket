@@ -432,3 +432,55 @@ type SendInNewBowlerTests ()=
     member _x.``same bowler cannot bowl to end 2 then end 1`` ()=
         let testInnings = { innings with BallsThisOver = []; EndFacingNext = End1; BowlerToEnd2 = Some newBowler; OversCompleted = 1 }
         (fun () -> (testInnings |> Innings.update (SendInBowler newBowler) None) |> ignore) |> should throw typeof<System.Exception>
+
+[<System.Diagnostics.CodeAnalysis.SuppressMessage("NameConventions", "MemberNamesMustBePascalCase")>]
+[<TestFixture>]
+type FallOfWicketTests ()=
+
+    let innings, _, _ = SampleData.sampleInningsData
+
+    [<Test>]
+    member _x.``new innings has no wickets fallen`` ()=
+        let newInnings = Innings.create
+
+        newInnings.FallOfWickets |> should equal []
+    
+    [<Test>]
+
+    member _x.``wicket to fall on first ball of innings is recorded correctly`` ()=
+        let updated =
+            innings
+            |> Innings.update (UpdateForBall Bowled) None
+
+        updated.FallOfWickets |> should equal [ { Wicket = 1; Runs = 0; BatsmanOut = SampleData.sampleBatsman1; Overs = 0; BallsWithinOver = 1 } ]
+    
+    [<Test>]
+    member _x.``wicket to fall after scoring is recorded correctly`` ()=
+        let updated =
+            innings
+            |> Innings.update (UpdateForBall (ScoreRuns 3)) None
+            |> Innings.update (UpdateForBall Bowled) None
+
+        updated.FallOfWickets |> should equal [ { Wicket = 1; Runs = 3; BatsmanOut = SampleData.sampleBatsman2; Overs = 0; BallsWithinOver = 2 } ]
+    
+    [<Test>]
+    member _x.``first two wickets to fall are recorded correctly`` ()=
+        let testBatsman = { Name = "sentInBatsman"; ID = 10 }
+    
+        let updated =
+            innings
+            |> Innings.update (UpdateForBall (ScoreRuns 3)) None
+            |> Innings.update (UpdateForBall DotBall) None
+            |> Innings.update (UpdateForBall DotBall) None
+            |> Innings.update (UpdateForBall DotBall) None
+            |> Innings.update (UpdateForBall DotBall) None
+            |> Innings.update (UpdateForBall Bowled) None
+            |> Innings.update (SendInBatsman testBatsman) None
+            |> Innings.update (UpdateForBall (ScoreRuns 2)) None
+            |> Innings.update (UpdateForBall Bowled) None
+
+        updated.FallOfWickets |> should equal
+            [
+                { Wicket = 1; Runs = 3; BatsmanOut = SampleData.sampleBatsman2; Overs = 0; BallsWithinOver = 6 }
+                { Wicket = 2; Runs = 5; BatsmanOut = SampleData.sampleBatsman1; Overs = 1; BallsWithinOver = 2 }
+            ]

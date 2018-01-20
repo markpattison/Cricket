@@ -92,7 +92,8 @@ module ``Acceptance tests`` =
                         OversCompleted = 1;
                         BallsThisOver = [];
                         BowlerToEnd1 = Some teamB.Players.[0];
-                        BowlerToEnd2 = None
+                        BowlerToEnd2 = None;
+                        FallOfWickets = []
                     }
             }
 
@@ -163,7 +164,8 @@ module ``Acceptance tests`` =
                         OversCompleted = 0;
                         BallsThisOver = [ DotBall; ScoreRuns 1; ScoreRuns 1; RunOutNonStriker (1, false) ]
                         BowlerToEnd1 = Some teamB.Players.[0];
-                        BowlerToEnd2 = None
+                        BowlerToEnd2 = None;
+                        FallOfWickets = [ { Wicket = 1; Runs = 3; BatsmanOut = teamA.Players.[1]; Overs = 0; BallsWithinOver = 4 } ]
                     }
             }
 
