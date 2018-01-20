@@ -4,6 +4,7 @@
     <TargetFramework>netcoreapp2.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Player.fs" />
     <Compile Include="Types.fs" />
     <Compile Include="Formatting.fs" />
     <Compile Include="MatchRules.fs" />
