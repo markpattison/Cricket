@@ -1,3 +1,6 @@
+## New in 0.4.3 (Released 2018/01/20)
+* Show fall of wickets
+
 ## New in 0.4.2 (Released 2018/01/14)
 * Calibrated batting and bowling skill levels
 
