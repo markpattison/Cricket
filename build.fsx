@@ -14,10 +14,10 @@ let fableReferences =
     !! "src/FableCricket/FableCricket.fsproj"
 
 let unitTestReferences =
-    !! "src/CricketEngineUnitTests/CricketEngineUnitTests.fsproj"
+    !! "tests/**/*UnitTests.fsproj"
 
 let acceptanceTestReferences =
-    !! "src/CricketEngineAcceptanceTests/CricketEngineAcceptanceTests.fsproj"
+    !! "tests/**/*AcceptanceTests.fsproj"
 
 let dotnetcliVersion = "2.1.3"
 let mutable dotnetExePath = "dotnet"

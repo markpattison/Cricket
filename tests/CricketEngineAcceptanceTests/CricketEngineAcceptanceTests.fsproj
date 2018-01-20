@@ -4,7 +4,7 @@
     <TargetFramework>netcoreapp2.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CricketEngine\CricketEngine.fsproj">
+    <ProjectReference Include="..\..\src\CricketEngine\CricketEngine.fsproj">
       <Name>CricketEngine.fsproj</Name>
     </ProjectReference>
   </ItemGroup>
