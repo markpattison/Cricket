@@ -41,7 +41,7 @@ Target "UpdateVersionNumber" (fun _ ->
     let version =
         match revisionFromCI with
         | None -> release.AssemblyVersion
-        | Some s -> sprintf "%s.%s" release.AssemblyVersion s
+        | Some s -> sprintf "%s build %s" release.AssemblyVersion s
     let versionFiles = !! "**/Version.fs"
     FileHelper.RegexReplaceInFilesWithEncoding @"VersionNumber = "".*""" (sprintf @"VersionNumber = ""%s""" version) System.Text.Encoding.UTF8 versionFiles
     TraceHelper.trace (sprintf @"Version = %s" version)
