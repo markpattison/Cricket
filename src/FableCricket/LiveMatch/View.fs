@@ -14,14 +14,14 @@ open Cricket.MatchRunner
 open Types
 
 let simpleButton txt action dispatch =
-  Button.button_a
-    [ Button.onClick (fun _ -> action |> dispatch) ]
+  Button.button
+    [ Button.OnClick (fun _ -> action |> dispatch) ]
     [ str txt ]
 
 let showSummaryStatus match' =
   let summary = match' |> Match.summaryStatus
   Heading.h5
-    [ Heading.isSubtitle ]
+    [ Heading.IsSubtitle ]
     [ str summary ]
 
 let howOutString (howOut: HowOut option) =
@@ -84,7 +84,7 @@ let showBowling innings =
   let allBowling = tbody [] (innings.Bowlers |> List.map showIndividualBowling)
   let rows = [ headerRow ; allBowling ]
 
-  Table.table [ Table.isFullwidth ] rows
+  Table.table [ Table.IsFullwidth ] rows
 
 let showInnings ((team, inningsNumber, innings), expanded) index dispatch =
   let teamInnings = sprintf "%s %s" team.Name (formatInningsNumber inningsNumber)
