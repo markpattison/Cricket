@@ -4,6 +4,7 @@ open Fable.Helpers.React
 open Fable.Helpers.React.Props
 
 open Fulma.Elements
+open Fulma.Elements.Form
 open Fulma.Extra.FontAwesome
 open Fulma.Layouts
 
@@ -13,10 +14,12 @@ open Cricket.MatchRunner
 
 open Types
 
-let simpleButton txt action dispatch =
-  Button.button
-    [ Button.OnClick (fun _ -> action |> dispatch) ]
-    [ str txt ]
+let simpleButton dispatch (txt, action)  =
+  Control.div []
+    [ Button.button
+        [ Button.OnClick (fun _ -> action |> dispatch) ]
+        [ str txt ]
+    ]
 
 let showSummaryStatus match' =
   let summary = match' |> Match.summaryStatus
@@ -121,18 +124,23 @@ let showAllInnings match' inningsExpanded dispatch =
   let withExpanded = List.zip allInnings inningsExpanded
   div [] (withExpanded |> List.mapi (fun i innings -> showInnings innings i dispatch))
 
-let showOption (option: UpdateOptionsForUI) dispatch =
+let showOption (option: UpdateOptionsForUI) =
   match option with
-  | StartMatchUI -> simpleButton "Start match" StartMatchMessage dispatch
-  | StartNextInningsUI -> simpleButton "Start next innings" StartNextInningsMessage dispatch
-  | ContinueInningsBallUI -> simpleButton "Continue (ball)" ContinueInningsBallMessage dispatch
-  | ContinueInningsOverUI -> simpleButton "Continue (over)" ContinueInningsOverMessage dispatch
-  | ContinueInningsInningsUI -> simpleButton "Continue (innings)" ContinueInningsInningsMessage dispatch
-  | MatchOverUI -> simpleButton "Reset match" ResetMatchMessage dispatch
+  | StartMatchUI -> "Start match", StartMatchMessage
+  | StartNextInningsUI -> "Start next innings", StartNextInningsMessage
+  | ContinueInningsBallUI -> "Continue (ball)", ContinueInningsBallMessage
+  | ContinueInningsOverUI -> "Continue (over)", ContinueInningsOverMessage
+  | ContinueInningsInningsUI -> "Continue (innings)", ContinueInningsInningsMessage
+  | MatchOverUI -> "Reset match", ResetMatchMessage
 
-let showOptions match' dispatch =
+let showOptions dispatch match' =
   let options = MatchRunner.getOptionsUI match'
-  div [ ClassName "level" ] [ div [ ClassName "buttons level-left" ] (options |> List.map (fun option -> showOption option dispatch)) ]
+  Level.level []
+    [ Level.left []
+        [ Field.div [ Field.IsGrouped ]
+            (List.map (showOption >> simpleButton dispatch) options )
+        ]
+    ]
 
 // main render method
 let root model dispatch =
@@ -140,7 +148,7 @@ let root model dispatch =
   div
     []
     [
-      showOptions match' dispatch
+      showOptions dispatch match'
       showSummaryStatus match'
       showAllInnings match' model.InningsExpanded dispatch
     ]
