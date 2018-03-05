@@ -11,13 +11,13 @@ module ``MatchRunner acceptance tests`` =
 
     let teamA =
         {
-            Name = "Team A"
+            TeamName = "Team A"
             Players = [| 1 .. 11 |] |> Array.map (fun n -> { Name = sprintf "batsman %i" n; ID = n })
         }
 
     let teamB =
         {
-            Name = "Team B"
+            TeamName = "Team B"
             Players = [| 1 .. 11 |] |> Array.map (fun n -> { Name = sprintf "bowler %i" n; ID = 20 + n })
         }
 

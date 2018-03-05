@@ -1,7 +1,7 @@
 ﻿namespace Cricket.CricketEngine
 
 type Team =
-    { Name: string; Players: Player [] }
+    { TeamName: string; Players: Player [] }
 
 type HowOut =
     | OutBowled of BowledBy: Player

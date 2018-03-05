@@ -37,7 +37,7 @@ let newMatch =
     {
         TeamA =
             {
-                Name = "England"
+                TeamName = "England"
                 Players =
                     players
                     |> List.take 11
@@ -46,7 +46,7 @@ let newMatch =
             }
         TeamB =
             {
-                Name = "India"
+                TeamName = "India"
                 Players =
                     players
                     |> List.skip 11

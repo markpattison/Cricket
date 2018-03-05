@@ -316,8 +316,8 @@ module MatchState =
         let leadA = leadA state
         let leadB = -leadA
 
-        let nameA = teamA.Name
-        let nameB = teamB.Name
+        let nameA = teamA.TeamName
+        let nameB = teamB.TeamName
 
         match state with
         | NotStarted -> "Match not started"

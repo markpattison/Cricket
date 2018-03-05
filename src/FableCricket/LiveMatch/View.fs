@@ -87,7 +87,7 @@ let showBowling innings =
   Table.table [ Table.IsFullwidth ] rows
 
 let showInnings ((team, inningsNumber, innings), expanded) index dispatch =
-  let teamInnings = sprintf "%s %s" team.Name (formatInningsNumber inningsNumber)
+  let teamInnings = sprintf "%s %s" team.TeamName (formatInningsNumber inningsNumber)
   let score = Innings.summary innings
   Box.box' []
     [
