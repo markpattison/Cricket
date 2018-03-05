@@ -1,10 +1,10 @@
 module FableCricket.Averages.View
 
 open Fable.Helpers.React
-open Fable.Helpers.React.Props
 
 open Fulma.Elements
 open Fulma.Layouts
+open Fulma.Size
 
 open Cricket.CricketEngine
 open Cricket.CricketEngine.Formatting
@@ -18,7 +18,7 @@ let showIndividualBatting (batting: BattingAverage) =
     td [] [str (batting.NotOuts.ToString())]
     td [] [str (batting.Runs.ToString())]
     td [] [str (formatHighScore batting.HighScore)]
-    td [ ClassName "has-text-weight-bold" ] [str (formatAverage batting.Average)]
+    td [] [strong [] [str (formatAverage batting.Average)] ]
     td [] [str (batting.BallsFaced.ToString())]
     td [] [str (formatAverage batting.StrikeRate)]
     td [] [str (batting.Hundreds.ToString())]
@@ -38,7 +38,7 @@ let showBatting batting =
           td [] [str "NO"]
           td [] [str "Runs"]
           td [] [str "HS"]
-          td [ ClassName "has-text-weight-bold" ] [str "Ave"]
+          td [] [strong [] [ str "Ave"] ]
           td [] [str "BF"]
           td [] [str "SR"]
           td [] [str "100"]
@@ -64,7 +64,7 @@ let showIndividualBowling (bowling: BowlingAverage) =
     td [] [str (bowling.Wickets.ToString())]
     td [] [str (formatBestBowling bowling.BestInnings)]
     td [] [str (formatBestBowling bowling.BestMatch)]
-    td [ ClassName "has-text-weight-bold" ] [str (formatAverage bowling.Average)]
+    td [] [strong [] [str (formatAverage bowling.Average)] ]
     td [] [str (formatAverage bowling.Economy)]
     td [] [str (formatAverage bowling.StrikeRate)]
     td [] [str (bowling.FiveWicketInnings.ToString())]
@@ -86,7 +86,7 @@ let showBowling bowling =
           td [] [str "Wkts"]
           td [] [str "BBI"]
           td [] [str "BBM"]
-          td [ ClassName "has-text-weight-bold" ] [str "Ave"]
+          td [] [strong [] [str "Ave"] ]
           td [] [str "Econ"]
           td [] [str "SR"]
           td [] [str "5"]
@@ -111,8 +111,8 @@ let showAverages playerRecords =
         |> Map.toList
         |> List.map Averages.createBowlingAverage
         |> List.sort
-    div
-        [ ClassName "is-size-7" ]
+    Content.content
+        [ Content.Size IsSmall ]
         [
             showBatting batting
             showBowling bowling
