@@ -1,5 +1,5 @@
 ## New in 0.4.4
-* Tweaked display of version number
+* Tweaked display of version number and button spacing
 
 ## New in 0.4.3 (Released 2018/01/20)
 * Show fall of wickets

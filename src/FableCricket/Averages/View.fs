@@ -3,6 +3,9 @@ module FableCricket.Averages.View
 open Fable.Helpers.React
 open Fable.Helpers.React.Props
 
+open Fulma.Elements
+open Fulma.Layouts
+
 open Cricket.CricketEngine
 open Cricket.CricketEngine.Formatting
 open Cricket.CricketEngine.Averages
@@ -26,10 +29,29 @@ let showIndividualBatting (batting: BattingAverage) =
   ]
 
 let showBatting batting =
-  let headerRow = thead [] [ tr [] [ td [] [str "Player"]; td [] [str "Mat"]; td [] [str "Inns"]; td [] [str "NO"]; td [] [str "Runs"]; td [] [str "HS"]; td [ ClassName "has-text-weight-bold" ] [str "Ave"]; td [] [str "BF"]; td [] [str "SR"]; td [] [str "100"]; td [] [str "50"]; td [] [str "0"]; td [] [str "4s"]; td [] [str "6s"] ] ]
+  let headerRow =
+    thead []
+      [ tr [] [
+          td [] [str "Player"]
+          td [] [str "Mat"]
+          td [] [str "Inns"]
+          td [] [str "NO"]
+          td [] [str "Runs"]
+          td [] [str "HS"]
+          td [ ClassName "has-text-weight-bold" ] [str "Ave"]
+          td [] [str "BF"]
+          td [] [str "SR"]
+          td [] [str "100"]
+          td [] [str "50"]
+          td [] [str "0"]
+          td [] [str "4s"]
+          td [] [str "6s"]
+        ]
+      ]
   let averages = tbody [] (batting |> List.map showIndividualBatting)
-  let rows = [ headerRow ; averages ]
-  div [] [ table [ ClassName "table is-fullwidth is-narrow is-size-7" ] rows ]
+  Table.table
+    [ Table.IsFullwidth ]
+    [ headerRow ; averages ]
 
 let showIndividualBowling (bowling: BowlingAverage) =
   tr [] [
@@ -52,10 +74,31 @@ let showIndividualBowling (bowling: BowlingAverage) =
   ]
 
 let showBowling bowling =
-  let headerRow = thead [] [ tr [] [ td [] [str "Player"]; td [] [str "Mat"]; td [] [str "Inns"]; td [] [str "Overs"]; td [] [str "Mdns"]; td [] [str "Runs"]; td [] [str "Wkts"]; td [] [str "BBI"]; td [] [str "BBM"]; td [ ClassName "has-text-weight-bold" ] [str "Ave"]; td [] [str "Econ"]; td [] [str "SR"]; td [] [str "5"]; td [] [str "10"]; td [] [str "Ct"]; td [] [str "St"] ] ]
+  let headerRow =
+    thead []
+      [ tr [] [
+          td [] [str "Player"]
+          td [] [str "Mat"]
+          td [] [str "Inns"]
+          td [] [str "Overs"]
+          td [] [str "Mdns"]
+          td [] [str "Runs"]
+          td [] [str "Wkts"]
+          td [] [str "BBI"]
+          td [] [str "BBM"]
+          td [ ClassName "has-text-weight-bold" ] [str "Ave"]
+          td [] [str "Econ"]
+          td [] [str "SR"]
+          td [] [str "5"]
+          td [] [str "10"]
+          td [] [str "Ct"]
+          td [] [str "St"]
+        ]
+      ]
   let averages = tbody [] (bowling |> List.map showIndividualBowling)
-  let rows = [ headerRow ; averages ]
-  div [] [ table [ ClassName "table is-fullwidth is-narrow is-size-7" ] rows ]
+  Table.table
+    [ Table.IsFullwidth ]
+    [ headerRow ; averages ]
 
 let showAverages playerRecords =
     let batting =
@@ -69,7 +112,7 @@ let showAverages playerRecords =
         |> List.map Averages.createBowlingAverage
         |> List.sort
     div
-        []
+        [ ClassName "is-size-7" ]
         [
             showBatting batting
             showBowling bowling
@@ -77,7 +120,7 @@ let showAverages playerRecords =
 
 let showSeriesSummary series =
     let summary = Series.summary series
-    div [ ClassName "level" ] [ str summary ]
+    Level.level [] [ str summary ]
 
 // main render method
 let root (model: FableCricket.LiveMatch.Types.Model) =
