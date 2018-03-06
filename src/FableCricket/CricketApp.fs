@@ -13,27 +13,27 @@ importAll "./sass/main.sass"
 
 open Fable.Helpers.React
 open Fable.Helpers.React.Props
+
+open Fulma.Components
+
 open Cricket.CricketEngine
 
 let menuItem label page currentPage =
-    li
-      [ ]
-      [ a
-          [ classList [ "is-active", page = currentPage ]
-            Href (toHash page) ]
-          [ str label ] ]
+    Menu.item [
+      Menu.Item.IsActive (page = currentPage)
+      Menu.Item.Props [ Href (toHash page) ]
+    ]
+       [ str label ]
 
 let menu currentPage =
-  aside
-    [ ClassName "menu" ]
-    [ p
-        [ ClassName "menu-label" ]
+  Menu.menu []
+    [ Menu.label []
         [ str "General" ]
-      ul
-        [ ClassName "menu-list" ]
+      Menu.list []
         [ menuItem "Scorecard" CricketPage currentPage
           menuItem "Averages" AveragesPage currentPage
-          menuItem "About" AboutPage currentPage ] ]
+          menuItem "About" AboutPage currentPage ]
+    ]
 
 let root model dispatch =
 

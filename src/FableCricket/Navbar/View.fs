@@ -8,7 +8,6 @@ open Fulma.Components
 open Fulma.Elements
 open Fulma.Elements.Form
 open Fulma.Extra.FontAwesome
-open Fulma.Size
 
 let navButton classy href faClass txt =
   Control.div
