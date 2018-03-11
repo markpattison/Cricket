@@ -7,7 +7,6 @@ open Fable.Core.JsInterop
 open FableCricket
 open FableCricket.App.Types
 open FableCricket.App.State
-open FableCricket.Global
 
 importAll "./sass/main.sass"
 
@@ -17,11 +16,12 @@ open Fable.Helpers.React.Props
 open Fulma.Components
 
 open Cricket.CricketEngine
+open FableCricket.Router
 
 let menuItem label page currentPage =
     Menu.item [
       Menu.Item.IsActive (page = currentPage)
-      Menu.Item.Props [ Href (toHash page) ]
+      Menu.Item.Props [ Router.href page ]
     ]
        [ str label ]
 
