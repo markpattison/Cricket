@@ -14,16 +14,16 @@ open Fable.Helpers.React
 open Fable.Helpers.React.Props
 
 open Fulma.Components
+open Fulma.Layouts
 
 open Cricket.CricketEngine
 open FableCricket.Router
 
 let menuItem label page currentPage =
-    Menu.item [
-      Menu.Item.IsActive (page = currentPage)
-      Menu.Item.Props [ Router.href page ]
-    ]
-       [ str label ]
+    Menu.item
+      [ Menu.Item.IsActive (page = currentPage)
+        Menu.Item.Props [ Router.href page ] ]
+      [ str label ]
 
 let menu currentPage =
   Menu.menu []
@@ -32,8 +32,7 @@ let menu currentPage =
       Menu.list []
         [ menuItem "Scorecard" CricketPage currentPage
           menuItem "Averages" AveragesPage currentPage
-          menuItem "About" AboutPage currentPage ]
-    ]
+          menuItem "About" AboutPage currentPage ] ]
 
 let root model dispatch =
 
@@ -43,24 +42,18 @@ let root model dispatch =
     | AveragesPage -> Averages.View.root model.cricket
     | CricketPage -> LiveMatch.View.root model.cricket (CricketMsg >> dispatch)
 
-  div
-    []
+  div []
     [ div
         [ ClassName "navbar-bg" ]
-        [ div
-            [ ClassName "container" ]
+        [ Container.container []
             [ Navbar.View.root ] ]
-      div
-        [ ClassName "section" ]
-        [ div
-            [ ClassName "container" ]
-            [ div
-                [ ClassName "columns" ]
-                [ div
-                    [ ClassName "column is-3" ]
+      Section.section []
+        [ Container.container []
+            [ Columns.columns []
+                [ Column.column
+                    [ Column.Width (Column.All, Column.Is3) ]
                     [ menu model.currentPage ]
-                  div
-                    [ ClassName "column" ]
+                  Column.column []
                     [ pageHtml model.currentPage ] ] ] ] ]
 
 open Elmish.React
