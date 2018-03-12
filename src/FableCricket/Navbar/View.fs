@@ -10,14 +10,16 @@ open Fulma.Elements.Form
 open Fulma.Extra.FontAwesome
 
 let navButton classy href faClass txt =
-  Control.div
-    [
-      Control.CustomClass (sprintf "button %s" classy)
-      Control.Props [ Href href ]
-    ]
-    [
-      Icon.faIcon [] [ Fa.icon faClass ]
-      span [] [ str txt ]
+  Control.div []
+    [ Button.a 
+        [
+          Button.CustomClass (sprintf "button %s" classy)
+          Button.Props [ Href href ]
+        ]
+        [
+          Icon.faIcon [] [ Fa.icon faClass ]
+          span [] [ str txt ]
+        ]
     ]
 
 let navButtons =
