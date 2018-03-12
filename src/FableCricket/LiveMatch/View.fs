@@ -7,6 +7,7 @@ open Fulma.Elements
 open Fulma.Elements.Form
 open Fulma.Extra.FontAwesome
 open Fulma.Layouts
+open Fulma.Size
 
 open Cricket.CricketEngine
 open Cricket.CricketEngine.Formatting
@@ -18,8 +19,7 @@ let simpleButton dispatch (txt, action)  =
   Control.div []
     [ Button.button
         [ Button.OnClick (fun _ -> action |> dispatch) ]
-        [ str txt ]
-    ]
+        [ str txt ] ]
 
 let showSummaryStatus match' =
   let summary = match' |> Match.summaryStatus
@@ -39,13 +39,12 @@ let oversString (innings: Innings) =
  
 let showIndividualInnings (p: Player, ii) =
   tr [] [
-    td [] [str p.Name]
-    td [] [str (howOutString ii.HowOut)]
-    td [ ClassName "has-text-weight-bold" ]  [ str (ii.Score.ToString()) ]
-    td [] [str (ii.BallsFaced.ToString())]
-    td [] [str (ii.Fours.ToString())]
-    td [] [str (ii.Sixes.ToString())]
-  ]
+    td [] [ str p.Name ]
+    td [] [ str (howOutString ii.HowOut) ]
+    td [] [ strong [] [ str (ii.Score.ToString()) ] ]
+    td [] [ str (ii.BallsFaced.ToString()) ]
+    td [] [ str (ii.Fours.ToString()) ]
+    td [] [ str (ii.Sixes.ToString()) ] ]
 
 let showFallOfWickets innings =
   if List.isEmpty innings.FallOfWickets then
@@ -58,66 +57,94 @@ let showFallOfWickets innings =
     Some ("Fall of wickets: " + wicketText)
 
 let showBatting innings =
-  let header = thead [] [ tr [ ClassName "has-text-weight-bold" ] [ td [] [str "Batsmen"]; td [] []; td [] [str "R"]; td [] [str "B"]; td [] [str "4"]; td [] [str "6"] ] ]
+  let header =
+    thead []
+      [ tr []
+          [ td [] [ strong [] [ str "Batsmen" ] ]
+            td [] []
+            td [] [ strong [] [ str "R" ] ]
+            td [] [ strong [] [ str "B" ] ]
+            td [] [ strong [] [ str "4" ] ]
+            td [] [ strong [] [ str "6" ] ] ] ]
+
   let allIndividualInnings = tbody [] (innings.Batsmen |> List.map showIndividualInnings)
   
-  let totalRow = tr [ ClassName "has-text-weight-bold" ] [ td [] [str "Total"]; td[] [str (oversString innings)]; td[] [str (Innings.summary innings)]; td[] []; td[] []; td[] [] ]
+  let totalRow =
+    tr []
+      [ td [] [ strong [] [ str "Total"] ]
+        td [] [ strong [] [ str (oversString innings)] ]
+        td [] [ strong [] [ str (Innings.summary innings)] ]
+        td [] []
+        td [] []
+        td [] [] ]
+
   let fallOfWicketsRow =
     showFallOfWickets innings
-    |> Option.map (fun s -> tr [ ClassName "is-size-7" ] [ td [ ColSpan 6.0 ] [str s] ])
+    |> Option.map (fun s ->
+        tr []
+          [ td
+              [ ColSpan 6.0 ]
+              [ Content.content
+                  [ Content.Size IsSmall ]
+                  [ str s ] ] ])
     |> Option.toList
   
-  let footer = tfoot [] ([ totalRow ] @ fallOfWicketsRow)
+  let footer =
+    tfoot []
+      (totalRow :: fallOfWicketsRow)
 
-  let rows = [ header; footer; allIndividualInnings ]
-
-  div [] [ table [ ClassName "table is-fullwidth" ] rows ]
+  Table.table
+    [ Table.IsFullwidth ]
+    [ header
+      footer
+      allIndividualInnings ]
 
 let showIndividualBowling (p: Player, bowling) =
   tr [] [
-    td [] [str p.Name]
-    td [] [str (formatOversFromBalls bowling.Balls)]
-    td [] [str (bowling.Maidens.ToString())]
-    td [] [str (bowling.RunsConceded.ToString())]
-    td [] [str (bowling.Wickets.ToString())]
-  ]
+    td [] [ str p.Name ]
+    td [] [ str (formatOversFromBalls bowling.Balls) ]
+    td [] [ str (bowling.Maidens.ToString()) ]
+    td [] [ str (bowling.RunsConceded.ToString()) ]
+    td [] [ str (bowling.Wickets.ToString()) ] ]
 
 let showBowling innings =
-  let headerRow = thead [] [ tr [ ClassName "has-text-weight-bold" ] [ td [] [str "Bowling"]; td [] [str "O"]; td [] [str "M"]; td [] [str "R"]; td [] [str "W"] ] ]
-  let allBowling = tbody [] (innings.Bowlers |> List.map showIndividualBowling)
-  let rows = [ headerRow ; allBowling ]
+  let headerRow =
+    thead []
+      [ tr []
+          [ td [] [ strong [] [ str "Bowling" ] ]
+            td [] [ strong [] [ str "O" ] ]
+            td [] [ strong [] [ str "M" ] ]
+            td [] [ strong [] [ str "R" ] ]
+            td [] [ strong [] [ str "W" ] ] ] ]
+  
+  let allBowling =
+    tbody []
+      (innings.Bowlers |> List.map showIndividualBowling)
 
-  Table.table [ Table.IsFullwidth ] rows
+  Table.table
+    [ Table.IsFullwidth ]
+    [ headerRow
+      allBowling ]
 
 let showInnings ((team, inningsNumber, innings), expanded) index dispatch =
   let teamInnings = sprintf "%s %s" team.TeamName (formatInningsNumber inningsNumber)
   let score = Innings.summary innings
   Box.box' []
-    [
-      yield div
-        [
-          ClassName "level subtitle is-5";
-          OnClick (fun _ -> (ToggleInningsExpandedMessage index) |> dispatch)
-        ]
-        [
-          div [ ClassName "level-left" ]
-            [
-              div [ ClassName "level-item" ]
-                [
-                  Icon.faIcon
-                    []
+    [ yield Level.level
+        [ Level.Level.Props [ OnClick (fun _ -> (ToggleInningsExpandedMessage index) |> dispatch) ] ]
+        [ Level.left []
+            [ Level.item []
+                [ Icon.faIcon []
                     [ Fa.icon (if expanded then Fa.I.CaretDown else Fa.I.CaretRight) ]
-                  str teamInnings
-                ]
-            ]
-          div [ ClassName "level-right" ]
-            [
-              p [ ClassName "level-item" ]
-                [ str score ]
-            ]            
-        ]
-      if expanded then yield! [ showBatting innings; showBowling innings ]
-    ]
+                  Heading.h5
+                    [ Heading.IsSubtitle ]
+                    [ str teamInnings ] ] ]
+          Level.right []
+            [ Level.item []
+                [ Heading.h5
+                    [ Heading.IsSubtitle ]
+                    [ str score ] ] ] ]
+      if expanded then yield! [ showBatting innings; showBowling innings ] ]
 
 let showAllInnings match' inningsExpanded dispatch =
   let allInnings = match' |> Match.inningsList
@@ -137,18 +164,14 @@ let showOptions dispatch match' =
   let options = MatchRunner.getOptionsUI match'
   Level.level []
     [ Level.left []
-        [ Field.div [ Field.IsGrouped ]
-            (List.map (showOption >> simpleButton dispatch) options )
-        ]
-    ]
+        [ Field.div
+            [ Field.IsGrouped ]
+            (List.map (showOption >> simpleButton dispatch) options ) ] ]
 
 // main render method
 let root model dispatch =
   let match' = model.Match
-  div
-    []
-    [
-      showOptions dispatch match'
+  div []
+    [ showOptions dispatch match'
       showSummaryStatus match'
-      showAllInnings match' model.InningsExpanded dispatch
-    ]
+      showAllInnings match' model.InningsExpanded dispatch ]
