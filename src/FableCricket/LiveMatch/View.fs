@@ -18,7 +18,9 @@ open Types
 let simpleButton dispatch (txt, action)  =
   Control.div []
     [ Button.button
-        [ Button.OnClick (fun _ -> action |> dispatch) ]
+        [ Button.OnClick (fun e ->
+                            e.preventDefault()
+                            action |> dispatch) ]
         [ str txt ] ]
 
 let showSummaryStatus match' =
