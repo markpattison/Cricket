@@ -19,7 +19,7 @@ let navButtons =
     [ Field.div
         [ Field.IsGrouped ]
         [ navButton "twitter" "https://twitter.com/mark_pattison" Fa.I.Twitter "Twitter"
-          navButton "github" "https://github.com/markpattison/Cricket" Fa.I.Github "Github" ] ]
+          navButton "github" "https://github.com/markpattison/Cricket" Fa.I.Github "GitHub" ] ]
 
 let root =
   Navbar.navbar [ Navbar.Color IsPrimary ]
