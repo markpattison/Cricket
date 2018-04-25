@@ -13,8 +13,7 @@ importAll "./sass/main.sass"
 open Fable.Helpers.React
 open Fable.Helpers.React.Props
 
-open Fulma.Components
-open Fulma.Layouts
+open Fulma
 
 open Cricket.CricketEngine
 open FableCricket.Router

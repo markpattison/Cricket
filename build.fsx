@@ -19,7 +19,7 @@ let unitTestReferences =
 let acceptanceTestReferences =
     !! "tests/**/*AcceptanceTests.fsproj"
 
-let dotnetcliVersion = "2.1.3"
+let dotnetcliVersion = "2.1.105"
 let mutable dotnetExePath = "dotnet"
 
 // Targets

@@ -3,11 +3,8 @@ module FableCricket.LiveMatch.View
 open Fable.Helpers.React
 open Fable.Helpers.React.Props
 
-open Fulma.Elements
-open Fulma.Elements.Form
-open Fulma.Extra.FontAwesome
-open Fulma.Layouts
-open Fulma.Size
+open Fulma
+open Fulma.FontAwesome
 
 open Cricket.CricketEngine
 open Cricket.CricketEngine.Formatting
@@ -96,7 +93,7 @@ let showBatting innings =
       (totalRow :: fallOfWicketsRow)
 
   Table.table
-    [ Table.IsFullwidth ]
+    [ Table.IsFullWidth ]
     [ header
       footer
       allIndividualInnings ]
@@ -124,7 +121,7 @@ let showBowling innings =
       (innings.Bowlers |> List.map showIndividualBowling)
 
   Table.table
-    [ Table.IsFullwidth ]
+    [ Table.IsFullWidth ]
     [ headerRow
       allBowling ]
 

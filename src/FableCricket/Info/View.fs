@@ -2,7 +2,7 @@ module FableCricket.Info.View
 
 open Fable.Helpers.React
 
-open Fulma.Elements
+open Fulma
 
 open FableCricket
 

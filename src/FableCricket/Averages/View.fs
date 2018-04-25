@@ -2,9 +2,7 @@ module FableCricket.Averages.View
 
 open Fable.Helpers.React
 
-open Fulma.Elements
-open Fulma.Layouts
-open Fulma.Size
+open Fulma
 
 open Cricket.CricketEngine
 open Cricket.CricketEngine.Formatting
@@ -48,7 +46,7 @@ let showBatting batting =
   
   let averages = tbody [] (batting |> List.map showIndividualBatting)
   Table.table
-    [ Table.IsFullwidth ]
+    [ Table.IsFullWidth ]
     [ headerRow 
       averages ]
 
@@ -94,7 +92,7 @@ let showBowling bowling =
   
   let averages = tbody [] (bowling |> List.map showIndividualBowling)
   Table.table
-    [ Table.IsFullwidth ]
+    [ Table.IsFullWidth ]
     [ headerRow
       averages ]
 
