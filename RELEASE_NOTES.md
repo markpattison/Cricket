@@ -1,3 +1,6 @@
+## New in 0.4.5
+* Prevent double-tap on buttons from zooming on mobile
+
 ## New in 0.4.4
 * Tweaked display of version number and button spacing
 
