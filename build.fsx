@@ -1,10 +1,12 @@
-// include Fake libs
-#r "packages/FAKE/tools/FakeLib.dll"
+#r "paket: groupref Build //"
+#load "./.fake/build.fsx/intellisense.fsx"
 
-open Fake
-open Fake.NpmHelper
+open Fake.Core
+open Fake.IO.Globbing.Operators
+open Fake.DotNet
 
 // Filesets
+
 let appReferences = 
     !! "src/CricketEngine/CricketEngine.fsproj"
     ++ "src/MatchRunner/MatchRunner.fsproj"
@@ -20,82 +22,77 @@ let acceptanceTestReferences =
     !! "tests/**/*AcceptanceTests.fsproj"
 
 let dotnetcliVersion = "2.1.302"
-let mutable dotnetExePath = "dotnet"
+
+let install = lazy DotNet.install (fun p ->
+    { p with Version = DotNet.CliVersion.Version dotnetcliVersion })
+
+let inline dotnet arg = DotNet.Options.lift install.Value arg
+
+let inline withWorkDir wd =
+    DotNet.Options.lift install.Value
+    >> DotNet.Options.withWorkingDirectory wd
+
+let inline withCustomParams cp =
+    DotNet.Options.lift install.Value
+    >> DotNet.Options.withCustomParams (Some cp)
+
+let inDebug =
+    (fun (buildOptions: DotNet.BuildOptions) -> { buildOptions with Configuration = DotNet.BuildConfiguration.Debug })
 
 // Targets
-Target "InstallDotNetCore" (fun _ ->
-    dotnetExePath <- DotNetCli.InstallDotNetSDK dotnetcliVersion
-)
 
-Target "Clean" (fun _ ->
+Target.create "Clean" (fun _ ->
     [ appReferences; unitTestReferences; acceptanceTestReferences ]
     |> Seq.concat
-    |> Seq.iter (fun proj -> DotNetCli.RunCommand id ("clean " + proj))
-)
+    |> Seq.iter (fun proj ->
+        let result = DotNet.exec dotnet "clean" proj
+        if not result.OK then failwithf "dotnet clean failed with code %i" result.ExitCode))
 
-Target "UpdateVersionNumber" (fun _ ->
+Target.create "UpdateVersionNumber" (fun _ ->
     let release =
-        ReadFile "RELEASE_NOTES.md"
-        |> ReleaseNotesHelper.parseReleaseNotes
-    let revisionFromCI = environVarOrNone "BUILD_BUILDID"
+        Fake.IO.File.read "RELEASE_NOTES.md"
+        |> ReleaseNotes.parse
+    let revisionFromCI = Environment.environVarOrNone "BUILD_BUILDID"
     let version =
         match revisionFromCI with
         | None -> release.AssemblyVersion
         | Some s -> sprintf "%s build %s" release.AssemblyVersion s
     let versionFiles = !! "**/Version.fs"
-    FileHelper.RegexReplaceInFilesWithEncoding @"VersionNumber = "".*""" (sprintf @"VersionNumber = ""%s""" version) System.Text.Encoding.UTF8 versionFiles
-    TraceHelper.trace (sprintf @"Version = %s" version)
-)
+    Fake.IO.Shell.regexReplaceInFilesWithEncoding @"VersionNumber = "".*""" (sprintf @"VersionNumber = ""%s""" version) System.Text.Encoding.UTF8 versionFiles
+    Trace.trace (sprintf @"Version = %s" version))
 
-Target "Restore" (fun _ ->
-    [ appReferences; unitTestReferences; acceptanceTestReferences; fableReferences ]
-    |> Seq.concat
-    |> Seq.iter (fun proj -> DotNetCli.Restore (fun p -> { p with Project = proj; ToolPath = dotnetExePath; AdditionalArgs = [ "--no-dependencies" ] }))
-)
-
-Target "BuildApp" (fun _ ->
+Target.create "BuildApp" (fun _ ->
     appReferences
-    |> Seq.iter (fun proj -> DotNetCli.Build (fun p -> { p with Project = proj; ToolPath = dotnetExePath; AdditionalArgs = [ "--no-dependencies  --no-restore" ] }))
-)
+    |> Seq.iter (fun proj -> DotNet.build (withCustomParams "--no-dependencies") proj))
 
-Target "BuildTests" (fun _ ->
-    [ unitTestReferences; acceptanceTestReferences ]
-    |> Seq.concat
-    |> Seq.iter (fun proj -> DotNetCli.Build (fun p -> { p with Project = proj; ToolPath = dotnetExePath; AdditionalArgs = [ "--no-dependencies  --no-restore" ] }))
-)
-
-Target "RunUnitTests" (fun _ ->
+Target.create "RunUnitTests" (fun _ ->
     unitTestReferences
-    |> Seq.iter (fun proj -> DotNetCli.Test (fun p -> { p with Project = proj; ToolPath = dotnetExePath; AdditionalArgs = [ "--no-build  --no-restore --logger:trx" ] }))
-)
+    |> Seq.iter (fun proj -> DotNet.test (withCustomParams "--logger:trx") proj))
 
-Target "RunAcceptanceTests" (fun _ ->
+Target.create "RunAcceptanceTests" (fun _ ->
     acceptanceTestReferences
-    |> Seq.iter (fun proj -> DotNetCli.Test (fun p -> { p with Project = proj; ToolPath = dotnetExePath; AdditionalArgs = [ "--no-build  --no-restore --logger:trx" ] }))
-)
+    |> Seq.iter (fun proj -> DotNet.test (withCustomParams "--logger:trx") proj))
 
-Target "NpmInstall" (fun _ ->
-    Npm (fun p ->
-        { p with Command = Install Standard; WorkingDirectory = fableDirectory })
-)
+Target.create "NpmInstall" (fun _ ->
+    Fake.JavaScript.Npm.install (fun p -> { p with WorkingDirectory = fableDirectory }))
 
-Target "BuildFable" (fun _ ->
+Target.create "BuildFable" (fun _ ->
     fableReferences
-    |> Seq.iter (fun proj -> DotNetCli.RunCommand (fun p -> { p with WorkingDir = fableDirectory; ToolPath = dotnetExePath }) ("fable npm-build " + proj))
-)
+    |> Seq.iter (fun proj ->
+        DotNet.exec (withWorkDir fableDirectory) "fable npm-build" proj |> ignore))
 
-Target "RunFable" (fun _ ->
+Target.create "RunFable" (fun _ ->
     fableReferences
-    |> Seq.iter (fun proj -> DotNetCli.RunCommand (fun p -> { p with WorkingDir = fableDirectory; ToolPath = dotnetExePath }) ("fable npm-start " + proj))
-)
+    |> Seq.iter (fun proj ->
+        DotNet.exec (withWorkDir fableDirectory) "fable npm-start" proj |> ignore))
 
 // Build order
-"InstallDotNetCore"
-    ==> "Clean"
+
+open Fake.Core.TargetOperators
+
+"Clean"
     ==> "UpdateVersionNumber"
-    ==> "Restore"
     ==> "BuildApp"
-    ==> "BuildTests"
     ==> "RunUnitTests"
     ==> "RunAcceptanceTests"
     ==> "NpmInstall"
@@ -104,4 +101,4 @@ Target "RunFable" (fun _ ->
 "NpmInstall" ==> "RunFable"
 
 // start build
-RunTargetOrDefault "BuildFable"
+Target.runOrDefault "BuildFable"
