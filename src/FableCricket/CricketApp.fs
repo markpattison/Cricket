@@ -19,7 +19,7 @@ open Cricket.CricketEngine
 open FableCricket.Router
 
 let menuItem label page currentPage =
-    Menu.item
+    Menu.Item.li
       [ Menu.Item.IsActive (page = currentPage)
         Menu.Item.Props [ Router.href page ] ]
       [ str label ]
@@ -50,7 +50,7 @@ let root model dispatch =
         [ Container.container []
             [ Columns.columns []
                 [ Column.column
-                    [ Column.Width (Column.All, Column.Is3) ]
+                    [ Column.Width (Screen.All, Column.Is3) ]
                     [ menu model.currentPage ]
                   Column.column []
                     [ pageHtml model.currentPage ] ] ] ] ]

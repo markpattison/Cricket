@@ -8,7 +8,7 @@ nuget Fulma
 nuget NUnit
 nuget NUnit3TestAdapter
 nuget Microsoft.NET.Test.Sdk
-nuget FAKE
+nuget FAKE ~> 4.64.12
 nuget Fable.Elmish.HMR
 nuget Fable.Core
 nuget Fable.Elmish.React
