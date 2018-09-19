@@ -79,12 +79,16 @@ Target.create "NpmInstall" (fun _ ->
 Target.create "BuildFable" (fun _ ->
     fableReferences
     |> Seq.iter (fun proj ->
-        DotNet.exec (withWorkDir fableDirectory) "fable npm-build" proj |> ignore))
+        let result =
+            DotNet.exec (withWorkDir fableDirectory) "fable npm-build" proj
+        if result.ExitCode <> 0 then failwithf "'dotnet fable' failed in %s" fableDirectory))
 
 Target.create "RunFable" (fun _ ->
     fableReferences
     |> Seq.iter (fun proj ->
-        DotNet.exec (withWorkDir fableDirectory) "fable npm-start" proj |> ignore))
+        let result =
+            DotNet.exec (withWorkDir fableDirectory) "fable npm-start" proj
+        if result.ExitCode <> 0 then failwithf "'dotnet fable' failed in %s" fableDirectory))
 
 // Build order
 

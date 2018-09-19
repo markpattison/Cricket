@@ -1,6 +1,7 @@
 source https://www.nuget.org/api/v2
 
 framework: auto-detect
+storage: none
 
 nuget FSharp.Core
 nuget FSUnit
@@ -19,6 +20,8 @@ clitool dotnet-fable
 group Build
     source https://www.nuget.org/api/v2
     
+    storage: none
+
     nuget Fake.Core
     nuget Fake.Core.ReleaseNotes
     nuget Fake.Core.Target
