@@ -25,6 +25,6 @@ let root =
   Navbar.navbar [ Navbar.Color IsPrimary ]
     [ Navbar.Brand.div []
         [ Navbar.Item.div []
-            [ Heading.h4 [] [ str "FableCricket TEST" ] ] ]
+            [ Heading.h4 [] [ str "FableCricket" ] ] ]
       Navbar.End.div []
         [ navButtons ] ]
