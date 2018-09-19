@@ -61,17 +61,22 @@ Target.create "UpdateVersionNumber" (fun _ ->
     Fake.IO.Shell.regexReplaceInFilesWithEncoding @"VersionNumber = "".*""" (sprintf @"VersionNumber = ""%s""" version) System.Text.Encoding.UTF8 versionFiles
     Trace.trace (sprintf @"Version = %s" version))
 
+Target.create "Restore" (fun _ ->
+    [ appReferences; unitTestReferences; acceptanceTestReferences; fableReferences ]
+    |> Seq.concat
+    |> Seq.iter (fun proj -> DotNet.restore (withCustomParams "--no-dependencies") proj))
+
 Target.create "BuildApp" (fun _ ->
     appReferences
-    |> Seq.iter (fun proj -> DotNet.build (withCustomParams "--no-dependencies") proj))
+    |> Seq.iter (fun proj -> DotNet.build (withCustomParams "--no-dependencies --no-restore") proj))
 
 Target.create "RunUnitTests" (fun _ ->
     unitTestReferences
-    |> Seq.iter (fun proj -> DotNet.test (withCustomParams "--logger:trx") proj))
+    |> Seq.iter (fun proj -> DotNet.test (withCustomParams "--logger:trx --no-restore") proj))
 
 Target.create "RunAcceptanceTests" (fun _ ->
     acceptanceTestReferences
-    |> Seq.iter (fun proj -> DotNet.test (withCustomParams "--logger:trx") proj))
+    |> Seq.iter (fun proj -> DotNet.test (withCustomParams "--logger:trx --no-restore") proj))
 
 Target.create "NpmInstall" (fun _ ->
     Fake.JavaScript.Npm.install (fun p -> { p with WorkingDirectory = fableDirectory }))
@@ -96,6 +101,7 @@ open Fake.Core.TargetOperators
 
 "Clean"
     ==> "UpdateVersionNumber"
+    ==> "Restore"
     ==> "BuildApp"
     ==> "RunUnitTests"
     ==> "RunAcceptanceTests"
