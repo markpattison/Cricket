@@ -4,22 +4,22 @@ open Fable.Helpers.React
 open Fable.Helpers.React.Props
 
 open Fulma
-open Fulma.FontAwesome
+open Fable.FontAwesome
 
 let navButton classy href faClass txt =
   Control.div []
     [ Button.a 
         [ Button.CustomClass (sprintf "button %s" classy)
           Button.Props [ Href href ] ]
-        [ Icon.faIcon [] [ Fa.icon faClass ]
+        [ Icon.icon [] [ Fa.i [ faClass ] [] ]
           span [] [ str txt ] ] ]
 
 let navButtons =
   Navbar.Item.div []
     [ Field.div
         [ Field.IsGrouped ]
-        [ navButton "twitter" "https://twitter.com/mark_pattison" Fa.I.Twitter "Twitter"
-          navButton "github" "https://github.com/markpattison/Cricket" Fa.I.Github "GitHub" ] ]
+        [ navButton "twitter" "https://twitter.com/mark_pattison" Fa.Brand.Twitter "Twitter"
+          navButton "github" "https://github.com/markpattison/Cricket" Fa.Brand.Github "GitHub" ] ]
 
 let root =
   Navbar.navbar [ Navbar.Color IsPrimary ]

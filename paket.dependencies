@@ -14,8 +14,7 @@ nuget Fable.Core
 nuget Fable.Elmish.React
 nuget Fable.Elmish.Browser
 nuget Fable.Elmish.Debugger
-
-clitool dotnet-fable
+nuget Fable.FontAwesome.Free
 
 group Build
     source https://www.nuget.org/api/v2

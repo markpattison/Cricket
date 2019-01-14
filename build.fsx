@@ -39,6 +39,20 @@ let inline withCustomParams cp =
 let inDebug =
     (fun (buildOptions: DotNet.BuildOptions) -> { buildOptions with Configuration = DotNet.BuildConfiguration.Debug })
 
+let npxTool =
+    match ProcessUtils.tryFindFileOnPath "npx.cmd" with
+    | Some t -> t
+    | None -> failwith "NPX not found"
+
+let runTool cmd args workingDir =
+    let arguments = args |> String.split ' ' |> Arguments.OfArgs
+    Command.RawCommand (cmd, arguments)
+    |> CreateProcess.fromCommand
+    |> CreateProcess.withWorkingDirectory workingDir
+    |> CreateProcess.ensureExitCode
+    |> Proc.run
+    |> ignore
+
 // Targets
 
 Target.create "Clean" (fun _ ->
@@ -84,16 +98,12 @@ Target.create "NpmInstall" (fun _ ->
 Target.create "BuildFable" (fun _ ->
     fableReferences
     |> Seq.iter (fun proj ->
-        let result =
-            DotNet.exec (withWorkDir fableDirectory) "fable npm-build" proj
-        if result.ExitCode <> 0 then failwithf "'dotnet fable' failed in %s" fableDirectory))
+        runTool npxTool "webpack-cli --config webpack.config.js -p" fableDirectory))
 
 Target.create "RunFable" (fun _ ->
     fableReferences
     |> Seq.iter (fun proj ->
-        let result =
-            DotNet.exec (withWorkDir fableDirectory) "fable npm-start" proj
-        if result.ExitCode <> 0 then failwithf "'dotnet fable' failed in %s" fableDirectory))
+        runTool npxTool "webpack-dev-server --config webpack.config.js" fableDirectory))
 
 // Build order
 

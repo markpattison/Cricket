@@ -3,10 +3,13 @@ module FableCricket.App.View
 open Elmish
 open Elmish.Browser.Navigation
 open Elmish.Browser.UrlParser
+
 open Fable.Core.JsInterop
 open FableCricket
 open FableCricket.App.Types
 open FableCricket.App.State
+
+open Elmish.HMR
 
 importAll "./sass/main.sass"
 
@@ -64,7 +67,6 @@ Program.mkProgram init update root
 |> Program.toNavigable (parseHash pageParser) urlUpdate
 #if DEBUG
 //|> Program.withDebugger
-|> Program.withHMR
 #endif
 |> Program.withReact "elmish-app"
 |> Program.run

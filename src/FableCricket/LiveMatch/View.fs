@@ -4,7 +4,7 @@ open Fable.Helpers.React
 open Fable.Helpers.React.Props
 
 open Fulma
-open Fulma.FontAwesome
+open Fable.FontAwesome
 
 open Cricket.CricketEngine
 open Cricket.CricketEngine.Formatting
@@ -82,7 +82,7 @@ let showBatting innings =
     |> Option.map (fun s ->
         tr []
           [ td
-              [ ColSpan 6.0 ]
+              [ ColSpan 6 ]
               [ Content.content
                   [ Content.Size IsSmall ]
                   [ str s ] ] ])
@@ -133,8 +133,8 @@ let showInnings ((team, inningsNumber, innings), expanded) index dispatch =
         [ Level.Level.Props [ OnClick (fun _ -> (ToggleInningsExpandedMessage index) |> dispatch) ] ]
         [ Level.left []
             [ Level.item []
-                [ Icon.faIcon []
-                    [ Fa.icon (if expanded then Fa.I.CaretDown else Fa.I.CaretRight) ]
+                [ Icon.icon []
+                    [ Fa.i [ (if expanded then Fa.Solid.CaretDown else Fa.Solid.CaretRight) ] [] ]
                   Heading.h5
                     [ Heading.IsSubtitle ]
                     [ str teamInnings ] ] ]
