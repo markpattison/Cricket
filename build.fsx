@@ -42,7 +42,7 @@ let inDebug =
 let npxTool =
     match ProcessUtils.tryFindFileOnPath "npx.cmd" with
     | Some t -> t
-    | None -> failwith "NPX not found"
+    | None -> failwith "npx not found"
 
 let runTool cmd args workingDir =
     let arguments = args |> String.split ' ' |> Arguments.OfArgs
@@ -95,12 +95,12 @@ Target.create "RunAcceptanceTests" (fun _ ->
 Target.create "NpmInstall" (fun _ ->
     Fake.JavaScript.Npm.install (fun p -> { p with WorkingDirectory = fableDirectory }))
 
-Target.create "BuildFable" (fun _ ->
+Target.create "Build" (fun _ ->
     fableReferences
     |> Seq.iter (fun proj ->
         runTool npxTool "webpack-cli --config webpack.config.js -p" fableDirectory))
 
-Target.create "RunFable" (fun _ ->
+Target.create "Run" (fun _ ->
     fableReferences
     |> Seq.iter (fun proj ->
         runTool npxTool "webpack-dev-server --config webpack.config.js" fableDirectory))
@@ -117,8 +117,8 @@ open Fake.Core.TargetOperators
     ==> "RunAcceptanceTests"
     ==> "NpmInstall"
 
-"NpmInstall" ==> "BuildFable"
-"NpmInstall" ==> "RunFable"
+"NpmInstall" ==> "Build"
+"NpmInstall" ==> "Run"
 
 // start build
-Target.runOrDefault "BuildFable"
+Target.runOrDefault "Build"
