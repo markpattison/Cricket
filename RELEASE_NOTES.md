@@ -1,3 +1,6 @@
+## New in 0.4.6 (Released 2019/02/11)
+* upgrade to Fable 2.1
+
 ## New in 0.4.5 (Released 2018/04/28)
 * Prevent double-tap on buttons from zooming on mobile
 
