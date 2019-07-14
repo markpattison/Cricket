@@ -96,14 +96,10 @@ Target.create "NpmInstall" (fun _ ->
     Fake.JavaScript.Npm.install (fun p -> { p with WorkingDirectory = fableDirectory }))
 
 Target.create "Build" (fun _ ->
-    fableReferences
-    |> Seq.iter (fun proj ->
-        runTool npxTool "webpack-cli --config webpack.config.js -p" fableDirectory))
+    runTool npxTool "webpack-cli --config webpack.config.js -p" fableDirectory)
 
 Target.create "Run" (fun _ ->
-    fableReferences
-    |> Seq.iter (fun proj ->
-        runTool npxTool "webpack-dev-server --config webpack.config.js" fableDirectory))
+    runTool npxTool "webpack-dev-server --config webpack.config.js" fableDirectory)
 
 // Build order
 
