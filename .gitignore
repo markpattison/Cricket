@@ -392,3 +392,5 @@ paket-files/
 # Fable output
 **/bundle.js*
 
+# Ionide
+.ionide/
