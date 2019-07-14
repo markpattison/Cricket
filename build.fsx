@@ -21,7 +21,7 @@ let unitTestReferences =
 let acceptanceTestReferences =
     !! "tests/**/*AcceptanceTests.fsproj"
 
-let dotnetcliVersion = "2.2.102"
+let dotnetcliVersion = "2.2.203"
 
 let install = lazy DotNet.install (fun p ->
     { p with Version = DotNet.CliVersion.Version dotnetcliVersion })
