@@ -1,8 +1,8 @@
 module FableCricket.App.State
 
 open Elmish
-open Elmish.Browser.UrlParser
-open Fable.Import.Browser
+open Elmish.UrlParser
+open Browser
 open FableCricket.Router
 open FableCricket.App.Types
 

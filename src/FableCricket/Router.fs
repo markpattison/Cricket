@@ -1,7 +1,8 @@
 module FableCricket.Router
 
-open Elmish.Browser.Navigation
-open Fable.Helpers.React.Props
+open Browser
+open Elmish.Navigation
+open Fable.React.Props
 
 type Page =
   | CricketPage
@@ -24,4 +25,4 @@ let newUrl route =
     route |> toHash |> Navigation.newUrl
 
 let modifyLocation route =
-    Fable.Import.Browser.window.location.href <- toHash route
+    window.location.href <- toHash route

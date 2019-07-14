@@ -10,6 +10,7 @@ nuget NUnit
 nuget NUnit3TestAdapter
 nuget Microsoft.NET.Test.Sdk
 nuget Fable.Elmish.HMR
+nuget Fable.Browser.Dom
 nuget Fable.Core
 nuget Fable.Elmish.React
 nuget Fable.Elmish.Browser

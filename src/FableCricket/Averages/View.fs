@@ -1,6 +1,6 @@
 module FableCricket.Averages.View
 
-open Fable.Helpers.React
+open Fable.React
 
 open Fulma
 

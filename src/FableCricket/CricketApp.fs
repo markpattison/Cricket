@@ -1,8 +1,8 @@
 module FableCricket.App.View
 
 open Elmish
-open Elmish.Browser.Navigation
-open Elmish.Browser.UrlParser
+open Elmish.Navigation
+open Elmish.UrlParser
 
 open Fable.Core.JsInterop
 open FableCricket
@@ -13,8 +13,8 @@ open Elmish.HMR
 
 importAll "./sass/main.sass"
 
-open Fable.Helpers.React
-open Fable.Helpers.React.Props
+open Fable.React
+open Fable.React.Props
 
 open Fulma
 
@@ -68,5 +68,5 @@ Program.mkProgram init update root
 #if DEBUG
 //|> Program.withDebugger
 #endif
-|> Program.withReact "elmish-app"
+|> Program.withReactBatched "elmish-app"
 |> Program.run
