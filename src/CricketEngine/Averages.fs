@@ -131,7 +131,12 @@ type BowlingAverage =
                         _this.RunsConceded - otherRecord.RunsConceded
                 | Some _, None -> -1
                 | None, Some _ -> 1
-                | None, None -> _this.RunsConceded - otherRecord.RunsConceded
+                | None, None ->
+                    match _this.BallsBowled, otherRecord.BallsBowled with
+                    | 0, 0 -> 0
+                    | _, 0 -> -1
+                    | 0, _ -> 1
+                    | _, _ -> _this.RunsConceded - otherRecord.RunsConceded
             | _ -> 0
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
