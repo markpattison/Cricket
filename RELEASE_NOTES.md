@@ -1,3 +1,6 @@
+## New in 0.4.8 (Released 2020/03/15)
+* show players who haven't bowled last in averages
+
 ## New in 0.4.7 (Released 2019/07/14)
 * upgrade to Fable 3.0
 
