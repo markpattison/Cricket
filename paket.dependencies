@@ -16,7 +16,7 @@ group Build
     
     storage: none
 
-    nuget FSharp.Core 4.3.4 // https://github.com/fsharp/FAKE/issues/2001
+    nuget FSharp.Core
     nuget Fake.Core
     nuget Fake.Core.ReleaseNotes
     nuget Fake.Core.Target
