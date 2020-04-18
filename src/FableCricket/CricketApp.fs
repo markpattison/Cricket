@@ -33,7 +33,7 @@ let root model dispatch =
 
   let pageHtml =
     function
-    | AboutPage -> Info.View.root
+    | AboutPage -> About.view
     | AveragesPage -> Averages.View.root model.cricket
     | CricketPage -> LiveMatch.View.root model.cricket (CricketMsg >> dispatch)
 

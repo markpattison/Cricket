@@ -1,4 +1,4 @@
-module FableCricket.Info.View
+module FableCricket.About
 
 open Fable.React
 
@@ -6,7 +6,7 @@ open Fulma
 
 open FableCricket
 
-let root =
+let view =
   Content.content []
     [ h1
         [ ]
