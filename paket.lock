@@ -1,5 +1,5 @@
 STORAGE: NONE
-RESTRICTION: == netcoreapp2.2
+RESTRICTION: == netcoreapp3.1
 NUGET
   remote: https://www.nuget.org/api/v2
     Fable.Browser.Blob (1.1)
@@ -268,7 +268,6 @@ NUGET
       Microsoft.NETCore.Platforms (>= 3.1)
       System.Security.Principal.Windows (>= 4.7)
     System.Security.Principal.Windows (4.7)
-      Microsoft.NETCore.Platforms (>= 3.1)
     System.Text.Encoding (4.3)
       Microsoft.NETCore.Platforms (>= 1.1)
       Microsoft.NETCore.Targets (>= 1.1)
