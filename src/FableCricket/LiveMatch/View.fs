@@ -171,6 +171,6 @@ let showOptions dispatch match' =
 let root model dispatch =
   let match' = model.Match
   div []
-    [ showOptions dispatch match'
+    [ showOptions (ServerMsg >> dispatch) match'
       showSummaryStatus match'
       showAllInnings match' model.InningsExpanded dispatch ]

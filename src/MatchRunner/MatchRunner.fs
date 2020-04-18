@@ -2,6 +2,23 @@
 
 open Cricket.CricketEngine
 
+type ServerModel =
+    {
+        Match: Match
+        PlayerRecords: Map<Player, PlayerRecord>
+        LivePlayerRecords: Map<Player, PlayerRecord>
+        PlayerAttributes: PlayerAttributes
+        Series: Series
+    }
+
+type ServerMsg =
+    | StartMatchMessage
+    | StartNextInningsMessage
+    | ContinueInningsBallMessage
+    | ContinueInningsOverMessage
+    | ContinueInningsInningsMessage
+    | ResetMatchMessage
+
 module MatchRunner =
 
     let random = System.Random()
@@ -96,3 +113,38 @@ module MatchRunner =
         match'
         |> Match.updateMatchState update
         |> runCaptains
+
+    let updateModel f model =
+        let alreadyCompleted = Match.isCompleted model.Match
+        let updatedMatch = f model.Match
+        let justCompleted = (Match.isCompleted updatedMatch) && not alreadyCompleted
+        let updatedRecords = Averages.updatePlayersForMatch model.PlayerRecords updatedMatch
+
+        if justCompleted then
+            let result =
+                match MatchState.summaryState updatedMatch.State with
+                | MatchCompleted result -> result
+                | _ -> NoResult
+            let updatedSeries = Series.update model.Series result BatFirst.Team1 // TODO change this if not always Team1 batting first
+            {
+                model with
+                    Match = updatedMatch
+                    Series = updatedSeries
+                    PlayerRecords = updatedRecords
+                    LivePlayerRecords = updatedRecords
+            }
+        else
+            {
+                model with
+                    Match = updatedMatch
+                    LivePlayerRecords = updatedRecords
+            }
+
+    let update msg model =
+        match msg with
+        | ContinueInningsBallMessage -> updateModel (continueInningsBall model.PlayerAttributes) model
+        | ContinueInningsOverMessage -> updateModel (continueInningsOver model.PlayerAttributes) model
+        | ContinueInningsInningsMessage -> updateModel (continueInningsInnings model.PlayerAttributes) model
+        | StartMatchMessage -> updateModel (updateMatchState MatchUpdate.StartMatch) model
+        | StartNextInningsMessage -> updateModel (updateMatchState MatchUpdate.StartNextInnings) model
+        | ResetMatchMessage -> { model with Match = MatchData.newMatch }

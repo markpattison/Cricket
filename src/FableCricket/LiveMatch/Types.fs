@@ -5,19 +5,13 @@ open Cricket.MatchRunner
 
 type Model =
     {
-        Match: Match
-        PlayerRecords: Map<Player, PlayerRecord>
-        LivePlayerRecords: Map<Player, PlayerRecord>
+        ServerModel: ServerModel // TODO: eventually remove
+        Match: Match // TODO: defer
+        LivePlayerRecords: Map<Player, PlayerRecord> // TODO: defer
         InningsExpanded: bool list
-        Series: Series
-        PlayerAttributes: PlayerAttributes
+        Series: Series // TODO: defer
     }
 
 type Msg =
-    | StartMatchMessage
-    | StartNextInningsMessage
-    | ContinueInningsBallMessage
-    | ContinueInningsOverMessage
-    | ContinueInningsInningsMessage
-    | ResetMatchMessage
+    | ServerMsg of ServerMsg
     | ToggleInningsExpandedMessage of int
