@@ -13,6 +13,7 @@
   <ItemGroup>
     <Compile Include="Version.fs" />
     <Compile Include="Router.fs" />
+    <Compile Include="Extensions.fs" />
     <Compile Include="About/View.fs" />
     <Compile Include="LiveMatch/Types.fs" />
     <Compile Include="LiveMatch/State.fs" />

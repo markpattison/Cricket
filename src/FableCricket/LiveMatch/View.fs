@@ -9,6 +9,7 @@ open Fable.FontAwesome
 open Cricket.CricketEngine
 open Cricket.CricketEngine.Formatting
 open Cricket.MatchRunner
+open FableCricket.Extensions
 
 open Types
 
@@ -169,8 +170,10 @@ let showOptions dispatch match' =
 
 // main render method
 let root model dispatch =
-  let match' = model.Match
-  div []
-    [ showOptions (ServerMsg >> dispatch) match'
-      showSummaryStatus match'
-      showAllInnings match' model.InningsExpanded dispatch ]
+  match model.Match with
+  | Resolved mtch ->
+    div []
+      [ showOptions (ServerMsg >> dispatch) mtch
+        showSummaryStatus mtch
+        showAllInnings mtch model.InningsExpanded dispatch ]
+  | _ -> Level.level [] [ str "Match loading..." ]

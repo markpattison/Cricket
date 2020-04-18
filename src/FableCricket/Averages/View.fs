@@ -6,6 +6,7 @@ open Fulma
 open Cricket.CricketEngine
 open Cricket.CricketEngine.Formatting
 open Cricket.CricketEngine.Averages
+open FableCricket.Extensions
 
 let showIndividualBatting (batting: BattingAverage) =
   tr [] [
@@ -95,24 +96,30 @@ let showBowling bowling =
     [ headerRow
       averages ]
 
-let showAverages playerRecords =
-  let batting =
-    playerRecords
-    |> Map.toList
-    |> List.map createBattingAverage
-    |> List.sort
-  let bowling =
-    playerRecords
-    |> Map.toList
-    |> List.map createBowlingAverage
-    |> List.sort
-  Content.content
-    [ Content.Size IsSmall ]
-    [ showBatting batting
-      showBowling bowling ]
+let showAverages deferredPlayerRecords =
+  match deferredPlayerRecords with
+  | Resolved playerRecords ->
+    let batting =
+      playerRecords
+      |> Map.toList
+      |> List.map createBattingAverage
+      |> List.sort
+    let bowling =
+      playerRecords
+      |> Map.toList
+      |> List.map createBowlingAverage
+      |> List.sort
+    Content.content
+      [ Content.Size IsSmall ]
+      [ showBatting batting
+        showBowling bowling ]
+  | _ -> Level.level [] [ str "Averages loading..." ]
 
-let showSeriesSummary series =
-  let summary = Series.summary series
+let showSeriesSummary deferredSeries =
+  let summary =
+    match deferredSeries with
+    | Resolved series -> Series.summary series
+    | _ -> "Series loading..."
   Level.level [] [ str summary ]
 
 // main render method

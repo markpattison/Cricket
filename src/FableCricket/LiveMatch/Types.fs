@@ -2,14 +2,18 @@ module FableCricket.LiveMatch.Types
 
 open Cricket.CricketEngine
 open Cricket.MatchRunner
+open FableCricket.Extensions
+
+type RunOption =
+    | OnClient of ServerModel
 
 type Model =
     {
-        ServerModel: ServerModel // TODO: eventually remove
-        Match: Match // TODO: defer
-        LivePlayerRecords: Map<Player, PlayerRecord> // TODO: defer
+        RunOption: RunOption
+        Match: Deferred<Match>
+        LivePlayerRecords: Deferred<Map<Player, PlayerRecord>>
         InningsExpanded: bool list
-        Series: Series // TODO: defer
+        Series: Deferred<Series>
     }
 
 type Msg =
