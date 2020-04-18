@@ -1,15 +1,8 @@
 module FableCricket.App.View
 
-open Elmish
-open Elmish.Navigation
-open Elmish.UrlParser
-
 open Fable.Core.JsInterop
 open FableCricket
 open FableCricket.App.Types
-open FableCricket.App.State
-
-open Elmish.HMR
 
 importAll "./sass/main.sass"
 
@@ -57,16 +50,3 @@ let root model dispatch =
                     [ menu model.currentPage ]
                   Column.column []
                     [ pageHtml model.currentPage ] ] ] ] ]
-
-open Elmish.React
-open Elmish.Debug
-open Elmish.HMR
-
-// App
-Program.mkProgram init update root
-|> Program.toNavigable (parseHash pageParser) urlUpdate
-#if DEBUG
-//|> Program.withDebugger
-#endif
-|> Program.withReactBatched "elmish-app"
-|> Program.run
