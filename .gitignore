@@ -382,9 +382,6 @@ _Pvt_Extensions
 # Paket dependency manager
 paket-files/
 
-# FAKE - F# Make
-.fake/
-
 # JetBrains Rider
 .idea/
 *.sln.iml
@@ -393,4 +390,5 @@ paket-files/
 **/bundle.js*
 
 # Ionide
-.ionide/
+.fake
+.ionide
