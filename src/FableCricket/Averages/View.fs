@@ -1,7 +1,6 @@
-module FableCricket.Averages.View
+module FableCricket.Averages
 
 open Fable.React
-
 open Fulma
 
 open Cricket.CricketEngine
@@ -100,12 +99,12 @@ let showAverages playerRecords =
   let batting =
     playerRecords
     |> Map.toList
-    |> List.map Averages.createBattingAverage
+    |> List.map createBattingAverage
     |> List.sort
   let bowling =
     playerRecords
     |> Map.toList
-    |> List.map Averages.createBowlingAverage
+    |> List.map createBowlingAverage
     |> List.sort
   Content.content
     [ Content.Size IsSmall ]
@@ -117,7 +116,7 @@ let showSeriesSummary series =
   Level.level [] [ str summary ]
 
 // main render method
-let root (model: FableCricket.LiveMatch.Types.Model) =
+let view (model: FableCricket.LiveMatch.Types.Model) =
   div []
     [ showSeriesSummary model.Series
       showAverages model.LivePlayerRecords ]
