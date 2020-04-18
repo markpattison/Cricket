@@ -13,6 +13,7 @@
     <Compile Include="SimpleCaptain.fs" />
     <Compile Include="PlayerAttributes.fs" />
     <Compile Include="RandomBall.fs" />
+    <Compile Include="MatchData.fs" />
     <Compile Include="MatchRunner.fs" />
   </ItemGroup>
   <Import Project="..\..\.paket\Paket.Restore.targets" />
