@@ -1,4 +1,4 @@
-module FableCricket.Navbar.View
+module FableCricket.Navbar
 
 open Fable.React
 open Fable.React.Props
@@ -21,7 +21,7 @@ let navButtons =
         [ navButton "twitter" "https://twitter.com/mark_pattison" Fa.Brand.Twitter "Twitter"
           navButton "github" "https://github.com/markpattison/Cricket" Fa.Brand.Github "GitHub" ] ]
 
-let root =
+let view =
   Navbar.navbar [ Navbar.Color IsPrimary ]
     [ Navbar.Brand.div []
         [ Navbar.Item.div []

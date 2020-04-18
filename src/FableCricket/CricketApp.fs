@@ -41,7 +41,7 @@ let root model dispatch =
     [ div
         [ ClassName "navbar-bg" ]
         [ Container.container []
-            [ Navbar.View.root ] ]
+            [ Navbar.view ] ]
       Section.section []
         [ Container.container []
             [ Columns.columns []
