@@ -13,10 +13,10 @@ let appReferences =
     !! "src/Shared/CricketEngine/CricketEngine.fsproj"
     ++ "src/Shared/MatchRunner/MatchRunner.fsproj"
 
-let fableDirectory = "src/Client/FableCricket"
+let fableDirectory = "src/Client"
 
 let fableReferences =
-    !! "src/FableCricket/FableCricket.fsproj"
+    !! "src/Client/Client.fsproj"
 
 let unitTestReferences =
     !! "tests/**/*UnitTests.fsproj"
@@ -107,7 +107,7 @@ Target.create "Build" (fun _ ->
 Target.create "Run" (fun _ ->
     let server = async {
         serverReferences
-        |> Seq.iter (fun proj -> DotNet.exec dotnet "watch run" proj |> ignore)
+        |> Seq.iter (fun proj -> DotNet.exec dotnet (sprintf "watch --project %s run" proj) |> ignore)
     }
     let client = async {
         runTool npxTool "webpack-dev-server --config webpack.config.js" fableDirectory
