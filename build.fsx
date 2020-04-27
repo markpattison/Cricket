@@ -7,6 +7,8 @@ open Fake.DotNet
 
 // Filesets
 
+let serverReferences = !! "src/Server/Server.fsproj"
+
 let appReferences = 
     !! "src/Shared/CricketEngine/CricketEngine.fsproj"
     ++ "src/Shared/MatchRunner/MatchRunner.fsproj"
@@ -57,7 +59,7 @@ let runTool cmd args workingDir =
 // Targets
 
 Target.create "Clean" (fun _ ->
-    [ appReferences; unitTestReferences; acceptanceTestReferences ]
+    [ appReferences; serverReferences; unitTestReferences; acceptanceTestReferences ]
     |> Seq.concat
     |> Seq.iter (fun proj ->
         let result = DotNet.exec dotnet "clean" proj
@@ -77,7 +79,7 @@ Target.create "UpdateVersionNumber" (fun _ ->
     Trace.trace (sprintf @"Version = %s" version))
 
 Target.create "Restore" (fun _ ->
-    [ appReferences; unitTestReferences; acceptanceTestReferences; fableReferences ]
+    [ appReferences; serverReferences; unitTestReferences; acceptanceTestReferences; fableReferences ]
     |> Seq.concat
     |> Seq.iter (fun proj -> DotNet.restore (withCustomParams "--no-dependencies") proj))
 
@@ -97,10 +99,24 @@ Target.create "NpmInstall" (fun _ ->
     Fake.JavaScript.Npm.install (fun p -> { p with WorkingDirectory = fableDirectory }))
 
 Target.create "Build" (fun _ ->
+    serverReferences
+    |> Seq.iter (fun proj -> DotNet.build (withCustomParams "--no-dependencies --no-restore") proj)
+
     runTool npxTool "webpack-cli --config webpack.config.js -p" fableDirectory)
 
 Target.create "Run" (fun _ ->
-    runTool npxTool "webpack-dev-server --config webpack.config.js" fableDirectory)
+    let server = async {
+        serverReferences
+        |> Seq.iter (fun proj -> DotNet.exec dotnet "watch run" proj |> ignore)
+    }
+    let client = async {
+        runTool npxTool "webpack-dev-server --config webpack.config.js" fableDirectory
+    }
+
+    [ server; client ]
+    |> Async.Parallel
+    |> Async.RunSynchronously
+    |> ignore)
 
 // Build order
 

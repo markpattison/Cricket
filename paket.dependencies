@@ -1,3 +1,13 @@
+group Server
+    source https://api.nuget.org/v3/index.json
+    framework: netcoreapp3.1
+    storage: none
+
+    nuget FSharp.Core
+    nuget Saturn
+    nuget Microsoft.AspNetCore.Authentication.JwtBearer
+    nuget Fable.Remoting.Giraffe ~> 3
+
 group Client
     source https://www.nuget.org/api/v2
     framework: auto-detect
