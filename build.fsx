@@ -11,7 +11,8 @@ let appReferences =
     !! "src/Shared/CricketEngine/CricketEngine.fsproj"
     ++ "src/Shared/MatchRunner/MatchRunner.fsproj"
 
-let fableDirectory = "src/FableCricket"
+let fableDirectory = "src/Client/FableCricket"
+
 let fableReferences =
     !! "src/FableCricket/FableCricket.fsproj"
 
