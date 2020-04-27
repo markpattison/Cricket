@@ -20,6 +20,7 @@ group Client
     nuget Fable.Elmish.HMR
     nuget Fable.Elmish.Debugger
     nuget Fable.FontAwesome.Free
+    nuget Fable.Remoting.Client
 
 group Build
     source https://www.nuget.org/api/v2
