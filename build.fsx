@@ -8,8 +8,8 @@ open Fake.DotNet
 // Filesets
 
 let appReferences = 
-    !! "src/CricketEngine/CricketEngine.fsproj"
-    ++ "src/MatchRunner/MatchRunner.fsproj"
+    !! "src/Shared/CricketEngine/CricketEngine.fsproj"
+    ++ "src/Shared/MatchRunner/MatchRunner.fsproj"
 
 let fableDirectory = "src/FableCricket"
 let fableReferences =

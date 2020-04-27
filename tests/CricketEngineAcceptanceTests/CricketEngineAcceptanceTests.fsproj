@@ -5,7 +5,7 @@
     <GenerateProgramFile>false</GenerateProgramFile>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\CricketEngine\CricketEngine.fsproj">
+    <ProjectReference Include="..\..\src\Shared\CricketEngine\CricketEngine.fsproj">
       <Name>CricketEngine.fsproj</Name>
     </ProjectReference>
   </ItemGroup>

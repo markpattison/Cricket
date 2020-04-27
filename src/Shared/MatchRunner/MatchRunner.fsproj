@@ -16,5 +16,5 @@
     <Compile Include="MatchData.fs" />
     <Compile Include="MatchRunner.fs" />
   </ItemGroup>
-  <Import Project="..\..\.paket\Paket.Restore.targets" />
+  <Import Project="..\..\..\.paket\Paket.Restore.targets" />
 </Project>

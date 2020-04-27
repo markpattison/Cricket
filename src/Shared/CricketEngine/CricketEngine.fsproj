@@ -18,5 +18,5 @@
     <Compile Include="Averages.fs" />
     <Compile Include="Series.fs" />
   </ItemGroup>
-  <Import Project="..\..\.paket\Paket.Restore.targets" />
+  <Import Project="..\..\..\.paket\Paket.Restore.targets" />
 </Project>
