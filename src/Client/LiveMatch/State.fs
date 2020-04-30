@@ -7,7 +7,20 @@ open Cricket.MatchRunner
 open FableCricket.Extensions
 open Types
 
-let init () : Model * Cmd<Msg> =
+module Server =
+
+    open Cricket.Shared
+    open Fable.Remoting.Client
+
+    let api : ICricketApi =
+      Remoting.createApi()
+      |> Remoting.withRouteBuilder Route.builder
+      |> Remoting.buildProxy<ICricketApi>
+
+let initiateSession = Cmd.OfAsync.perform Server.api.newSession () ServerSessionInitiated
+let serverUpdate sessionId serverMsg = Cmd.OfAsync.perform Server.api.update (sessionId, serverMsg) NewStateReceived
+
+let initClient () : Model * Cmd<Msg> =
     {
         Match = MatchData.newMatch |> Resolved
         LivePlayerRecords = Map.empty |> Resolved
@@ -29,6 +42,15 @@ let init () : Model * Cmd<Msg> =
             }            
     }, []
 
+let initServer () : Model * Cmd<Msg> =
+    {
+        Match = HasNotStartedYet
+        LivePlayerRecords = HasNotStartedYet
+        InningsExpanded = []
+        Series = HasNotStartedYet
+        RunOption = OnServer InProgress
+    }, [] //initiateSession
+
 let checkForNewInnings model =
     match model.Match with
     | Resolved mtch ->
@@ -42,21 +64,61 @@ let checkForNewInnings model =
     | _ -> model
 
 let update msg model =
-    match msg, model.RunOption with
-    | ServerMsg serverMsg, OnClient serverModel ->
+    match model.RunOption, msg with
+    | OnClient serverModel, ServerMsg serverMsg ->
         let updatedServerModel =
             MatchRunner.update serverMsg serverModel
         let updatedModel =
-            {
-                model with
-                    RunOption = OnClient updatedServerModel
-                    Match = updatedServerModel.Match |> Resolved
-                    LivePlayerRecords = updatedServerModel.LivePlayerRecords |> Resolved
-                    Series = updatedServerModel.Series |> Resolved
+            { model with
+                RunOption = OnClient updatedServerModel
+                Match = updatedServerModel.Match |> Resolved
+                LivePlayerRecords = updatedServerModel.LivePlayerRecords |> Resolved
+                Series = updatedServerModel.Series |> Resolved
             } |> checkForNewInnings
         updatedModel, Cmd.none
+
+    | OnClient _, ServerSessionInitiated _
+    | OnClient _, NewStateReceived _ ->
+        model, Cmd.none   
+     
+    | OnServer InProgress, ServerSessionInitiated (sessionId, (mtch, livePlayerRecords, series)) ->
+        let updatedModel =
+            { model with
+                RunOption = OnServer (Resolved sessionId)
+                Match = Resolved mtch
+                LivePlayerRecords = Resolved livePlayerRecords
+                Series = Resolved series
+            }
+        updatedModel, Cmd.none
     
-    | ToggleInningsExpandedMessage index, _ ->
+    | OnServer (Resolved sessionId), ServerMsg serverMsg ->
+        let updatedModel =
+            { model with
+                Match = InProgress
+                LivePlayerRecords = InProgress
+                Series = InProgress
+            } |> checkForNewInnings
+        updatedModel, serverUpdate sessionId serverMsg
+
+    | OnServer (Resolved _), NewStateReceived (Ok (mtch, livePlayerRecords, series)) ->
+        let updatedModel =
+            { model with
+                Match = Resolved mtch
+                LivePlayerRecords = Resolved livePlayerRecords
+                Series = Resolved series
+            }
+        updatedModel, Cmd.none       
+
+    | OnServer (Resolved _), NewStateReceived (Error error) ->
+        printfn "Error: %s" error
+        model, Cmd.none
+
+    | OnServer _, ServerSessionInitiated _
+    | OnServer _, ServerMsg _
+    | OnServer _, NewStateReceived _ ->
+        model, Cmd.none
+
+    | _, ToggleInningsExpandedMessage index ->
         { model with
             InningsExpanded = model.InningsExpanded |> List.mapi
                 (fun i expanded -> if i = index then not expanded else expanded)

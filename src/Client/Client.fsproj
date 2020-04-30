@@ -11,6 +11,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Shared\Shared.fs" />
     <Compile Include="Version.fs" />
     <Compile Include="Router.fs" />
     <Compile Include="Extensions.fs" />

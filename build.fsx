@@ -102,15 +102,16 @@ Target.create "Build" (fun _ ->
     serverReferences
     |> Seq.iter (fun proj -> DotNet.build (withCustomParams "--no-dependencies --no-restore") proj)
 
-    runTool npxTool "webpack-cli --config webpack.config.js -p" fableDirectory)
+    runTool npxTool "webpack-cli -p" fableDirectory)
 
 Target.create "Run" (fun _ ->
     let server = async {
         serverReferences
-        |> Seq.iter (fun proj -> DotNet.exec dotnet (sprintf "watch --project %s run" proj) |> ignore)
+        |> Seq.iter (fun proj -> DotNet.exec dotnet (sprintf "watch --project %s run" proj) "" |> ignore)
     }
+
     let client = async {
-        runTool npxTool "webpack-dev-server --config webpack.config.js" fableDirectory
+        runTool npxTool "webpack-dev-server" fableDirectory
     }
 
     [ server; client ]

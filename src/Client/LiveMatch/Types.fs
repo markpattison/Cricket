@@ -2,10 +2,12 @@ module FableCricket.LiveMatch.Types
 
 open Cricket.CricketEngine
 open Cricket.MatchRunner
+open Cricket.Shared
 open FableCricket.Extensions
 
 type RunOption =
     | OnClient of ServerModel
+    | OnServer of Deferred<SessionId>
 
 type Model =
     {
@@ -17,5 +19,7 @@ type Model =
     }
 
 type Msg =
+    | ServerSessionInitiated of SessionId * DataFromServer
     | ServerMsg of ServerMsg
+    | NewStateReceived of Result<DataFromServer, string>
     | ToggleInningsExpandedMessage of int

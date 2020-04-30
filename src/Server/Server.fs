@@ -4,12 +4,13 @@ open System.Threading.Tasks
 open Microsoft.AspNetCore.Builder
 open Microsoft.Extensions.DependencyInjection
 open FSharp.Control.Tasks.V2
-open Giraffe
-open Saturn
-open Shared
-
 open Fable.Remoting.Server
 open Fable.Remoting.Giraffe
+open Giraffe
+open Saturn
+
+open Cricket.Shared
+open Cricket.Server.SessionManager
 
 let tryGetEnv = System.Environment.GetEnvironmentVariable >> function null | "" -> None | x -> Some x
 
@@ -19,14 +20,17 @@ let port =
     "SERVER_PORT"
     |> tryGetEnv |> Option.map uint16 |> Option.defaultValue 8085us
 
-let counterApi = {
-    initialCounter = fun () -> async { return { Value = 42 } }
+let sessionManager = SessionManager()
+
+let cricketApi = {
+    newSession = fun () -> async { return sessionManager.NewSession() }
+    update = fun (sessionId, serverMsg) -> async { return sessionManager.Update(sessionId, serverMsg) }
 }
 
 let webApp =
     Remoting.createApi()
     |> Remoting.withRouteBuilder Route.builder
-    |> Remoting.fromValue counterApi
+    |> Remoting.fromValue cricketApi
     |> Remoting.buildHttpHandler
 
 let app = application {
