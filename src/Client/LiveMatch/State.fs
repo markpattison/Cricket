@@ -49,7 +49,7 @@ let initServer () : Model * Cmd<Msg> =
         InningsExpanded = []
         Series = HasNotStartedYet
         RunOption = OnServer InProgress
-    }, [] //initiateSession
+    }, initiateSession
 
 let checkForNewInnings model =
     match model.Match with
@@ -89,7 +89,7 @@ let update msg model =
                 LivePlayerRecords = Resolved livePlayerRecords
                 Series = Resolved series
             }
-        updatedModel, Cmd.none
+        updatedModel |> checkForNewInnings, Cmd.none
     
     | OnServer (Resolved sessionId), ServerMsg serverMsg ->
         let updatedModel =
@@ -97,7 +97,7 @@ let update msg model =
                 Match = InProgress
                 LivePlayerRecords = InProgress
                 Series = InProgress
-            } |> checkForNewInnings
+            }
         updatedModel, serverUpdate sessionId serverMsg
 
     | OnServer (Resolved _), NewStateReceived (Ok (mtch, livePlayerRecords, series)) ->
@@ -106,7 +106,7 @@ let update msg model =
                 Match = Resolved mtch
                 LivePlayerRecords = Resolved livePlayerRecords
                 Series = Resolved series
-            }
+            } |> checkForNewInnings
         updatedModel, Cmd.none       
 
     | OnServer (Resolved _), NewStateReceived (Error error) ->

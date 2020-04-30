@@ -22,7 +22,7 @@ let urlUpdate (result: Option<Page>) model =
       { model with currentPage = page }, []
 
 let init result =
-  let (cricket, cricketCmd) = FableCricket.LiveMatch.State.initClient()
+  let (cricket, cricketCmd) = FableCricket.LiveMatch.State.initServer()
   let (model, cmd) =
     urlUpdate result
       { currentPage = CricketPage
