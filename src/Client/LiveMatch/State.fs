@@ -48,7 +48,7 @@ let initServer () : Model * Cmd<Msg> =
         LivePlayerRecords = HasNotStartedYet
         InningsExpanded = []
         Series = HasNotStartedYet
-        RunOption = OnServer InProgress
+        RunOption = OnServer (InProgress None)
     }, initiateSession
 
 let checkForNewInnings model =
@@ -94,9 +94,9 @@ let update msg model =
     | OnServer (Resolved sessionId), ServerMsg serverMsg ->
         let updatedModel =
             { model with
-                Match = InProgress
-                LivePlayerRecords = InProgress
-                Series = InProgress
+                Match = updateInProgress model.Match
+                LivePlayerRecords = updateInProgress model.LivePlayerRecords
+                Series = updateInProgress model.Series
             }
         updatedModel, serverUpdate sessionId serverMsg
 
