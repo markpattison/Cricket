@@ -4,10 +4,10 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Shared\CricketEngine\CricketEngine.fsproj">
+    <ProjectReference Include="..\CricketEngine\CricketEngine.fsproj">
       <Name>CricketEngine.fsproj</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Shared\MatchRunner\MatchRunner.fsproj">
+    <ProjectReference Include="..\MatchRunner\MatchRunner.fsproj">
       <Name>MatchRunner.fsproj</Name>
     </ProjectReference>
   </ItemGroup>

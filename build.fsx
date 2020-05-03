@@ -10,8 +10,8 @@ open Fake.DotNet
 let serverReferences = !! "src/Server/Server.fsproj"
 
 let appReferences = 
-    !! "src/Shared/CricketEngine/CricketEngine.fsproj"
-    ++ "src/Shared/MatchRunner/MatchRunner.fsproj"
+    !! "src/CricketEngine/CricketEngine.fsproj"
+    ++ "src/MatchRunner/MatchRunner.fsproj"
 
 let fableDirectory = "src/Client"
 
