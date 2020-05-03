@@ -1,10 +1,11 @@
-module FableCricket.App.State
+module Cricket.Client.State
 
+open Browser
 open Elmish
 open Elmish.UrlParser
-open Browser
-open FableCricket.Router
-open FableCricket.App.Types
+
+open Cricket.Client.Router
+open Cricket.Client.Types
 
 let pageParser: Parser<Page->Page,Page> =
   oneOf [
@@ -22,7 +23,7 @@ let urlUpdate (result: Option<Page>) model =
       { model with currentPage = page }, []
 
 let init result =
-  let (cricket, cricketCmd) = FableCricket.LiveMatch.State.initServer()
+  let (cricket, cricketCmd) = LiveMatch.State.initServer()
   let (model, cmd) =
     urlUpdate result
       { currentPage = CricketPage
@@ -33,5 +34,5 @@ let init result =
 let update msg model =
   match msg with
   | CricketMsg msg ->
-      let (cricket, cricketCmd) = FableCricket.LiveMatch.State.update msg model.cricket
+      let (cricket, cricketCmd) = LiveMatch.State.update msg model.cricket
       { model with cricket = cricket }, Cmd.map CricketMsg cricketCmd

@@ -1,18 +1,15 @@
-module FableCricket.App.View
+module Cricket.Client.View
 
 open Fable.Core.JsInterop
-open FableCricket
-open FableCricket.App.Types
-
-importAll "./sass/main.sass"
-
 open Fable.React
 open Fable.React.Props
-
 open Fulma
 
 open Cricket.CricketEngine
-open FableCricket.Router
+open Types
+open Router
+
+importAll "./sass/main.sass"
 
 let menuItem label page currentPage =
     Menu.Item.li

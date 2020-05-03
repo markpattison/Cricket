@@ -1,4 +1,4 @@
-module FableCricket.App.Program
+module Cricket.Client.Program
 
 open Elmish
 open Elmish.Debug
@@ -7,7 +7,7 @@ open Elmish.Navigation
 open Elmish.React
 open Elmish.UrlParser
 
-open FableCricket.App.State
+open Cricket.Client.State
 
 Program.mkProgram init update View.root
 |> Program.toNavigable (parseHash pageParser) urlUpdate

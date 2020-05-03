@@ -1,10 +1,10 @@
-module FableCricket.About
+module Cricket.Client.About
 
 open Fable.React
 
 open Fulma
 
-open FableCricket
+open Cricket.Client
 
 let view =
   Content.content []

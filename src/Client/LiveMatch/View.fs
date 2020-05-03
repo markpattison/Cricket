@@ -1,4 +1,4 @@
-module FableCricket.LiveMatch.View
+module Cricket.Client.LiveMatch.View
 
 open Fable.React
 open Fable.React.Props
@@ -9,7 +9,7 @@ open Fable.FontAwesome
 open Cricket.CricketEngine
 open Cricket.CricketEngine.Formatting
 open Cricket.MatchRunner
-open FableCricket.Extensions
+open Cricket.Client.Extensions
 
 open Types
 

@@ -1,4 +1,4 @@
-module FableCricket.Router
+module Cricket.Client.Router
 
 open Browser
 open Elmish.Navigation

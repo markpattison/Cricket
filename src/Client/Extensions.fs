@@ -1,4 +1,4 @@
-module FableCricket.Extensions
+module Cricket.Client.Extensions
 
 type Deferred<'t> =
     | HasNotStartedYet

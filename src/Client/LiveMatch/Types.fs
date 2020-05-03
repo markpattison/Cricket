@@ -1,9 +1,9 @@
-module FableCricket.LiveMatch.Types
+module Cricket.Client.LiveMatch.Types
 
 open Cricket.CricketEngine
 open Cricket.MatchRunner
 open Cricket.Shared
-open FableCricket.Extensions
+open Cricket.Client.Extensions
 
 type RunOption =
     | OnClient of ServerModel

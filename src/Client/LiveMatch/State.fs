@@ -1,10 +1,10 @@
-module FableCricket.LiveMatch.State
+module Cricket.Client.LiveMatch.State
 
 open Elmish
 
 open Cricket.CricketEngine
 open Cricket.MatchRunner
-open FableCricket.Extensions
+open Cricket.Client.Extensions
 open Types
 
 module Server =

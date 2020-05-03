@@ -1,11 +1,11 @@
-module FableCricket.App.Types
+module Cricket.Client.Types
 
-open FableCricket.Router
+open Router
 
 type Msg =
-  | CricketMsg of FableCricket.LiveMatch.Types.Msg
+  | CricketMsg of LiveMatch.Types.Msg
 
 type Model = {
     currentPage: Page
-    cricket: FableCricket.LiveMatch.Types.Model
+    cricket: LiveMatch.Types.Model
   }
