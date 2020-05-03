@@ -18,21 +18,21 @@ let urlUpdate (result: Option<Page>) model =
   match result with
   | None ->
     console.error("Error parsing url")
-    model, modifyUrl model.currentPage
+    model, modifyUrl model.CurrentPage
   | Some page ->
-      { model with currentPage = page }, []
+      { model with CurrentPage = page }, []
 
 let init result =
   let (cricket, cricketCmd) = LiveMatch.State.initServer()
   let (model, cmd) =
     urlUpdate result
-      { currentPage = CricketPage
-        cricket = cricket }
+      { CurrentPage = CricketPage
+        Cricket = cricket }
   model, Cmd.batch [ cmd
                      Cmd.map CricketMsg cricketCmd ]
 
 let update msg model =
   match msg with
   | CricketMsg msg ->
-      let (cricket, cricketCmd) = LiveMatch.State.update msg model.cricket
-      { model with cricket = cricket }, Cmd.map CricketMsg cricketCmd
+      let (cricket, cricketCmd) = LiveMatch.State.update msg model.Cricket
+      { model with Cricket = cricket }, Cmd.map CricketMsg cricketCmd

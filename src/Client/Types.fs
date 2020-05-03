@@ -6,6 +6,6 @@ type Msg =
   | CricketMsg of LiveMatch.Types.Msg
 
 type Model = {
-    currentPage: Page
-    cricket: LiveMatch.Types.Model
+    CurrentPage: Page
+    Cricket: LiveMatch.Types.Model
   }

@@ -31,8 +31,8 @@ let root model dispatch =
   let pageHtml =
     function
     | AboutPage -> About.view
-    | AveragesPage -> Averages.view model.cricket
-    | CricketPage -> LiveMatch.View.root model.cricket (CricketMsg >> dispatch)
+    | AveragesPage -> Averages.view model.Cricket
+    | CricketPage -> LiveMatch.View.root model.Cricket (CricketMsg >> dispatch)
 
   div []
     [ div
@@ -44,6 +44,6 @@ let root model dispatch =
             [ Columns.columns []
                 [ Column.column
                     [ Column.Width (Screen.All, Column.Is3) ]
-                    [ menu model.currentPage ]
+                    [ menu model.CurrentPage ]
                   Column.column []
-                    [ pageHtml model.currentPage ] ] ] ] ]
+                    [ pageHtml model.CurrentPage ] ] ] ] ]
