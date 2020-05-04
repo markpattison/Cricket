@@ -31,8 +31,8 @@ let root model dispatch =
   let pageHtml =
     function
     | AboutPage -> About.view
-    | AveragesPage -> Averages.view model.Cricket
-    | CricketPage -> LiveMatch.View.root model.Cricket (CricketMsg >> dispatch)
+    | AveragesPage -> Averages.view model
+    | CricketPage -> LiveMatch.root model dispatch
 
   div []
     [ div

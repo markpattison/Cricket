@@ -1,4 +1,4 @@
-module Cricket.Client.LiveMatch.View
+module Cricket.Client.LiveMatch
 
 open Fable.React
 open Fable.React.Props
@@ -10,8 +10,7 @@ open Cricket.CricketEngine
 open Cricket.CricketEngine.Formatting
 open Cricket.MatchRunner
 open Cricket.Client.Extensions
-
-open Types
+open Cricket.Client.Types
 
 let simpleButton dispatch isDisabled (txt, action)  =
   Control.div []
@@ -176,7 +175,7 @@ let showMatch mtch isUpdateInProgress inningsExpanded dispatch =
         showAllInnings mtch inningsExpanded dispatch ]
 
 // main render method
-let root model dispatch =
+let root (model: Model) dispatch =
   match model.Match with
   | Resolved mtch ->
     showMatch mtch false model.InningsExpanded dispatch

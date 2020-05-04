@@ -1,11 +1,28 @@
 module Cricket.Client.Types
 
+open Cricket.CricketEngine
+open Cricket.MatchRunner
+open Cricket.Shared
+open Cricket.Client.Extensions
+
 open Router
 
-type Msg =
-  | CricketMsg of LiveMatch.Types.Msg
+type RunOption =
+    | OnClient of ServerModel
+    | OnServer of Deferred<SessionId>
 
-type Model = {
-    CurrentPage: Page
-    Cricket: LiveMatch.Types.Model
-  }
+type Msg =
+    | ServerSessionInitiated of SessionId * DataFromServer
+    | ServerMsg of ServerMsg
+    | NewStateReceived of Result<DataFromServer, string>
+    | ToggleInningsExpandedMessage of int
+
+type Model =
+    {
+        CurrentPage: Page
+        RunOption: RunOption
+        Match: Deferred<Match>
+        LivePlayerRecords: Deferred<Map<Player, PlayerRecord>>
+        InningsExpanded: bool list
+        Series: Deferred<Series>
+    }
