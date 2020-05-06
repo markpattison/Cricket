@@ -13,6 +13,7 @@ type SessionManagerState =
 type SessionManagerMsg =
     | NewSession of AsyncReplyChannel<SessionId * DataFromServer>
     | Update of SessionId * ServerMsg * AsyncReplyChannel<Result<DataFromServer, string>>
+    | GetStatistics of SessionId * AsyncReplyChannel<Result<Statistics, string>>
 
 type SessionManager () =
 
@@ -46,7 +47,19 @@ type SessionManager () =
                         printfn "Session not found: %A" sessionId
                         rc.Reply(Error (sprintf "Session not found: %A" sessionId))
                         state
-
+                
+                | GetStatistics (sessionId, rc) ->
+                    match Map.tryFind sessionId state.Sessions with
+                    | Some session ->
+                        let statistics = session.GetStatistics()
+                        rc.Reply(Ok statistics)
+                        state
+                    
+                    | None ->
+                        printfn "Session not found: %A" sessionId
+                        rc.Reply(Error (sprintf "Session not found: %A" sessionId))
+                        state
+            
             return! messageLoop updatedState
             }
 
@@ -57,3 +70,4 @@ type SessionManager () =
     // public interface
     member this.NewSession() = agent.PostAndReply(fun rc -> NewSession rc)
     member this.Update(sessionId, serverMsg) = agent.PostAndReply(fun rc -> Update (sessionId, serverMsg, rc))
+    member this.GetStatistics(sessionId) = agent.PostAndReply(fun rc -> GetStatistics (sessionId, rc))

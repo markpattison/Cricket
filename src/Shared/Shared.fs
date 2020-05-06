@@ -7,7 +7,13 @@ open Cricket.MatchRunner
 
 type SessionId = SessionId of Guid
 
-type DataFromServer = Match * Map<Player, PlayerRecord> * Series
+type Statistics =
+    {
+        LivePlayerRecords: Map<Player, PlayerRecord>
+        Series: Series
+    }
+
+type DataFromServer = Match
 
 module Route =
     /// Defines how routes are generated on server and mapped from client
@@ -18,4 +24,6 @@ module Route =
 /// to learn more, read the docs at https://zaid-ajaj.github.io/Fable.Remoting/src/basics.html
 type ICricketApi =
     { newSession : unit -> Async<SessionId * DataFromServer>
-      update : (SessionId * ServerMsg) -> Async<Result<DataFromServer, string>> }
+      update : (SessionId * ServerMsg) -> Async<Result<DataFromServer, string>>
+      getStatistics : SessionId -> Async<Result<Statistics, string>>
+    }

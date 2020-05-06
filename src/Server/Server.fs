@@ -25,6 +25,7 @@ let sessionManager = SessionManager()
 let cricketApi = {
     newSession = fun () -> async { return sessionManager.NewSession() }
     update = fun (sessionId, serverMsg) -> async { return sessionManager.Update(sessionId, serverMsg) }
+    getStatistics = fun sessionId -> async { return sessionManager.GetStatistics(sessionId) }
 }
 
 let webApp =

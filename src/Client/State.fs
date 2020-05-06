@@ -10,20 +10,13 @@ open Cricket.Client.Extensions
 open Cricket.Client.Router
 open Cricket.Client.Types
 
-let pageParser: Parser<Page->Page,Page> =
+let pageParser: Parser<Page -> Page, Page> =
   oneOf [
     map AboutPage (s "about")
     map AveragesPage (s "averages")
     map CricketPage (s "cricket")
   ]
 
-let urlUpdate (result: Option<Page>) model =
-  match result with
-  | None ->
-    console.error("Error parsing url")
-    model, modifyUrl model.CurrentPage
-  | Some page ->
-      { model with CurrentPage = page }, []
 
 module Server =
 
@@ -37,6 +30,20 @@ module Server =
 
 let initiateSession = Cmd.OfAsync.perform Server.api.newSession () ServerSessionInitiated
 let serverUpdate sessionId serverMsg = Cmd.OfAsync.perform Server.api.update (sessionId, serverMsg) NewStateReceived
+let getStatistics sessionId = Cmd.OfAsync.perform Server.api.getStatistics sessionId StatisticsReceived
+
+let urlUpdate (result: Option<Page>) model =
+  match result with
+  | None ->
+    console.error("Error parsing url")
+    model, modifyUrl model.CurrentPage
+
+  | Some page ->
+      match model.RunOption, page, model.LivePlayerRecords with
+      | (OnServer (Resolved sessionId)), AveragesPage, HasNotStartedYet ->
+          { model with CurrentPage = page; LivePlayerRecords = InProgress None; Series = InProgress None }, getStatistics sessionId
+      | _ ->
+          { model with CurrentPage = page }, Cmd.none
 
 let initClient () : Model * Cmd<Msg> =
     {
@@ -104,16 +111,17 @@ let update msg model =
         updatedModel, Cmd.none
 
     | OnClient _, ServerSessionInitiated _
+    | OnClient _, StatisticsReceived _
     | OnClient _, NewStateReceived _ ->
         model, Cmd.none   
      
-    | OnServer InProgress, ServerSessionInitiated (sessionId, (mtch, livePlayerRecords, series)) ->
+    | OnServer InProgress, ServerSessionInitiated (sessionId, mtch) ->
         let updatedModel =
             { model with
                 RunOption = OnServer (Resolved sessionId)
                 Match = Resolved mtch
-                LivePlayerRecords = Resolved livePlayerRecords
-                Series = Resolved series
+                LivePlayerRecords = HasNotStartedYet
+                Series = HasNotStartedYet
             }
         updatedModel |> checkForNewInnings, Cmd.none
     
@@ -126,12 +134,12 @@ let update msg model =
             }
         updatedModel, serverUpdate sessionId serverMsg
 
-    | OnServer (Resolved _), NewStateReceived (Ok (mtch, livePlayerRecords, series)) ->
+    | OnServer (Resolved _), NewStateReceived (Ok mtch) ->
         let updatedModel =
             { model with
                 Match = Resolved mtch
-                LivePlayerRecords = Resolved livePlayerRecords
-                Series = Resolved series
+                LivePlayerRecords = HasNotStartedYet
+                Series = HasNotStartedYet
             } |> checkForNewInnings
         updatedModel, Cmd.none       
 
@@ -139,9 +147,18 @@ let update msg model =
         printfn "Error: %s" error
         model, Cmd.none
 
+    | OnServer (Resolved _), StatisticsReceived (Ok stats) ->
+        let updatedModel = { model with LivePlayerRecords = Resolved stats.LivePlayerRecords; Series = Resolved stats.Series }
+        updatedModel, Cmd.none
+
+    | OnServer (Resolved _), StatisticsReceived (Error error) ->
+        printfn "Error: %s" error
+        model, Cmd.none
+
     | OnServer _, ServerSessionInitiated _
     | OnServer _, ServerMsg _
-    | OnServer _, NewStateReceived _ ->
+    | OnServer _, NewStateReceived _
+    | OnServer _, StatisticsReceived _ ->
         model, Cmd.none
 
     | _, ToggleInningsExpandedMessage index ->

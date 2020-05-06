@@ -15,6 +15,7 @@ type Msg =
     | ServerSessionInitiated of SessionId * DataFromServer
     | ServerMsg of ServerMsg
     | NewStateReceived of Result<DataFromServer, string>
+    | StatisticsReceived of Result<Statistics, string>
     | ToggleInningsExpandedMessage of int
 
 type Model =
