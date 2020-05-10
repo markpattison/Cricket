@@ -5,10 +5,13 @@ open Cricket.CricketEngine
 open Cricket.Shared
 open Cricket.MatchRunner
 
+let saveDelay = 5000 // ms
+
 type SessionMsg =
     | GetState of AsyncReplyChannel<DataFromServer>
     | GetStatistics of AsyncReplyChannel<Statistics>
-    | Update of ServerMsg * AsyncReplyChannel<DataFromServer>
+    | Update of ServerMsg * AsyncReplyChannel<ServerModel>
+    | SaveIfNotUpdated of ServerModel
 
 let dataFromServerState state : DataFromServer =
     state.Match
@@ -48,8 +51,12 @@ type Session () =
                     state
                 | Update (sessionMsg, rc) ->
                     let updated = MatchRunner.update sessionMsg state
-                    rc.Reply(dataFromServerState updated)
+                    rc.Reply(updated)
                     updated
+                | SaveIfNotUpdated oldState ->
+                    if oldState = state then
+                        printfn "Saving..."
+                    state
             
             return! messageLoop updatedState
             }
@@ -58,7 +65,16 @@ type Session () =
         messageLoop initialState
         )
 
+    let delayedSave state =
+        async {
+            do! Async.Sleep(saveDelay)
+            agent.Post(SaveIfNotUpdated state)
+        }
+
     // public interface
     member this.GetData() = agent.PostAndReply(fun rc -> GetState rc)
-    member this.Update(serverMsg) = agent.PostAndReply(fun rc -> Update (serverMsg, rc))
     member this.GetStatistics() = agent.PostAndReply(fun rc -> GetStatistics rc)
+    member this.Update(serverMsg) =
+        let state = agent.PostAndReply(fun rc -> Update (serverMsg, rc))
+        Async.Start(delayedSave state)
+        dataFromServerState state

@@ -79,7 +79,7 @@ let initServer () : Model * Cmd<Msg> =
     }, initiateSession
 
 let init result =
-  let (initialState, initialCommand) = initClient()
+  let (initialState, initialCommand) = initServer()
   let (model, cmd) = urlUpdate result initialState
   
   model, Cmd.batch [ cmd; initialCommand ]
