@@ -74,6 +74,13 @@ let checkForNewInnings model =
 
 let update msg model =
     match model.RunOption, msg with
+    | _, SwitchPage page ->
+        match model.RunOption, page, model.LivePlayerRecords with
+        | (OnServer (Resolved sessionId)), AveragesPage, HasNotStartedYet ->
+            { model with CurrentPage = page; LivePlayerRecords = InProgress None; Series = InProgress None }, getStatistics sessionId
+        | _ ->
+            { model with CurrentPage = page }, Cmd.none
+    
     | OnClient serverModel, ServerMsg serverMsg ->
         let updatedServerModel =
             MatchRunner.update serverMsg serverModel

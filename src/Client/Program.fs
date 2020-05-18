@@ -5,9 +5,8 @@ open Elmish.Debug
 open Elmish.HMR
 open Elmish.Navigation
 open Elmish.React
-open Elmish.UrlParser
 
-open Cricket.Client.CricketState
+open State
 
 Program.mkProgram init update View.root
 |> Program.withReactBatched "elmish-app"

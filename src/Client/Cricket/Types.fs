@@ -9,17 +9,18 @@ type RunOption =
     | OnClient of ServerModel
     | OnServer of Deferred<SessionId>
 
+type Page =
+    | CricketPage
+    | AveragesPage
+    | AboutPage
+
 type Msg =
+    | SwitchPage of Page
     | ServerSessionInitiated of SessionId * DataFromServer
     | ServerMsg of ServerMsg
     | NewStateReceived of Result<DataFromServer, string>
     | StatisticsReceived of Result<Statistics, string>
     | ToggleInningsExpandedMessage of int
-
-type Page =
-    | CricketPage
-    | AveragesPage
-    | AboutPage
 
 type Model =
     {
