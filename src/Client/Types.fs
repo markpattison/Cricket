@@ -5,8 +5,6 @@ open Cricket.MatchRunner
 open Cricket.Shared
 open Cricket.Client.Extensions
 
-open Router
-
 type RunOption =
     | OnClient of ServerModel
     | OnServer of Deferred<SessionId>
@@ -17,6 +15,11 @@ type Msg =
     | NewStateReceived of Result<DataFromServer, string>
     | StatisticsReceived of Result<Statistics, string>
     | ToggleInningsExpandedMessage of int
+
+type Page =
+    | CricketPage
+    | AveragesPage
+    | AboutPage
 
 type Model =
     {

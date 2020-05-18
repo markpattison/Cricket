@@ -7,14 +7,12 @@ open Fulma
 
 open Cricket.CricketEngine
 open Types
-open Router
 
 importAll "./sass/main.sass"
 
 let menuItem label page currentPage =
     Menu.Item.li
-      [ Menu.Item.IsActive (page = currentPage)
-        Menu.Item.Props [ Router.href page ] ]
+      [ Menu.Item.IsActive (page = currentPage) ]
       [ str label ]
 
 let menu currentPage =

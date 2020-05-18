@@ -7,16 +7,7 @@ open Elmish.UrlParser
 open Cricket.CricketEngine
 open Cricket.MatchRunner
 open Cricket.Client.Extensions
-open Cricket.Client.Router
 open Cricket.Client.Types
-
-let pageParser: Parser<Page -> Page, Page> =
-  oneOf [
-    map AboutPage (s "about")
-    map AveragesPage (s "averages")
-    map CricketPage (s "cricket")
-  ]
-
 
 module Server =
 
@@ -31,19 +22,6 @@ module Server =
 let initiateSession = Cmd.OfAsync.perform Server.api.newSession () ServerSessionInitiated
 let serverUpdate sessionId serverMsg = Cmd.OfAsync.perform Server.api.update (sessionId, serverMsg) NewStateReceived
 let getStatistics sessionId = Cmd.OfAsync.perform Server.api.getStatistics sessionId StatisticsReceived
-
-let urlUpdate (result: Option<Page>) model =
-  match result with
-  | None ->
-    console.error("Error parsing url")
-    model, modifyUrl model.CurrentPage
-
-  | Some page ->
-      match model.RunOption, page, model.LivePlayerRecords with
-      | (OnServer (Resolved sessionId)), AveragesPage, HasNotStartedYet ->
-          { model with CurrentPage = page; LivePlayerRecords = InProgress None; Series = InProgress None }, getStatistics sessionId
-      | _ ->
-          { model with CurrentPage = page }, Cmd.none
 
 let initClient () : Model * Cmd<Msg> =
     {
@@ -78,11 +56,9 @@ let initServer () : Model * Cmd<Msg> =
         RunOption = OnServer (InProgress None)
     }, initiateSession
 
-let init result =
-  let (initialState, initialCommand) = initServer()
-  let (model, cmd) = urlUpdate result initialState
-  
-  model, Cmd.batch [ cmd; initialCommand ]
+let init () =
+  let initialModel, initialCommand = initServer()
+  initialModel, initialCommand
 
 let checkForNewInnings model =
     match model.Match with
