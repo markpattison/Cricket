@@ -10,7 +10,7 @@ open Cricket.CricketEngine
 open Cricket.CricketEngine.Formatting
 open Cricket.MatchRunner
 open Cricket.Client.Extensions
-open Cricket.Client.Types
+open Cricket.Client.CricketTypes
 
 let simpleButton dispatch isDisabled (txt, action)  =
   Control.div []

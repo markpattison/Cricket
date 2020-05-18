@@ -123,7 +123,7 @@ let showSeriesSummary deferredSeries =
   Level.level [] [ str summary ]
 
 // main render method
-let view (model: Types.Model) =
+let view (model: CricketTypes.Model) =
   div []
     [ showSeriesSummary model.Series
       showAverages model.LivePlayerRecords ]

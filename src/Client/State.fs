@@ -7,7 +7,7 @@ open Elmish.UrlParser
 open Cricket.CricketEngine
 open Cricket.MatchRunner
 open Cricket.Client.Extensions
-open Cricket.Client.Types
+open Cricket.Client.CricketTypes
 
 module Server =
 
