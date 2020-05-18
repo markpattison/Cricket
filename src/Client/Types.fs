@@ -1,18 +1,6 @@
 module Cricket.Client.Types
 
-open Cricket.CricketEngine
-open Cricket.MatchRunner
-open Cricket.Shared
-open Cricket.Client.Extensions
-
-type LobbyPage =
-    | StartPage
-    | LobbyAboutPage
-
-type LobbyMsg =
-    | SwitchPage of LobbyPage
-    | StartOnClient
-    | StartOnServer
+open Lobby
 
 type Msg =
     | LobbyMsg of LobbyMsg

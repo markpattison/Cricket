@@ -7,6 +7,7 @@ open Fulma
 
 open Cricket.CricketEngine
 open Cricket.Client.CricketTypes
+open Cricket.Client.Lobby
 open Cricket.Client.Types
 
 importAll "./sass/main.sass"
@@ -14,7 +15,7 @@ importAll "./sass/main.sass"
 let lobbyMenuItem label page currentPage dispatch =
     Menu.Item.li
       [ Menu.Item.IsActive (page = currentPage)
-        Menu.Item.OnClick (fun _ -> Types.SwitchPage page |> dispatch)]
+        Menu.Item.OnClick (fun _ -> Lobby.SwitchPage page |> dispatch)]
       [ str label ]
 
 let menuItem label page currentPage dispatch =

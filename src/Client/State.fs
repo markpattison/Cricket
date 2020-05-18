@@ -7,6 +7,7 @@ open Elmish.UrlParser
 open Cricket.CricketEngine
 open Cricket.MatchRunner
 open Cricket.Client.Extensions
+open Cricket.Client.Lobby
 open Cricket.Client.Types
 
 let init () =

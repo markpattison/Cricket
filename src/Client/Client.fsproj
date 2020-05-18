@@ -15,10 +15,11 @@
     <Compile Include="Version.fs" />
     <Compile Include="Extensions.fs" />
     <Compile Include="Cricket/Types.fs" />
+    <Compile Include="About.fs" />
+    <Compile Include="Lobby.fs" />
     <Compile Include="Types.fs" />
     <Compile Include="Cricket/State.fs" />
     <Compile Include="State.fs" />
-    <Compile Include="About.fs" />
     <Compile Include="Cricket/LiveMatch.fs" />
     <Compile Include="Cricket/Averages.fs" />
     <Compile Include="Navbar.fs" />
