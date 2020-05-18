@@ -20,8 +20,8 @@
     <Compile Include="Types.fs" />
     <Compile Include="Cricket/State.fs" />
     <Compile Include="State.fs" />
-    <Compile Include="Cricket/LiveMatch.fs" />
-    <Compile Include="Cricket/Averages.fs" />
+    <Compile Include="Cricket/MatchView.fs" />
+    <Compile Include="Cricket/AveragesView.fs" />
     <Compile Include="Cricket/View.fs" />
     <Compile Include="Navbar.fs" />
     <Compile Include="View.fs" />
