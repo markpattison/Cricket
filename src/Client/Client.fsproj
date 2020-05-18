@@ -21,7 +21,7 @@
     <Compile Include="About.fs" />
     <Compile Include="Cricket/LiveMatch.fs" />
     <Compile Include="Cricket/Averages.fs" />
-    <Compile Include="Navbar/View.fs" />
+    <Compile Include="Navbar.fs" />
     <Compile Include="View.fs" />
     <Compile Include="Program.fs" />
 
