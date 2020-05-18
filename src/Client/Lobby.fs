@@ -1,16 +1,16 @@
 module Cricket.Client.Lobby
 
-type LobbyPage =
+open Fable.React
+open Fulma
+
+type Page =
     | StartPage
     | LobbyAboutPage
 
-type LobbyMsg =
-    | SwitchPage of LobbyPage
+type Msg =
+    | SwitchPage of Page
     | StartOnClient
     | StartOnServer
-
-open Fable.React
-open Fulma
 
 let menuItem label page currentPage dispatch =
     Menu.Item.li

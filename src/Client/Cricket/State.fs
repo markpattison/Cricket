@@ -1,8 +1,6 @@
 module Cricket.Client.CricketState
 
-open Browser
 open Elmish
-open Elmish.UrlParser
 
 open Cricket.CricketEngine
 open Cricket.MatchRunner

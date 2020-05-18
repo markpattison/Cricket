@@ -1,13 +1,11 @@
 module Cricket.Client.Types
 
-open Lobby
-
 type Msg =
-    | LobbyMsg of LobbyMsg
+    | LobbyMsg of Lobby.Msg
     | CricketMsg of CricketTypes.Msg
 
 type OuterState =
-    | Lobby of LobbyPage
+    | Lobby of Lobby.Page
     | Playing of CricketTypes.Model
 
 type Model =

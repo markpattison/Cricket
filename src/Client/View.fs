@@ -5,9 +5,6 @@ open Fable.React
 open Fable.React.Props
 open Fulma
 
-open Cricket.CricketEngine
-open Cricket.Client.CricketTypes
-open Cricket.Client.Lobby
 open Cricket.Client.Types
 
 importAll "./sass/main.sass"
