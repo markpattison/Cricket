@@ -20,9 +20,7 @@ let menuItem label page currentPage dispatch =
 
 let menu currentPage dispatch =
   Menu.menu []
-    [ Menu.label []
-        [ str "Lobby menu" ]
-      Menu.list []
+    [ Menu.list []
         [ menuItem "Start" StartPage currentPage dispatch
           menuItem "About" LobbyAboutPage currentPage dispatch ] ]
 
@@ -37,7 +35,7 @@ let simpleButton dispatch txt action =
 let view lobbyPage dispatch =
   let page =
     match lobbyPage with
-    | LobbyAboutPage -> About.view
+    | LobbyAboutPage -> About.view ""
     | StartPage ->
       div []
         [

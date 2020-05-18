@@ -4,7 +4,9 @@ open Fable.React
 open Fulma
 
 open Cricket.CricketEngine
+open Cricket.Shared
 open Cricket.Client.CricketTypes
+open Cricket.Client.Extensions
 
 let menuItem label page currentPage dispatch =
     Menu.Item.li
@@ -14,9 +16,7 @@ let menuItem label page currentPage dispatch =
 
 let menu currentPage dispatch =
   Menu.menu []
-    [ Menu.label []
-        [ str "General" ]
-      Menu.list []
+    [ Menu.list []
         [ menuItem "Scorecard" CricketPage currentPage dispatch
           menuItem "Averages" AveragesPage currentPage dispatch
           menuItem "About" AboutPage currentPage dispatch ] ]
@@ -24,7 +24,13 @@ let menu currentPage dispatch =
 let view cricketModel dispatch =
   let page =
     match cricketModel.CurrentPage with
-    | AboutPage -> About.view
+    | AboutPage ->
+        let extraText =
+          match cricketModel.RunOption with
+          | OnClient -> "Running in-browser."
+          | OnServer (Resolved (SessionId sessionId)) -> sprintf "Running on server, session ID: %O" sessionId
+          | OnServer _ -> "Running on server, not connected."
+        About.view extraText
     | AveragesPage -> Averages.view cricketModel
     | CricketPage -> LiveMatch.root cricketModel dispatch
   
