@@ -16,6 +16,7 @@
     <Compile Include="Extensions.fs" />
     <Compile Include="Cricket/Types.fs" />
     <Compile Include="Types.fs" />
+    <Compile Include="Cricket/State.fs" />
     <Compile Include="State.fs" />
     <Compile Include="Cricket/About.fs" />
     <Compile Include="Cricket/LiveMatch.fs" />

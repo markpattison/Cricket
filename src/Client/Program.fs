@@ -7,7 +7,7 @@ open Elmish.Navigation
 open Elmish.React
 open Elmish.UrlParser
 
-open Cricket.Client.State
+open Cricket.Client.CricketState
 
 Program.mkProgram init update View.root
 |> Program.withReactBatched "elmish-app"
