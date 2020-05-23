@@ -1174,7 +1174,7 @@ NUGET
     FSharp.Control.Websockets (0.2.2)
       FSharp.Core (>= 4.3.4)
       Microsoft.IO.RecyclableMemoryStream (>= 1.2.2)
-    FSharp.Core (4.7.1)
+    FSharp.Core (4.7.2)
     Giraffe (4.1)
       FSharp.Core (>= 4.7)
       Microsoft.IO.RecyclableMemoryStream (>= 1.2.2)

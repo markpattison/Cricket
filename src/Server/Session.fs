@@ -1,6 +1,10 @@
 module Cricket.Server.Session
 
 open System
+open Microsoft.Azure
+open Microsoft.Azure.Cosmos.Table
+open Microsoft.AspNetCore.Http
+
 open Cricket.CricketEngine
 open Cricket.Shared
 open Cricket.MatchRunner
@@ -19,7 +23,7 @@ let dataFromServerState state : DataFromServer =
 let statisticsFromServerState state : Statistics =
     { LivePlayerRecords = state.LivePlayerRecords; Series = state.Series }
 
-type Session () =
+type Session(sessionId: SessionId, table: CloudTable) =
 
     let initialState =
         {   
@@ -35,6 +39,9 @@ type Session () =
                 }
             Series = Series.create "England" "India"
         }    
+
+    let sessionIdString =
+        match sessionId with | SessionId guid -> guid.ToString()
 
     let agent = MailboxProcessor.Start(fun inbox ->
 
@@ -55,6 +62,10 @@ type Session () =
                     updated
                 | SaveIfNotUpdated oldState ->
                     if oldState = state then
+                        let stateJson = "hello"
+                        let cricketStore = CricketStore(sessionIdString, stateJson)
+                        let op = TableOperation.InsertOrReplace(cricketStore)
+                        table.Execute(op) |> ignore
                         printfn "Saving..."
                     state
             

@@ -42,8 +42,8 @@ let sessionManager = SessionManager()
 
 let cricketApi (ctx: HttpContext) = {
     newSession = fun () -> async { return sessionManager.NewSession(ctx) }
-    update = fun (sessionId, serverMsg) -> async { return sessionManager.Update(ctx, sessionId, serverMsg) }
-    getStatistics = fun sessionId -> async { return sessionManager.GetStatistics(ctx, sessionId) }
+    update = fun (sessionId, serverMsg) -> async { return sessionManager.Update(sessionId, serverMsg) }
+    getStatistics = fun sessionId -> async { return sessionManager.GetStatistics(sessionId) }
 }
 
 let webApp =
