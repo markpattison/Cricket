@@ -104,6 +104,10 @@ Target.create "Build" (fun _ ->
 
     runTool npxTool "webpack-cli -p" fableDirectory)
 
+Target.create "SetStorageEnvironmentVariable" (fun _ ->
+    let connectionString = Fake.IO.File.readAsString "C:/Repos/Keys/markcricketstorage.txt"
+    Environment.setEnvironVar "cricketStorageConnectionString" connectionString)
+
 Target.create "Run" (fun _ ->
     let server = async {
         serverReferences
@@ -132,7 +136,10 @@ open Fake.Core.TargetOperators
     ==> "NpmInstall"
 
 "NpmInstall" ==> "Build"
-"NpmInstall" ==> "Run"
+
+"NpmInstall"
+    ==> "SetStorageEnvironmentVariable"
+    ==> "Run"
 
 // start build
 Target.runOrDefault "Build"

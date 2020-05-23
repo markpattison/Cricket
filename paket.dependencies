@@ -6,6 +6,7 @@ group Server
     nuget FSharp.Core
     nuget Saturn
     nuget Microsoft.AspNetCore.Authentication.JwtBearer
+    nuget Microsoft.Azure.Cosmos.Table
     nuget Fable.Remoting.Giraffe ~> 3
 
 group Client
@@ -28,6 +29,7 @@ group Build
 
     nuget FSharp.Core
     nuget Fake.Core
+    nuget Fake.Core.Environment
     nuget Fake.Core.ReleaseNotes
     nuget Fake.Core.Target
     nuget Fake.DotNet.Cli

@@ -1,6 +1,12 @@
 module Cricket.Server.SessionManager
 
 open System
+open Microsoft.Azure
+open Microsoft.Azure.Cosmos.Table
+open Microsoft.AspNetCore.Http
+open FSharp.Control.Tasks.ContextInsensitive
+
+open Saturn
 open Cricket.Shared
 open Cricket.MatchRunner
 open Session
@@ -68,6 +74,9 @@ type SessionManager () =
         )
 
     // public interface
-    member this.NewSession() = agent.PostAndReply(fun rc -> NewSession rc)
-    member this.Update(sessionId, serverMsg) = agent.PostAndReply(fun rc -> Update (sessionId, serverMsg, rc))
-    member this.GetStatistics(sessionId) = agent.PostAndReply(fun rc -> GetStatistics (sessionId, rc))
+    member this.NewSession(ctx) =
+        // let config : Config = Controller.getConfig ctx
+        // printfn "Conn Str: %s" config.StorageConnectionString
+        agent.PostAndReply(fun rc -> NewSession rc)
+    member this.Update(ctx, sessionId, serverMsg) = agent.PostAndReply(fun rc -> Update (sessionId, serverMsg, rc))
+    member this.GetStatistics(ctx, sessionId) = agent.PostAndReply(fun rc -> GetStatistics (sessionId, rc))
