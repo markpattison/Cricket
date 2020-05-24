@@ -1,4 +1,4 @@
-## New in 0.4.9
+## New in 0.4.9 (Released 2020/05/03)
 * upgrade to .NET Core 3.1
 
 ## New in 0.4.8 (Released 2020/03/15)
