@@ -8,6 +8,7 @@ group Server
     nuget Microsoft.AspNetCore.Authentication.JwtBearer
     nuget Microsoft.Azure.Cosmos.Table
     nuget Fable.Remoting.Giraffe ~> 3
+    nuget Thoth.Json.Net
 
 group Client
     source https://www.nuget.org/api/v2

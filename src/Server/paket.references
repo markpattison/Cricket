@@ -3,3 +3,5 @@ group Server
     Saturn
     Fable.Remoting.Giraffe
     Microsoft.Azure.Cosmos.Table
+    Thoth.Json.Net
+    

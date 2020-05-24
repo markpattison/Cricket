@@ -62,7 +62,7 @@ type Session(sessionId: SessionId, table: CloudTable) =
                     updated
                 | SaveIfNotUpdated oldState ->
                     if oldState = state then
-                        let stateJson = "hello"
+                        let stateJson = Thoth.Json.Net.Encode.Auto.toString(0, state)
                         let cricketStore = CricketStore(sessionIdString, stateJson)
                         let op = TableOperation.InsertOrReplace(cricketStore)
                         table.Execute(op) |> ignore
