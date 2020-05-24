@@ -1,11 +1,5 @@
 module Cricket.Server.Session
 
-open System
-open Microsoft.Azure
-open Microsoft.Azure.Cosmos.Table
-open Microsoft.AspNetCore.Http
-
-open Cricket.CricketEngine
 open Cricket.Shared
 open Cricket.MatchRunner
 
@@ -23,25 +17,7 @@ let dataFromServerState state : DataFromServer =
 let statisticsFromServerState state : Statistics =
     { LivePlayerRecords = state.LivePlayerRecords; Series = state.Series }
 
-type Session(sessionId: SessionId, table: CloudTable) =
-
-    let initialState =
-        {   
-            Match = MatchData.newMatch
-            PlayerRecords = Map.empty
-            LivePlayerRecords = Map.empty
-            PlayerAttributes =
-                {
-                    Attributes =
-                        MatchData.players
-                        |> List.mapi (fun n (_, bat, bowl) -> n, { BattingSkill = bat; BowlingSkill = bowl })
-                        |> Map.ofList
-                }
-            Series = Series.create "England" "India"
-        }    
-
-    let sessionIdString =
-        match sessionId with | SessionId guid -> guid.ToString()
+type Session(initialState: ServerModel, saveState: ServerModel -> unit) =
 
     let agent = MailboxProcessor.Start(fun inbox ->
 
@@ -62,10 +38,7 @@ type Session(sessionId: SessionId, table: CloudTable) =
                     updated
                 | SaveIfNotUpdated oldState ->
                     if oldState = state then
-                        let stateJson = Thoth.Json.Net.Encode.Auto.toString(0, state)
-                        let cricketStore = CricketStore(sessionIdString, stateJson)
-                        let op = TableOperation.InsertOrReplace(cricketStore)
-                        table.Execute(op) |> ignore
+                        saveState state
                         printfn "Saving..."
                     state
             

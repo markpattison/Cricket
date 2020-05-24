@@ -15,7 +15,7 @@
     <None Include="paket.references" />
     <Compile Include="../Shared/Shared.fs" />
     <Compile Include="Config.fs" />
-    <Compile Include="CricketStore.fs" />
+    <Compile Include="Storage.fs" />
     <Compile Include="Session.fs" />
     <Compile Include="SessionManager.fs" />
     <Compile Include="Server.fs" />

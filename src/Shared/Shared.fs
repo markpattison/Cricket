@@ -5,7 +5,10 @@ open System
 open Cricket.CricketEngine
 open Cricket.MatchRunner
 
-type SessionId = SessionId of Guid
+type SessionId =
+    | SessionId of Guid
+    override this.ToString() =
+        match this with | SessionId guid -> guid.ToString()
 
 type Statistics =
     {
@@ -24,6 +27,7 @@ module Route =
 /// to learn more, read the docs at https://zaid-ajaj.github.io/Fable.Remoting/src/basics.html
 type ICricketApi =
     { newSession : unit -> Async<SessionId * DataFromServer>
+      loadSession: SessionId -> Async<Result<DataFromServer, string>>
       update : (SessionId * ServerMsg) -> Async<Result<DataFromServer, string>>
       getStatistics : SessionId -> Async<Result<Statistics, string>>
     }

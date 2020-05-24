@@ -7,6 +7,7 @@ open Microsoft.AspNetCore.Http
 open Saturn
 
 open Cricket.Shared
+open Cricket.CricketEngine
 open Cricket.MatchRunner
 open Session
 
@@ -17,6 +18,7 @@ type SessionManagerState =
 
 type SessionManagerMsg =
     | NewSession of Config * AsyncReplyChannel<SessionId * DataFromServer>
+    | LoadSession of Config * SessionId * AsyncReplyChannel<Result<DataFromServer, string>>
     | Update of SessionId * ServerMsg * AsyncReplyChannel<Result<DataFromServer, string>>
     | GetStatistics of SessionId * AsyncReplyChannel<Result<Statistics, string>>
 
@@ -27,6 +29,21 @@ let getStorageTable config =
     table.CreateIfNotExists() |> ignore
     
     table
+
+let initialSessionState =
+    {   
+        Match = MatchData.newMatch
+        PlayerRecords = Map.empty
+        LivePlayerRecords = Map.empty
+        PlayerAttributes =
+            {
+                Attributes =
+                    MatchData.players
+                    |> List.mapi (fun n (_, bat, bowl) -> n, { BattingSkill = bat; BowlingSkill = bowl })
+                    |> Map.ofList
+            }
+        Series = Series.create "England" "India"
+    }
 
 type SessionManager () =
 
@@ -42,7 +59,9 @@ type SessionManager () =
                 | NewSession (config, rc) ->
                     let table = getStorageTable config
                     let newSessionId = SessionId (Guid.NewGuid())
-                    let newSession = Session(newSessionId, table)
+                    let saveState = Storage.save table newSessionId
+
+                    let newSession = Session(initialSessionState, saveState)
                     let newSessionState = newSession.GetData()
 
                     rc.Reply(newSessionId, newSessionState)
@@ -50,6 +69,34 @@ type SessionManager () =
                         Sessions = Map.add newSessionId newSession state.Sessions
                     }
                 
+                | LoadSession (config, sessionId, rc) ->
+                    match Map.tryFind sessionId state.Sessions with
+                    | Some session ->
+                        let data = session.GetData()
+                        rc.Reply(Ok data)
+                        state
+                    | None ->
+                        let table = getStorageTable config
+                        let loadResult = Storage.load table sessionId
+
+                        match loadResult with
+                            | Ok sessionState ->
+                                let table = getStorageTable config
+                                let newSessionId = SessionId (Guid.NewGuid())
+                                let saveState = Storage.save table newSessionId
+
+                                let newSession = Session(sessionState, saveState)
+                                let newSessionState = newSession.GetData()
+
+                                rc.Reply(Ok newSessionState)
+                                { state with
+                                    Sessions = Map.add sessionId newSession state.Sessions
+                                }
+                            
+                            | Error msg ->
+                                rc.Reply(Error msg)
+                                state
+
                 | Update (sessionId, sessionMsg, rc) ->
                     match Map.tryFind sessionId state.Sessions with
                     | Some session ->
@@ -85,5 +132,8 @@ type SessionManager () =
     member this.NewSession(ctx) =
         let config : Config = Controller.getConfig ctx
         agent.PostAndReply(fun rc -> NewSession (config, rc))
+    member this.LoadSession(ctx, sessionId) =
+        let config : Config = Controller.getConfig ctx
+        agent.PostAndReply(fun rc -> LoadSession (config, sessionId, rc))
     member this.Update(sessionId, serverMsg) = agent.PostAndReply(fun rc -> Update (sessionId, serverMsg, rc))
     member this.GetStatistics(sessionId) = agent.PostAndReply(fun rc -> GetStatistics (sessionId, rc))
