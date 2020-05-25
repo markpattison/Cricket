@@ -5,27 +5,26 @@ open Elmish
 open Cricket.Client.Types
 
 let init () =
-    { OuterState = Lobby Lobby.StartPage }, Cmd.none
+    let lobbyState, lobbyCmd = Lobby.State.init()
+    { OuterState = Lobby lobbyState }, Cmd.map LobbyMsg lobbyCmd
 
 let update msg model =
     match model.OuterState, msg with
-    | Lobby, LobbyMsg Lobby.StartOnClient ->
-        let cricketModel, cmd = CricketState.initClient()
-        { model with OuterState = Playing cricketModel }, Cmd.map CricketMsg cmd
+    | Lobby _, LobbyMsg (Lobby.ServerSessionInitiated (sessionId, mtch)) ->
+        let cricketModel, cricketCmd = CricketState.initServer(sessionId, mtch)
+        { model with OuterState = Playing cricketModel }, Cmd.map CricketMsg cricketCmd
+
+    | Lobby _, LobbyMsg (Lobby.ClientSessionInitiated) ->
+        let cricketModel, cricketCmd = CricketState.initClient()
+        { model with OuterState = Playing cricketModel }, Cmd.map CricketMsg cricketCmd        
     
-    | Lobby, LobbyMsg Lobby.StartOnServer ->
-        let cricketModel, cmd = CricketState.initServer()
-        { model with OuterState = Playing cricketModel }, Cmd.map CricketMsg cmd
-    
-    | Lobby, LobbyMsg (Lobby.SwitchPage page) ->
-        { model with OuterState = Lobby page }, Cmd.none
-    
-    | Lobby, _ ->
-        model, Cmd.none
-    
+    | Lobby lobbyModel, LobbyMsg lobbyMsg ->
+        let updatedLobbyModel, lobbyCmd = Lobby.State.update lobbyMsg lobbyModel
+        { model with OuterState = Lobby updatedLobbyModel }, Cmd.map LobbyMsg lobbyCmd
+
     | Playing cricketModel, CricketMsg cricketMsg ->
-        let updatedCricketModel, cmd = CricketState.update cricketMsg cricketModel
-        { model with OuterState = Playing updatedCricketModel }, Cmd.map CricketMsg cmd
+        let updatedCricketModel, cricketCmd = CricketState.update cricketMsg cricketModel
+        { model with OuterState = Playing updatedCricketModel }, Cmd.map CricketMsg cricketCmd
     
-    | Playing _, _ ->
+    | _, _ ->
         model, Cmd.none

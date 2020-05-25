@@ -7,19 +7,20 @@ open Cricket.MatchRunner
 open Cricket.Client.Extensions
 open Cricket.Client.CricketTypes
 
-module Server =
-
-    open Cricket.Shared
-    open Fable.Remoting.Client
-
-    let api : ICricketApi =
-      Remoting.createApi()
-      |> Remoting.withRouteBuilder Route.builder
-      |> Remoting.buildProxy<ICricketApi>
-
-let initiateSession = Cmd.OfAsync.perform Server.api.newSession () ServerSessionInitiated
 let serverUpdate sessionId serverMsg = Cmd.OfAsync.perform Server.api.update (sessionId, serverMsg) NewStateReceived
 let getStatistics sessionId = Cmd.OfAsync.perform Server.api.getStatistics sessionId StatisticsReceived
+
+let checkForNewInnings model =
+    match model.Match with
+    | Resolved mtch ->
+        let numInnings = mtch |> Match.inningsList |> List.length
+        let numExpanders = model.InningsExpanded |> List.length
+        if numInnings > numExpanders then
+            let newExpanders = List.init numInnings (fun i -> i = numInnings - 1)
+            { model with InningsExpanded = newExpanders }
+        else
+            model
+    | _ -> model
 
 let initClient () : Model * Cmd<Msg> =
     {
@@ -44,31 +45,17 @@ let initClient () : Model * Cmd<Msg> =
             }            
     }, []
 
-let initServer () : Model * Cmd<Msg> =
-    {
-        CurrentPage = CricketPage
-        Match = HasNotStartedYet
-        LivePlayerRecords = HasNotStartedYet
-        InningsExpanded = []
-        Series = HasNotStartedYet
-        RunOption = OnServer (InProgress None)
-    }, initiateSession
-
-let init () =
-  let initialModel, initialCommand = initServer()
-  initialModel, initialCommand
-
-let checkForNewInnings model =
-    match model.Match with
-    | Resolved mtch ->
-        let numInnings = mtch |> Match.inningsList |> List.length
-        let numExpanders = model.InningsExpanded |> List.length
-        if numInnings > numExpanders then
-            let newExpanders = List.init numInnings (fun i -> i = numInnings - 1)
-            { model with InningsExpanded = newExpanders }
-        else
-            model
-    | _ -> model
+let initServer (sessionId, mtch) : Model * Cmd<Msg> =
+    let model =
+        {
+            CurrentPage = CricketPage
+            Match = Resolved mtch
+            LivePlayerRecords = HasNotStartedYet
+            InningsExpanded = []
+            Series = HasNotStartedYet
+            RunOption = OnServer (Resolved sessionId)
+        }
+    model |> checkForNewInnings, Cmd.none
 
 let update msg model =
     match model.RunOption, msg with
@@ -91,20 +78,9 @@ let update msg model =
             } |> checkForNewInnings
         updatedModel, Cmd.none
 
-    | OnClient _, ServerSessionInitiated _
     | OnClient _, StatisticsReceived _
     | OnClient _, NewStateReceived _ ->
         model, Cmd.none   
-     
-    | OnServer InProgress, ServerSessionInitiated (sessionId, mtch) ->
-        let updatedModel =
-            { model with
-                RunOption = OnServer (Resolved sessionId)
-                Match = Resolved mtch
-                LivePlayerRecords = HasNotStartedYet
-                Series = HasNotStartedYet
-            }
-        updatedModel |> checkForNewInnings, Cmd.none
     
     | OnServer (Resolved sessionId), ServerMsg serverMsg ->
         let updatedModel =
@@ -136,7 +112,6 @@ let update msg model =
         printfn "Error: %s" error
         model, Cmd.none
 
-    | OnServer _, ServerSessionInitiated _
     | OnServer _, ServerMsg _
     | OnServer _, NewStateReceived _
     | OnServer _, StatisticsReceived _ ->

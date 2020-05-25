@@ -5,7 +5,7 @@ type Msg =
     | CricketMsg of CricketTypes.Msg
 
 type OuterState =
-    | Lobby of Lobby.Page
+    | Lobby of Lobby.Model
     | Playing of CricketTypes.Model
 
 type Model =

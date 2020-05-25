@@ -81,9 +81,7 @@ type SessionManager () =
 
                         match loadResult with
                             | Ok sessionState ->
-                                let table = getStorageTable config
-                                let newSessionId = SessionId (Guid.NewGuid())
-                                let saveState = Storage.save table newSessionId
+                                let saveState = Storage.save table sessionId
 
                                 let newSession = Session(sessionState, saveState)
                                 let newSessionState = newSession.GetData()
