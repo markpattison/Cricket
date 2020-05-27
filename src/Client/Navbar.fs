@@ -1,10 +1,9 @@
-module FableCricket.Navbar
+module Cricket.Client.Navbar
 
+open Fable.FontAwesome
 open Fable.React
 open Fable.React.Props
-
 open Fulma
-open Fable.FontAwesome
 
 let navButton classy href faClass txt =
   Control.div []

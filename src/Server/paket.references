@@ -1,0 +1,7 @@
+group Server
+    FSharp.Core
+    Saturn
+    Fable.Remoting.Giraffe
+    Microsoft.Azure.Cosmos.Table
+    Thoth.Json.Net
+    

@@ -1,3 +1,4 @@
-FsUnit
-Nunit3TestAdapter
-Microsoft.NET.Test.Sdk
+group Client
+    FsUnit
+    Nunit3TestAdapter
+    Microsoft.NET.Test.Sdk

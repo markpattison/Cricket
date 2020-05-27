@@ -11,17 +11,22 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Shared\Shared.fs" />
     <Compile Include="Version.fs" />
-    <Compile Include="Router.fs" />
     <Compile Include="Extensions.fs" />
-    <Compile Include="About/View.fs" />
-    <Compile Include="LiveMatch/Types.fs" />
-    <Compile Include="LiveMatch/State.fs" />
-    <Compile Include="LiveMatch/View.fs" />
-    <Compile Include="Averages/View.fs" />
-    <Compile Include="Navbar/View.fs" />
+    <Compile Include="Cricket/Types.fs" />
+    <Compile Include="Lobby/Types.fs" />
+    <Compile Include="About.fs" />
     <Compile Include="Types.fs" />
+    <Compile Include="Server.fs" />
+    <Compile Include="Cricket/State.fs" />
+    <Compile Include="Lobby/State.fs" />
     <Compile Include="State.fs" />
+    <Compile Include="Cricket/MatchView.fs" />
+    <Compile Include="Cricket/AveragesView.fs" />
+    <Compile Include="Cricket/View.fs" />
+    <Compile Include="Lobby/View.fs" />
+    <Compile Include="Navbar.fs" />
     <Compile Include="View.fs" />
     <Compile Include="Program.fs" />
 

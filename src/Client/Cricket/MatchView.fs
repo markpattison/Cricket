@@ -1,4 +1,4 @@
-module FableCricket.LiveMatch.View
+module Cricket.Client.LiveMatch
 
 open Fable.React
 open Fable.React.Props
@@ -9,16 +9,16 @@ open Fable.FontAwesome
 open Cricket.CricketEngine
 open Cricket.CricketEngine.Formatting
 open Cricket.MatchRunner
-open FableCricket.Extensions
+open Cricket.Client.Extensions
+open Cricket.Client.CricketTypes
 
-open Types
-
-let simpleButton dispatch (txt, action)  =
+let simpleButton dispatch isDisabled (txt, action)  =
   Control.div []
     [ Button.button
         [ Button.OnClick (fun e ->
                             e.preventDefault()
-                            action |> dispatch) ]
+                            action |> dispatch)
+          Button.Disabled isDisabled ]
         [ str txt ] ]
 
 let showSummaryStatus match' =
@@ -160,20 +160,25 @@ let showOption (option: UpdateOptionsForUI) =
   | ContinueInningsInningsUI -> "Continue (innings)", ContinueInningsInningsMessage
   | MatchOverUI -> "Reset match", ResetMatchMessage
 
-let showOptions dispatch match' =
+let showOptions dispatch match' isUpdateInProgress =
   let options = MatchRunner.getOptionsUI match'
   Level.level []
     [ Level.left []
         [ Field.div
             [ Field.IsGrouped ]
-            (List.map (showOption >> simpleButton dispatch) options ) ] ]
+            (List.map (showOption >> simpleButton dispatch isUpdateInProgress) options ) ] ]
+
+let showMatch mtch isUpdateInProgress inningsExpanded dispatch =
+    div []
+      [ showOptions (ServerMsg >> dispatch) mtch isUpdateInProgress
+        showSummaryStatus mtch
+        showAllInnings mtch inningsExpanded dispatch ]
 
 // main render method
-let root model dispatch =
+let root (model: Model) dispatch =
   match model.Match with
   | Resolved mtch ->
-    div []
-      [ showOptions (ServerMsg >> dispatch) mtch
-        showSummaryStatus mtch
-        showAllInnings mtch model.InningsExpanded dispatch ]
+    showMatch mtch false model.InningsExpanded dispatch
+  | InProgress (Some mtch) ->
+    showMatch mtch true model.InningsExpanded dispatch
   | _ -> Level.level [] [ str "Match loading..." ]

@@ -1,4 +1,4 @@
-module FableCricket.Averages
+module Cricket.Client.Averages
 
 open Fable.React
 open Fulma
@@ -6,7 +6,7 @@ open Fulma
 open Cricket.CricketEngine
 open Cricket.CricketEngine.Formatting
 open Cricket.CricketEngine.Averages
-open FableCricket.Extensions
+open Extensions
 
 let showIndividualBatting (batting: BattingAverage) =
   tr [] [
@@ -123,7 +123,7 @@ let showSeriesSummary deferredSeries =
   Level.level [] [ str summary ]
 
 // main render method
-let view (model: FableCricket.LiveMatch.Types.Model) =
+let view (model: CricketTypes.Model) =
   div []
     [ showSeriesSummary model.Series
       showAverages model.LivePlayerRecords ]

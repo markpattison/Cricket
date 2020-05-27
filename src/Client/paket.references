@@ -1,0 +1,6 @@
+group Client
+    Fable.Elmish.Debugger
+    Fable.Elmish.HMR
+    Fable.FontAwesome.Free
+    Fable.Remoting.Client
+    Fulma
