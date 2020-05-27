@@ -15,7 +15,7 @@ open Cricket.Server.SessionManager
 
 let tryGetEnv = System.Environment.GetEnvironmentVariable >> function null | "" -> None | x -> Some x
 
-let publicPath = Path.GetFullPath "../Client/public"
+let publicPath = Path.GetFullPath "./public"
 
 let port =
     "SERVER_PORT"
@@ -54,7 +54,7 @@ let webApp =
     |> Remoting.buildHttpHandler
 
 let app = application {
-    url ("http://0.0.0.0:" + port.ToString() + "/")
+    url ("http://localhost:" + port.ToString() + "/")
     use_router webApp
     memory_cache
     use_static publicPath
