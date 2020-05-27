@@ -2,6 +2,7 @@
 #load "./.fake/build.fsx/intellisense.fsx"
 
 open Fake.Core
+open Fake.IO
 open Fake.IO.Globbing.Operators
 open Fake.DotNet
 
@@ -23,6 +24,9 @@ let unitTestReferences =
 
 let acceptanceTestReferences =
     !! "tests/**/*AcceptanceTests.fsproj"
+
+let clientDeployDir = Path.combine fableDirectory "deploy"
+let deployDir = Path.getFullName "./deploy"
 
 let dotnetcliVersion = "3.1.201"
 
@@ -59,6 +63,8 @@ let runTool cmd args workingDir =
 // Targets
 
 Target.create "Clean" (fun _ ->
+    Shell.cleanDirs [ clientDeployDir; deployDir ]
+
     [ appReferences; serverReferences; unitTestReferences; acceptanceTestReferences ]
     |> Seq.concat
     |> Seq.iter (fun proj ->
@@ -67,7 +73,7 @@ Target.create "Clean" (fun _ ->
 
 Target.create "UpdateVersionNumber" (fun _ ->
     let release =
-        Fake.IO.File.read "RELEASE_NOTES.md"
+        File.read "RELEASE_NOTES.md"
         |> ReleaseNotes.parse
     let revisionFromCI = Environment.environVarOrNone "BUILD_BUILDID"
     let version =
@@ -75,7 +81,7 @@ Target.create "UpdateVersionNumber" (fun _ ->
         | None -> release.AssemblyVersion
         | Some s -> sprintf "%s build %s" release.AssemblyVersion s
     let versionFiles = !! "**/Version.fs"
-    Fake.IO.Shell.regexReplaceInFilesWithEncoding @"VersionNumber = "".*""" (sprintf @"VersionNumber = ""%s""" version) System.Text.Encoding.UTF8 versionFiles
+    Shell.regexReplaceInFilesWithEncoding @"VersionNumber = "".*""" (sprintf @"VersionNumber = ""%s""" version) System.Text.Encoding.UTF8 versionFiles
     Trace.trace (sprintf @"Version = %s" version))
 
 Target.create "Restore" (fun _ ->
@@ -104,8 +110,17 @@ Target.create "Build" (fun _ ->
 
     runTool npxTool "webpack-cli -p" fableDirectory)
 
+Target.create "Bundle" (fun _ ->
+    let publicDir = Path.combine deployDir "public"
+    let publishArgs = sprintf "-o \"%s\"" deployDir
+
+    serverReferences
+    |> Seq.iter (fun proj -> DotNet.publish (withCustomParams publishArgs) proj)
+    
+    Shell.copyDir publicDir clientDeployDir FileFilter.allFiles)
+
 Target.create "SetStorageEnvironmentVariable" (fun _ ->
-    let connectionString = Fake.IO.File.readAsString "C:/Repos/Keys/markcricketstorage.txt"
+    let connectionString = File.readAsString "C:/Repos/Keys/markcricketstorage.txt"
     Environment.setEnvironVar "cricketStorageConnectionString" connectionString)
 
 Target.create "Run" (fun _ ->
@@ -135,7 +150,9 @@ open Fake.Core.TargetOperators
     ==> "RunAcceptanceTests"
     ==> "NpmInstall"
 
-"NpmInstall" ==> "Build"
+"NpmInstall"
+    ==> "Build"
+    ==> "Bundle"
 
 "NpmInstall"
     ==> "SetStorageEnvironmentVariable"
