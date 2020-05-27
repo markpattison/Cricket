@@ -388,6 +388,7 @@ paket-files/
 
 # Fable output
 **/bundle.js*
+**/deploy/*
 
 # Ionide
 .fake
