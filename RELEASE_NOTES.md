@@ -1,14 +1,17 @@
+## New in 0.5.0
+* Option to play on server with persistent data
+
 ## New in 0.4.9 (Released 2020/05/03)
-* upgrade to .NET Core 3.1
+* Upgrade to .NET Core 3.1
 
 ## New in 0.4.8 (Released 2020/03/15)
-* show players who haven't bowled last in averages
+* Show players who haven't bowled last in averages
 
 ## New in 0.4.7 (Released 2019/07/14)
-* upgrade to Fable 3.0
+* Upgrade to Fable 3.0
 
 ## New in 0.4.6 (Released 2019/02/11)
-* upgrade to Fable 2.1
+* Upgrade to Fable 2.1
 
 ## New in 0.4.5 (Released 2018/04/28)
 * Prevent double-tap on buttons from zooming on mobile
