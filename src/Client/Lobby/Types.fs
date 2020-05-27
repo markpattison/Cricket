@@ -5,6 +5,7 @@ open Cricket.Shared
 type LobbyState =
     | Ready
     | WaitingForNewServerGame
+    | NewServerGameReady of SessionId * DataFromServer
     | WaitingToLoadServerGame
 
 type Msg =
@@ -12,6 +13,7 @@ type Msg =
     | RequestLoadServerGame
     | NewServerGameResponse of SessionId * DataFromServer
     | LoadServerGameResponse of SessionId * Result<DataFromServer, string>
+    | StartNewServerGame
     | ServerSessionInitiated of SessionId * DataFromServer
     | ClientSessionInitiated
     | SessionIdTextChanged of string

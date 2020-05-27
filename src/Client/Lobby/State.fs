@@ -20,8 +20,11 @@ let update msg model =
         { model with State = WaitingForNewServerGame; LoadSessionError = false }, initiateSession
     
     | WaitingForNewServerGame, NewServerGameResponse (sessionId, mtch) ->
-        model, Cmd.ofMsg (ServerSessionInitiated (sessionId, mtch))
+        { model with State = NewServerGameReady (sessionId, mtch) }, Cmd.none
     
+    | NewServerGameReady (sessionId, mtch), StartNewServerGame ->
+        model, Cmd.ofMsg (ServerSessionInitiated (sessionId, mtch))
+
     | Ready, RequestLoadServerGame ->
         match System.Guid.TryParse(model.SessionIdText) with
         | true, guid ->

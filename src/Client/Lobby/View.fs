@@ -4,6 +4,8 @@ open Fable.Core.JsInterop
 open Fable.React
 open Fulma
 
+open Cricket.Shared
+
 let simpleButton dispatch isDisabled txt action =
   Control.div []
     [ Button.button
@@ -25,6 +27,11 @@ let view lobbyModel dispatch =
         [ simpleButton dispatch buttonsDisabled "Play in browser" ClientSessionInitiated
           br []
           simpleButton dispatch buttonsDisabled "New game on server" RequestNewServerGame
+          match lobbyModel.State with
+          | NewServerGameReady (SessionId guid, _) ->
+            str (sprintf "Keep a copy of this game ID for future access: %O" guid)
+            simpleButton dispatch false "Start!" StartNewServerGame
+          | _ -> ()
           br []
           simpleButton dispatch buttonsDisabled "Load game on server" RequestLoadServerGame
           Input.text
