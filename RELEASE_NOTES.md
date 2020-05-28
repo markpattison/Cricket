@@ -1,4 +1,4 @@
-## New in 0.5.0
+## New in 0.5.0 (Released 2020/05/28)
 * Option to play on server with persistent data
 
 ## New in 0.4.9 (Released 2020/05/03)
