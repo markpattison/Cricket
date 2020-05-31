@@ -11,4 +11,4 @@ let view extraText =
     [ h1 [] [ str "About FableCricket" ]
       p [] [ str "This is a simple cricket game built with F# + Fable + Elmish + React + Fulma." ]
       p [] [ str extraText ]
-      p [] [ str ("Version " + App.Version.VersionNumber) ] ]
+      p [] [ str ("Version " + Version.VersionNumber) ] ]
