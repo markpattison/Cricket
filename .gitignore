@@ -386,9 +386,10 @@ paket-files/
 .idea/
 *.sln.iml
 
-# Fable output
+# Fable
 **/bundle.js*
 **/deploy/*
+.fable
 
 # Ionide
 .fake
