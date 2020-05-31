@@ -9,7 +9,6 @@ type IndividualInnings =
         Sixes: int;
     }
 
-[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module IndividualInnings =
 
     let create =

@@ -54,7 +54,6 @@ type MatchUpdate =
     | DeclineFollowOn
     | UpdateInnings of InningsUpdate
 
-[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module MatchState = 
 
     let private startMatch state = 

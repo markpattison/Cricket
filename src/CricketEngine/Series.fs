@@ -12,7 +12,6 @@ type Series =
 
 type BatFirst = Team1 | Team2
 
-[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Series =
 
     let create team1 team2 =

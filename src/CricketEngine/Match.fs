@@ -10,7 +10,6 @@ type Match =
         Rules: MatchRules;
     }
 
-[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Match =
     
     let updateMatchState update match' = { match' with State = MatchState.update match'.Rules update match'.State }

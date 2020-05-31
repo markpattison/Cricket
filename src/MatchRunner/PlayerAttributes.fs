@@ -11,7 +11,6 @@ type PlayerAttributes =
         Attributes: Map<int, PlayerAttribute>
     }
 
-[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module PlayerAttributes =
 
     let battingSkill attributes (player: Cricket.CricketEngine.Player) =

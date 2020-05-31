@@ -45,7 +45,6 @@ type InningsUpdate =
     | SendInBowler of Player
     | UpdateForBall of BallOutcome
 
-[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Innings =
 
     type ReadyForBall =
