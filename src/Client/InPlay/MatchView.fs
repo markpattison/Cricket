@@ -1,4 +1,4 @@
-module Cricket.Client.LiveMatch
+module Cricket.Client.InPlay.LiveMatch
 
 open Fable.React
 open Fable.React.Props
@@ -10,7 +10,7 @@ open Cricket.CricketEngine
 open Cricket.CricketEngine.Formatting
 open Cricket.MatchRunner
 open Cricket.Client.Extensions
-open Cricket.Client.CricketTypes
+open Cricket.Client.InPlay.Types
 
 let simpleButton dispatch isDisabled (txt, action)  =
   Control.div []

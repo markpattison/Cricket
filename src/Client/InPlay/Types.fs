@@ -1,4 +1,4 @@
-module Cricket.Client.CricketTypes
+module Cricket.Client.InPlay.Types
 
 open Cricket.CricketEngine
 open Cricket.MatchRunner

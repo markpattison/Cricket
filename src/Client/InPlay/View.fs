@@ -1,17 +1,18 @@
-module Cricket.Client.CricketView
+module Cricket.Client.InPlay.View
 
 open Fable.React
 open Fulma
 
 open Cricket.CricketEngine
 open Cricket.Shared
-open Cricket.Client.CricketTypes
+open Cricket.Client
 open Cricket.Client.Extensions
+open Types
 
 let menuItem label page currentPage dispatch =
     Menu.Item.li
       [ Menu.Item.IsActive (page = currentPage)
-        Menu.Item.OnClick (fun _ -> CricketTypes.SwitchPage page |> dispatch)]
+        Menu.Item.OnClick (fun _ -> Types.SwitchPage page |> dispatch)]
       [ str label ]
 
 let menu currentPage dispatch =

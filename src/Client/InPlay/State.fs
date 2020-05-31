@@ -1,11 +1,12 @@
-module Cricket.Client.CricketState
+module Cricket.Client.InPlay.State
 
 open Elmish
 
 open Cricket.CricketEngine
 open Cricket.MatchRunner
+open Cricket.Client
 open Cricket.Client.Extensions
-open Cricket.Client.CricketTypes
+open Cricket.Client.InPlay.Types
 
 let serverUpdate sessionId serverMsg = Cmd.OfAsync.perform Server.api.update (sessionId, serverMsg) NewStateReceived
 let getStatistics sessionId = Cmd.OfAsync.perform Server.api.getStatistics sessionId StatisticsReceived

@@ -13,7 +13,7 @@ let root (model: Model) dispatch =
   let page =
     match model.OuterState with
     | Lobby lobbyModel -> Lobby.View.view lobbyModel (LobbyMsg >> dispatch)
-    | Playing cricketModel -> CricketView.view cricketModel (CricketMsg >> dispatch)
+    | Playing cricketModel -> InPlay.View.view cricketModel (CricketMsg >> dispatch)
 
   div []
     [ div
