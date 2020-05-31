@@ -22,8 +22,8 @@
     <Compile Include="InPlay/State.fs" />
     <Compile Include="Lobby/State.fs" />
     <Compile Include="State.fs" />
-    <Compile Include="InPlay/MatchView.fs" />
-    <Compile Include="InPlay/AveragesView.fs" />
+    <Compile Include="InPlay/LiveMatch.fs" />
+    <Compile Include="InPlay/Averages.fs" />
     <Compile Include="InPlay/View.fs" />
     <Compile Include="Lobby/View.fs" />
     <Compile Include="Navbar.fs" />
