@@ -1,10 +1,7 @@
-open System.IO
-open System.Threading.Tasks
+module Cricket.Server.Server
 
-open Microsoft.AspNetCore.Builder
+open System.IO
 open Microsoft.AspNetCore.Http
-open Microsoft.Extensions.DependencyInjection
-open FSharp.Control.Tasks.V2
 open Fable.Remoting.Server
 open Fable.Remoting.Giraffe
 open Giraffe
