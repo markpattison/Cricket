@@ -388,7 +388,7 @@ paket-files/
 
 # Fable
 **/bundle.js*
-**/deploy/*
+deploy
 .fable
 
 # Ionide
