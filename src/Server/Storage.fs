@@ -1,6 +1,7 @@
 module Cricket.Server.Storage
 
 open Microsoft.Azure.Cosmos.Table
+open Thoth.Json.Net
 
 open Cricket.Shared
 open Cricket.MatchRunner
@@ -12,7 +13,7 @@ type CricketStore(sessionId: string, state: string) =
     member val State = state with get, set
 
 let save (table: CloudTable) (sessionId: SessionId) (state: ServerModel) =
-    let stateJson = Thoth.Json.Net.Encode.Auto.toString(0, state)
+    let stateJson = Encode.Auto.toString(0, state)
     let cricketStore = CricketStore(sessionId.ToString(), stateJson)
     let op = TableOperation.InsertOrReplace(cricketStore)
     table.Execute(op) |> ignore
@@ -24,5 +25,5 @@ let load (table: CloudTable) (sessionId: SessionId) =
     match opResult with
     | null -> Error "Session could not be found"
     | :? CricketStore as cricketStore ->
-        Thoth.Json.Net.Decode.Auto.fromString<ServerModel>(cricketStore.State)
+        Decode.Auto.fromString<ServerModel>(cricketStore.State)
     | _ -> Error "Error reading session"

@@ -1,9 +1,7 @@
 module Cricket.Server.SessionManager
 
 open System
-open Microsoft.Azure
 open Microsoft.Azure.Cosmos.Table
-open Microsoft.AspNetCore.Http
 open Saturn
 
 open Cricket.Shared
