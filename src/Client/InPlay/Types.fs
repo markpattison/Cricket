@@ -18,7 +18,8 @@ type Msg =
     | SwitchPage of Page
     | ServerMsg of ServerMsg
     | NewStateReceived of Result<DataFromServer, string>
-    | StatisticsReceived of Result<Statistics, string>
+    | AveragesReceived of Result<Averages, string>
+    | SeriesReceived of Result<Series, string>
     | ToggleInningsExpandedMessage of int
 
 type Model =

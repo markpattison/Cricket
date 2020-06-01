@@ -41,7 +41,8 @@ let cricketApi (ctx: HttpContext) = {
     newSession = fun () -> async { return sessionManager.NewSession(ctx) }
     loadSession = fun sessionId -> async { return sessionManager.LoadSession(ctx, sessionId)}
     update = fun (sessionId, serverMsg) -> async { return sessionManager.Update(sessionId, serverMsg) }
-    getStatistics = fun sessionId -> async { return sessionManager.GetStatistics(sessionId) }
+    getAverages = fun sessionId -> async { return sessionManager.GetAverages(sessionId) }
+    getSeries = fun sessionId -> async { return sessionManager.GetSeries(sessionId) }
 }
 
 let webApp =

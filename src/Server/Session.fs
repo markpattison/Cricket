@@ -1,5 +1,6 @@
 module Cricket.Server.Session
 
+open Cricket.CricketEngine
 open Cricket.Shared
 open Cricket.MatchRunner
 
@@ -7,15 +8,19 @@ let saveDelay = 5000 // ms
 
 type SessionMsg =
     | GetState of AsyncReplyChannel<DataFromServer>
-    | GetStatistics of AsyncReplyChannel<Statistics>
+    | GetAverages of AsyncReplyChannel<Averages>
+    | GetSeries of AsyncReplyChannel<Series>
     | Update of ServerMsg * AsyncReplyChannel<ServerModel>
     | SaveIfNotUpdated of ServerModel
 
 let dataFromServerState state : DataFromServer =
     state.Match
 
-let statisticsFromServerState state : Statistics =
-    { LivePlayerRecords = state.LivePlayerRecords; Series = state.Series }
+let averagesFromServerState state : Averages =
+    state.LivePlayerRecords
+
+let seriesFromServerState state : Series =
+    state.Series
 
 type Session(initialState: ServerModel, saveState: ServerModel -> unit) =
 
@@ -29,8 +34,11 @@ type Session(initialState: ServerModel, saveState: ServerModel -> unit) =
                 | GetState rc ->
                     rc.Reply(dataFromServerState state)
                     state
-                | GetStatistics rc ->
-                    rc.Reply(statisticsFromServerState state)
+                | GetAverages rc ->
+                    rc.Reply(averagesFromServerState state)
+                    state
+                | GetSeries rc ->
+                    rc.Reply(seriesFromServerState state)
                     state
                 | Update (sessionMsg, rc) ->
                     let updated = MatchRunner.update sessionMsg state
@@ -57,7 +65,8 @@ type Session(initialState: ServerModel, saveState: ServerModel -> unit) =
 
     // public interface
     member this.GetData() = agent.PostAndReply(fun rc -> GetState rc)
-    member this.GetStatistics() = agent.PostAndReply(fun rc -> GetStatistics rc)
+    member this.GetAverages() = agent.PostAndReply(fun rc -> GetAverages rc)
+    member this.GetSeries() = agent.PostAndReply(fun rc -> GetSeries rc)
     member this.Update(serverMsg) =
         let state = agent.PostAndReply(fun rc -> Update (serverMsg, rc))
         Async.Start(delayedSave state)

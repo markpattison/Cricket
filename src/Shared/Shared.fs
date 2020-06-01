@@ -10,13 +10,8 @@ type SessionId =
     override this.ToString() =
         match this with | SessionId guid -> guid.ToString()
 
-type Statistics =
-    {
-        LivePlayerRecords: Map<Player, PlayerRecord>
-        Series: Series
-    }
-
 type DataFromServer = Match
+type Averages = Map<Player, PlayerRecord>
 
 module Route =
     /// Defines how routes are generated on server and mapped from client
@@ -29,5 +24,6 @@ type ICricketApi =
     { newSession : unit -> Async<SessionId * DataFromServer>
       loadSession: SessionId -> Async<Result<DataFromServer, string>>
       update : (SessionId * ServerMsg) -> Async<Result<DataFromServer, string>>
-      getStatistics : SessionId -> Async<Result<Statistics, string>>
+      getAverages : SessionId -> Async<Result<Averages, string>>
+      getSeries : SessionId -> Async<Result<Series, string>>
     }

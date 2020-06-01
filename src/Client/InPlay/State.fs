@@ -9,7 +9,8 @@ open Cricket.Client.Extensions
 open Cricket.Client.InPlay.Types
 
 let serverUpdate sessionId serverMsg = Cmd.OfAsync.perform Server.api.update (sessionId, serverMsg) NewStateReceived
-let getStatistics sessionId = Cmd.OfAsync.perform Server.api.getStatistics sessionId StatisticsReceived
+let getAverages sessionId = Cmd.OfAsync.perform Server.api.getAverages sessionId AveragesReceived
+let getSeries sessionId = Cmd.OfAsync.perform Server.api.getSeries sessionId SeriesReceived
 
 let checkForNewInnings model =
     match model.Match with
@@ -60,13 +61,23 @@ let initServer (sessionId, mtch) : Model * Cmd<Msg> =
 
 let update msg model =
     match model.RunOption, msg with
-    | _, SwitchPage page ->
-        match model.RunOption, page, model.LivePlayerRecords with
-        | (OnServer (Resolved sessionId)), AveragesPage, HasNotStartedYet ->
-            { model with CurrentPage = page; LivePlayerRecords = InProgress None; Series = InProgress None }, getStatistics sessionId
+    | _, SwitchPage AveragesPage ->
+        match model.RunOption, model.LivePlayerRecords with
+        | (OnServer (Resolved sessionId)), HasNotStartedYet ->
+            { model with CurrentPage = AveragesPage; LivePlayerRecords = InProgress None }, Cmd.batch [ getAverages sessionId; getSeries sessionId ]
         | _ ->
-            { model with CurrentPage = page }, Cmd.none
+            { model with CurrentPage = AveragesPage }, Cmd.none
     
+    // | _, SwitchPage SeriesPage ->
+    //     match model.RunOption, model.LivePlayerRecords with
+    //     | (OnServer (Resolved sessionId)), HasNotStartedYet ->
+    //         { model with CurrentPage = AveragesPage; Series = InProgress None }, getAverages sessionId
+    //     | _ ->
+    //         { model with CurrentPage = AveragesPage }, Cmd.none
+
+    | _, SwitchPage page ->
+        { model with CurrentPage = page }, Cmd.none
+        
     | OnClient serverModel, ServerMsg serverMsg ->
         let updatedServerModel =
             MatchRunner.update serverMsg serverModel
@@ -79,7 +90,8 @@ let update msg model =
             } |> checkForNewInnings
         updatedModel, Cmd.none
 
-    | OnClient _, StatisticsReceived _
+    | OnClient _, AveragesReceived _
+    | OnClient _, SeriesReceived _
     | OnClient _, NewStateReceived _ ->
         model, Cmd.none   
     
@@ -105,17 +117,26 @@ let update msg model =
         printfn "Error: %s" error
         model, Cmd.none
 
-    | OnServer (Resolved _), StatisticsReceived (Ok stats) ->
-        let updatedModel = { model with LivePlayerRecords = Resolved stats.LivePlayerRecords; Series = Resolved stats.Series }
+    | OnServer (Resolved _), AveragesReceived (Ok averages) ->
+        let updatedModel = { model with LivePlayerRecords = Resolved averages }
         updatedModel, Cmd.none
 
-    | OnServer (Resolved _), StatisticsReceived (Error error) ->
+    | OnServer (Resolved _), AveragesReceived (Error error) ->
         printfn "Error: %s" error
         model, Cmd.none
 
+    | OnServer (Resolved _), SeriesReceived (Ok series) ->
+        let updatedModel = { model with Series = Resolved series }
+        updatedModel, Cmd.none
+
+    | OnServer (Resolved _), SeriesReceived (Error error) ->
+        printfn "Error: %s" error
+        model, Cmd.none
+    
     | OnServer _, ServerMsg _
     | OnServer _, NewStateReceived _
-    | OnServer _, StatisticsReceived _ ->
+    | OnServer _, AveragesReceived _
+    | OnServer _, SeriesReceived _ ->
         model, Cmd.none
 
     | _, ToggleInningsExpandedMessage index ->

@@ -121,11 +121,7 @@ module MatchRunner =
         let updatedRecords = Averages.updatePlayersForMatch model.PlayerRecords updatedMatch
 
         if justCompleted then
-            let result =
-                match MatchState.summaryState updatedMatch.State with
-                | MatchCompleted result -> result
-                | _ -> NoResult
-            let updatedSeries = Series.update model.Series result BatFirst.Team1 // TODO change this if not always Team1 batting first
+            let updatedSeries = Series.update model.Series updatedMatch BatFirst.Team1 // TODO change this if not always Team1 batting first
             {
                 model with
                     Match = updatedMatch

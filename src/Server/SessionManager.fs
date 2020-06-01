@@ -18,7 +18,8 @@ type SessionManagerMsg =
     | NewSession of Config * AsyncReplyChannel<SessionId * DataFromServer>
     | LoadSession of Config * SessionId * AsyncReplyChannel<Result<DataFromServer, string>>
     | Update of SessionId * ServerMsg * AsyncReplyChannel<Result<DataFromServer, string>>
-    | GetStatistics of SessionId * AsyncReplyChannel<Result<Statistics, string>>
+    | GetAverages of SessionId * AsyncReplyChannel<Result<Averages, string>>
+    | GetSeries of SessionId * AsyncReplyChannel<Result<Series, string>>
 
 let getStorageTable config =
     let storageAccount = CloudStorageAccount.Parse(config.StorageConnectionString)
@@ -105,18 +106,30 @@ type SessionManager () =
                         rc.Reply(Error (sprintf "Session not found: %A" sessionId))
                         state
                 
-                | GetStatistics (sessionId, rc) ->
+                | GetAverages (sessionId, rc) ->
                     match Map.tryFind sessionId state.Sessions with
                     | Some session ->
-                        let statistics = session.GetStatistics()
-                        rc.Reply(Ok statistics)
+                        let averages = session.GetAverages()
+                        rc.Reply(Ok averages)
                         state
                     
                     | None ->
                         printfn "Session not found: %A" sessionId
                         rc.Reply(Error (sprintf "Session not found: %A" sessionId))
                         state
-            
+                
+                | GetSeries (sessionId, rc) ->
+                    match Map.tryFind sessionId state.Sessions with
+                    | Some session ->
+                        let series = session.GetSeries()
+                        rc.Reply(Ok series)
+                        state
+                    
+                    | None ->
+                        printfn "Session not found: %A" sessionId
+                        rc.Reply(Error (sprintf "Session not found: %A" sessionId))
+                        state
+                            
             return! messageLoop updatedState
             }
 
@@ -132,4 +145,5 @@ type SessionManager () =
         let config : Config = Controller.getConfig ctx
         agent.PostAndReply(fun rc -> LoadSession (config, sessionId, rc))
     member this.Update(sessionId, serverMsg) = agent.PostAndReply(fun rc -> Update (sessionId, serverMsg, rc))
-    member this.GetStatistics(sessionId) = agent.PostAndReply(fun rc -> GetStatistics (sessionId, rc))
+    member this.GetAverages(sessionId) = agent.PostAndReply(fun rc -> GetAverages (sessionId, rc))
+    member this.GetSeries(sessionId) = agent.PostAndReply(fun rc -> GetSeries (sessionId, rc))
