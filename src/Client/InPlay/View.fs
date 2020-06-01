@@ -9,19 +9,20 @@ open Cricket.Client
 open Cricket.Client.Extensions
 open Types
 
-let menuItem label page currentPage dispatch =
+
+let menu currentPage dispatch =
+  let menuItem label page =
     Menu.Item.li
       [ Menu.Item.IsActive (page = currentPage)
         Menu.Item.OnClick (fun _ -> Types.SwitchPage page |> dispatch)]
       [ str label ]
-
-let menu currentPage dispatch =
+  
   Menu.menu []
     [ Menu.list []
-        [ menuItem "Scorecard" CricketPage currentPage dispatch
-          menuItem "Averages" AveragesPage currentPage dispatch
-          menuItem "Series" SeriesPage currentPage dispatch
-          menuItem "About" AboutPage currentPage dispatch ] ]
+        [ menuItem "Scorecard" CricketPage
+          menuItem "Averages" AveragesPage
+          menuItem "Series" SeriesPage
+          menuItem "About" AboutPage ] ]
 
 let view cricketModel dispatch =
   let page =
