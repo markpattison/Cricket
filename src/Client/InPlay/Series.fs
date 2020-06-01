@@ -4,18 +4,22 @@ open Fable.React
 open Fulma
 
 open Cricket.CricketEngine
-open Cricket.CricketEngine.Formatting
-open Cricket.CricketEngine.Averages
 open Cricket.Client.Extensions
 
-let showSeriesSummary deferredSeries =
-  let summary =
-    match deferredSeries with
-    | Resolved series -> Series.summary series
-    | _ -> "Series loading..."
-  Level.level [] [ str summary ]
+let showCompletedMatch mtch =
+  p [] [ sprintf "Test %i: %s" mtch.Index mtch.Summary |> str ]
 
-// main render method
-let view deferredSeries =
+let showCompletedMatches matches =
+  div [] (matches |> List.map showCompletedMatch)
+
+let showSeries series =
   div []
-    [ showSeriesSummary deferredSeries ]
+    [ Level.level [] [ Series.summary series |> str ]
+      Content.content []
+        [ showCompletedMatches series.CompletedMatches ] ]
+
+let view deferredSeries =
+  match deferredSeries with
+  | Resolved series -> showSeries series
+  | _ ->
+    Level.level [] [ str "Series loading..." ]
