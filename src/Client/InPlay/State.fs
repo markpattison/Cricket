@@ -64,16 +64,16 @@ let update msg model =
     | _, SwitchPage AveragesPage ->
         match model.RunOption, model.Averages with
         | (OnServer (Resolved sessionId)), HasNotStartedYet ->
-            { model with CurrentPage = AveragesPage; Averages = InProgress None }, Cmd.batch [ getAverages sessionId; getSeries sessionId ]
+            { model with CurrentPage = AveragesPage; Averages = InProgress None }, getAverages sessionId
         | _ ->
             { model with CurrentPage = AveragesPage }, Cmd.none
     
-    // | _, SwitchPage SeriesPage ->
-    //     match model.RunOption, model.LivePlayerRecords with
-    //     | (OnServer (Resolved sessionId)), HasNotStartedYet ->
-    //         { model with CurrentPage = AveragesPage; Series = InProgress None }, getAverages sessionId
-    //     | _ ->
-    //         { model with CurrentPage = AveragesPage }, Cmd.none
+    | _, SwitchPage SeriesPage ->
+        match model.RunOption, model.Series with
+        | (OnServer (Resolved sessionId)), HasNotStartedYet ->
+            { model with CurrentPage = SeriesPage; Series = InProgress None }, getSeries sessionId
+        | _ ->
+            { model with CurrentPage = SeriesPage }, Cmd.none
 
     | _, SwitchPage page ->
         { model with CurrentPage = page }, Cmd.none

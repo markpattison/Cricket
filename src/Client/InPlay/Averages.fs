@@ -115,15 +115,7 @@ let showAverages deferredPlayerRecords =
         showBowling bowling ]
   | _ -> Level.level [] [ str "Averages loading..." ]
 
-let showSeriesSummary deferredSeries =
-  let summary =
-    match deferredSeries with
-    | Resolved series -> Series.summary series
-    | _ -> "Series loading..."
-  Level.level [] [ str summary ]
-
 // main render method
 let view (model: Types.Model) =
   div []
-    [ showSeriesSummary model.Series
-      showAverages model.Averages ]
+    [ showAverages model.Averages ]

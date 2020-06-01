@@ -12,6 +12,7 @@ type RunOption =
 type Page =
     | CricketPage
     | AveragesPage
+    | SeriesPage
     | AboutPage
 
 type Msg =
