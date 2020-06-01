@@ -34,8 +34,8 @@ let view cricketModel dispatch =
           | OnServer (Resolved (SessionId sessionId)) -> sprintf "Running on server, session ID: %O" sessionId
           | OnServer _ -> "Running on server, not connected."
         About.view extraText
-    | AveragesPage -> Averages.view cricketModel
-    | SeriesPage -> Series.view cricketModel
+    | AveragesPage -> Averages.view cricketModel.Averages
+    | SeriesPage -> Series.view cricketModel.Series
     | CricketPage -> LiveMatch.root cricketModel dispatch
   
   Columns.columns []

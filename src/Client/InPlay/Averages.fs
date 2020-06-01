@@ -116,6 +116,6 @@ let showAverages deferredPlayerRecords =
   | _ -> Level.level [] [ str "Averages loading..." ]
 
 // main render method
-let view (model: Types.Model) =
+let view deferredAverages =
   div []
-    [ showAverages model.Averages ]
+    [ showAverages deferredAverages ]
