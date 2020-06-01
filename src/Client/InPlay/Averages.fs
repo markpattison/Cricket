@@ -126,4 +126,4 @@ let showSeriesSummary deferredSeries =
 let view (model: Types.Model) =
   div []
     [ showSeriesSummary model.Series
-      showAverages model.LivePlayerRecords ]
+      showAverages model.Averages ]

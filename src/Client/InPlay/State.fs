@@ -28,7 +28,7 @@ let initClient () : Model * Cmd<Msg> =
     {
         CurrentPage = CricketPage
         Match = MatchData.newMatch |> Resolved
-        LivePlayerRecords = Map.empty |> Resolved
+        Averages = Map.empty |> Resolved
         InningsExpanded = []
         Series = Series.create "England" "India" |> Resolved
         RunOption = OnClient
@@ -52,7 +52,7 @@ let initServer (sessionId, mtch) : Model * Cmd<Msg> =
         {
             CurrentPage = CricketPage
             Match = Resolved mtch
-            LivePlayerRecords = HasNotStartedYet
+            Averages = HasNotStartedYet
             InningsExpanded = []
             Series = HasNotStartedYet
             RunOption = OnServer (Resolved sessionId)
@@ -62,9 +62,9 @@ let initServer (sessionId, mtch) : Model * Cmd<Msg> =
 let update msg model =
     match model.RunOption, msg with
     | _, SwitchPage AveragesPage ->
-        match model.RunOption, model.LivePlayerRecords with
+        match model.RunOption, model.Averages with
         | (OnServer (Resolved sessionId)), HasNotStartedYet ->
-            { model with CurrentPage = AveragesPage; LivePlayerRecords = InProgress None }, Cmd.batch [ getAverages sessionId; getSeries sessionId ]
+            { model with CurrentPage = AveragesPage; Averages = InProgress None }, Cmd.batch [ getAverages sessionId; getSeries sessionId ]
         | _ ->
             { model with CurrentPage = AveragesPage }, Cmd.none
     
@@ -85,7 +85,7 @@ let update msg model =
             { model with
                 RunOption = OnClient updatedServerModel
                 Match = updatedServerModel.Match |> Resolved
-                LivePlayerRecords = updatedServerModel.LivePlayerRecords |> Resolved
+                Averages = updatedServerModel.LivePlayerRecords |> Resolved
                 Series = updatedServerModel.Series |> Resolved
             } |> checkForNewInnings
         updatedModel, Cmd.none
@@ -99,7 +99,7 @@ let update msg model =
         let updatedModel =
             { model with
                 Match = updateInProgress model.Match
-                LivePlayerRecords = updateInProgress model.LivePlayerRecords
+                Averages = updateInProgress model.Averages
                 Series = updateInProgress model.Series
             }
         updatedModel, serverUpdate sessionId serverMsg
@@ -108,7 +108,7 @@ let update msg model =
         let updatedModel =
             { model with
                 Match = Resolved mtch
-                LivePlayerRecords = HasNotStartedYet
+                Averages = HasNotStartedYet
                 Series = HasNotStartedYet
             } |> checkForNewInnings
         updatedModel, Cmd.none       
@@ -118,7 +118,7 @@ let update msg model =
         model, Cmd.none
 
     | OnServer (Resolved _), AveragesReceived (Ok averages) ->
-        let updatedModel = { model with LivePlayerRecords = Resolved averages }
+        let updatedModel = { model with Averages = Resolved averages }
         updatedModel, Cmd.none
 
     | OnServer (Resolved _), AveragesReceived (Error error) ->

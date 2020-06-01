@@ -27,7 +27,7 @@ type Model =
         CurrentPage: Page
         RunOption: RunOption
         Match: Deferred<Match>
-        LivePlayerRecords: Deferred<Map<Player, PlayerRecord>>
+        Averages: Deferred<Averages>
         InningsExpanded: bool list
         Series: Deferred<Series>
     }
