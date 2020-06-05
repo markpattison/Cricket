@@ -17,7 +17,7 @@ let checkForNewInnings model =
     | Resolved mtch ->
         let numInnings = mtch |> Match.inningsList |> List.length
         let numExpanders = model.InningsExpanded |> List.length
-        if numInnings > numExpanders then
+        if numInnings <> numExpanders then
             let newExpanders = List.init numInnings (fun i -> i = numInnings - 1)
             { model with InningsExpanded = newExpanders }
         else
