@@ -133,7 +133,13 @@ Target.create "Run" (fun _ ->
         runTool npxTool "webpack-dev-server" fableDirectory
     }
 
-    [ server; client ]
+    let safeClientOnly = Environment.hasEnvironVar "safeClientOnly"
+
+    let tasks =
+        [ if not safeClientOnly then server
+          client ]
+    
+    tasks
     |> Async.Parallel
     |> Async.RunSynchronously
     |> ignore)
