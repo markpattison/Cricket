@@ -47,7 +47,7 @@
         {
             "label": "Watch Client",
             "command": "dotnet",
-            "args": [ "fake", "build", "-t", "Run" ],
+            "args": [ "fake", "build", "-t", "RunClientOnly" ],
             "type": "shell",
             "options": {
                 "cwd": "${workspaceFolder}",

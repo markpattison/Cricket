@@ -144,6 +144,10 @@ Target.create "Run" (fun _ ->
     |> Async.RunSynchronously
     |> ignore)
 
+Target.create "RunClientOnly" (fun _ ->
+    runTool npxTool "webpack-dev-server" fableDirectory
+    )
+
 // Build order
 
 open Fake.Core.TargetOperators
@@ -154,7 +158,9 @@ open Fake.Core.TargetOperators
     ==> "BuildApp"
     ==> "RunUnitTests"
     ==> "RunAcceptanceTests"
-    ==> "NpmInstall"
+
+"RunAcceptanceTests" ==> "Build"
+"RunAcceptanceTests" ==> "SetStorageEnvironmentVariable"
 
 "NpmInstall"
     ==> "Build"
@@ -163,6 +169,9 @@ open Fake.Core.TargetOperators
 "NpmInstall"
     ==> "SetStorageEnvironmentVariable"
     ==> "Run"
+
+"NpmInstall"
+    ==> "RunClientOnly"
 
 // start build
 Target.runOrDefault "Build"
