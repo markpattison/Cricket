@@ -9,10 +9,14 @@ type RunOption =
     | OnClient of ServerModel
     | OnServer of Deferred<SessionId>
 
+type SeriesView =
+    | ListMatches
+    | ShowMatch of int
+
 type Page =
     | CricketPage
     | AveragesPage
-    | SeriesPage
+    | SeriesPage of SeriesView
     | AboutPage
 
 type Msg =
@@ -21,6 +25,7 @@ type Msg =
     | NewStateReceived of Result<DataFromServer, string>
     | AveragesReceived of Result<Averages, string>
     | SeriesReceived of Result<Series, string>
+    | CompletedMatchReceived of Result<CompletedMatch, string>
     | ToggleInningsExpandedMessage of int
 
 type Model =
@@ -31,4 +36,5 @@ type Model =
         Averages: Deferred<Averages>
         InningsExpanded: bool list
         Series: Deferred<Series>
+        CompletedMatches: Map<int, Deferred<Match>>
     }

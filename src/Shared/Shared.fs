@@ -12,6 +12,7 @@ type SessionId =
 
 type DataFromServer = Match
 type Averages = Map<Player, PlayerRecord>
+type CompletedMatch = int * Match
 
 module Route =
     /// Defines how routes are generated on server and mapped from client
@@ -26,4 +27,5 @@ type ICricketApi =
       update : (SessionId * ServerMsg) -> Async<Result<DataFromServer, string>>
       getAverages : SessionId -> Async<Result<Averages, string>>
       getSeries : SessionId -> Async<Result<Series, string>>
+      getCompletedMatch : (SessionId * int) -> Async<Result<CompletedMatch, string>>
     }

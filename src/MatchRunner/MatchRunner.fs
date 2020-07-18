@@ -9,6 +9,7 @@ type ServerModel =
         LivePlayerRecords: Map<Player, PlayerRecord>
         PlayerAttributes: PlayerAttributes
         Series: Series
+        CompletedMatches: Map<int, Match>
     }
 
 type ServerMsg =
@@ -57,7 +58,7 @@ module MatchRunner =
         let option = getOption match'
         match option with
         | ModalMessageToCaptain _ -> failwith "shouldn't happen"
-        | ContinueInnings _ -> [ ContinueInningsBallUI; ContinueInningsOverUI(*; ContinueInningsInningsUI*) ]
+        | ContinueInnings _ -> [ ContinueInningsBallUI; ContinueInningsOverUI; ContinueInningsInningsUI ]
         | UpdateOptions.StartMatch -> [ StartMatchUI ]
         | UpdateOptions.StartNextInnings -> [ StartNextInningsUI ]
         | UpdateOptions.MatchOver -> [ MatchOverUI ]
@@ -122,10 +123,13 @@ module MatchRunner =
 
         if justCompleted then
             let updatedSeries = Series.update model.Series updatedMatch BatFirst.Team1 // TODO change this if not always Team1 batting first
+            let nextMatchId = 1 + Map.count model.CompletedMatches
+            let updatedCompletedMatches = Map.add nextMatchId updatedMatch model.CompletedMatches
             {
                 model with
                     Match = updatedMatch
                     Series = updatedSeries
+                    CompletedMatches = updatedCompletedMatches
                     PlayerRecords = updatedRecords
                     LivePlayerRecords = updatedRecords
             }

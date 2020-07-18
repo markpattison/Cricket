@@ -21,7 +21,7 @@ let menu currentPage dispatch =
     [ Menu.list []
         [ menuItem "Scorecard" CricketPage
           menuItem "Averages" AveragesPage
-          menuItem "Series" SeriesPage
+          menuItem "Series" (SeriesPage ListMatches)
           menuItem "About" AboutPage ] ]
 
 let view cricketModel dispatch =
@@ -35,7 +35,7 @@ let view cricketModel dispatch =
           | OnServer _ -> "Running on server, not connected."
         About.view extraText
     | AveragesPage -> Averages.view cricketModel.Averages
-    | SeriesPage -> Series.view cricketModel.Series
+    | SeriesPage seriesView -> Series.view seriesView cricketModel.Series cricketModel.CompletedMatches dispatch
     | CricketPage -> LiveMatch.root cricketModel dispatch
   
   Columns.columns []
