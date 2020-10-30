@@ -30,7 +30,7 @@ let view cricketModel dispatch =
     | AboutPage ->
         let extraText =
           match cricketModel.RunOption with
-          | OnClient -> "Running in-browser."
+          | OnClient _ -> "Running in-browser."
           | OnServer (Resolved (SessionId sessionId)) -> sprintf "Running on server, session ID: %O" sessionId
           | OnServer _ -> "Running on server, not connected."
         About.view extraText
