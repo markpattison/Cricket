@@ -9,19 +9,30 @@ open Cricket.Client
 open Cricket.Client.Extensions
 open Types
 
-
-let menu currentPage dispatch =
+let menu (seriesDef: Deferred<Series>) currentPage dispatch =
   let menuItem label page =
     Menu.Item.li
       [ Menu.Item.IsActive (page = currentPage)
         Menu.Item.OnClick (fun _ -> Types.SwitchPage page |> dispatch)]
       [ str label ]
   
+  let subMenu label page subMenuItems =
+    li []
+      [ Menu.Item.a
+          [ Menu.Item.IsActive (page = currentPage)
+            Menu.Item.OnClick (fun _ -> Types.SwitchPage page |> dispatch)]
+          [ str label ]
+        Menu.list [] subMenuItems ]
+
   Menu.menu []
     [ Menu.list []
         [ menuItem "Scorecard" CricketPage
           menuItem "Averages" AveragesPage
-          menuItem "Series" (SeriesPage ListMatches)
+          match currentPage, seriesDef with
+            | SeriesPage _, Resolved series when not series.CompletedMatches.IsEmpty ->
+                let subMenuItems = (series.CompletedMatches |> Seq.map (fun matchRecord -> menuItem (sprintf "  Test %i" matchRecord.Index) (SeriesPage (ShowMatch matchRecord.Index))) |> Seq.toList)
+                subMenu "Series" (SeriesPage ListMatches) subMenuItems
+            | _ -> menuItem "Series" (SeriesPage ListMatches)
           menuItem "About" AboutPage ] ]
 
 let view cricketModel dispatch =
@@ -41,6 +52,6 @@ let view cricketModel dispatch =
   Columns.columns []
     [ Column.column
         [ Column.Width (Screen.All, Column.Is3) ]
-        [ menu cricketModel.CurrentPage dispatch ]
+        [ menu cricketModel.Series cricketModel.CurrentPage dispatch ]
       Column.column []
         [ page ] ]

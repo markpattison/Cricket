@@ -17,10 +17,8 @@ let simpleButton dispatch (txt, action)  =
 
 let showCompletedMatchSummary dispatch mtch =
   let text = sprintf "Test %i: %s" mtch.Index mtch.Summary
-  div []
-   [ span [] [ str text ]
-     simpleButton dispatch ("Show", SwitchPage (SeriesPage (ShowMatch mtch.Index)))]
-  //div [ Props.OnClick (fun _ -> dispatch (SwitchPage (SeriesPage (ShowMatch mtch.Index)))) ] [ str text ]
+  p []
+    [ a [ Props.OnClick (fun _ -> dispatch (SwitchPage (SeriesPage (ShowMatch mtch.Index)))) ] [ str text ] ]
 
 let showCompletedMatchSummaries dispatch matches =
   div [] (matches |> List.map (showCompletedMatchSummary dispatch))
@@ -35,12 +33,18 @@ let listCompletedMatches deferredSeries dispatch =
   | _ ->
     Level.level [] [ str "Series loading..." ]
 
-let showMatch completedMatches matchId dispatch =
+let showSingleMatch mtch =
+  let allExpanded = mtch |> Match.inningsList |> List.map (fun _ -> true)
+  div []
+    [ LiveMatch.showSummaryStatus mtch
+      LiveMatch.showAllInnings mtch allExpanded LiveMatch.NoExpanders ]
+
+let showMatch completedMatches matchId =
   match Map.tryFind matchId completedMatches with
-  | Some (Resolved mtch) -> Level.level [] [ str "Show a single match" ]
+  | Some (Resolved mtch) -> showSingleMatch mtch
   | _ -> Level.level [] [ str "Match loading..." ]
 
 let view seriesView deferredSeries completedMatches dispatch =
   match seriesView with
   | ListMatches -> listCompletedMatches deferredSeries dispatch
-  | ShowMatch matchId -> showMatch completedMatches matchId dispatch
+  | ShowMatch matchId -> showMatch completedMatches matchId
