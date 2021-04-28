@@ -1,3 +1,6 @@
+## New in 0.5.1 (Released 2021/04/28)
+* Show past matches
+
 ## New in 0.5.0 (Released 2020/05/28)
 * Option to play on server with persistent data
 
