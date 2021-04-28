@@ -28,7 +28,7 @@ let acceptanceTestReferences =
 let clientDeployDir = Path.combine fableDirectory "deploy"
 let deployDir = Path.getFullName "./deploy"
 
-let dotnetcliVersion = "3.1.402"
+let dotnetcliVersion = "3.1.408"
 
 let install = lazy DotNet.install (fun p ->
     { p with Version = DotNet.CliVersion.Version dotnetcliVersion })
