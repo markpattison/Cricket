@@ -28,7 +28,7 @@ let completedMatchFromServerState state matchId : Result<CompletedMatch, string>
     | Some mtch -> Ok (matchId, mtch)
     | None -> Error "match not found"
 
-type Session(initialState: ServerModel, saveState: ServerModel -> ServerModel -> unit) =
+type Session(initialState: ServerModel, saveState: ServerModel -> ServerModel option -> unit) =
 
     let agent = MailboxProcessor.Start(fun inbox ->
 
@@ -57,7 +57,7 @@ type Session(initialState: ServerModel, saveState: ServerModel -> ServerModel ->
                     if oldState = state then
                         printfn "Saving..."
                         saveState state savedState
-                        state, state
+                        state, Some state
                     else
                         state, savedState
             
@@ -65,7 +65,7 @@ type Session(initialState: ServerModel, saveState: ServerModel -> ServerModel ->
             }
 
         // start the loop
-        messageLoop initialState initialState
+        messageLoop initialState None
         )
 
     let delayedSave state =
