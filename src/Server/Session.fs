@@ -10,6 +10,7 @@ type SessionMsg =
     | GetState of AsyncReplyChannel<DataFromServer>
     | GetAverages of AsyncReplyChannel<Averages>
     | GetSeries of AsyncReplyChannel<Series>
+    | GetCompletedMatch of int * AsyncReplyChannel<Result<CompletedMatch, string>>
     | Update of ServerMsg * AsyncReplyChannel<ServerModel>
     | SaveIfNotUpdated of ServerModel
 
@@ -22,39 +23,49 @@ let averagesFromServerState state : Averages =
 let seriesFromServerState state : Series =
     state.Series
 
-type Session(initialState: ServerModel, saveState: ServerModel -> unit) =
+let completedMatchFromServerState state matchId : Result<CompletedMatch, string> =
+    match Map.tryFind matchId state.CompletedMatches with
+    | Some mtch -> Ok (matchId, mtch)
+    | None -> Error "match not found"
+
+type Session(initialState: ServerModel, saveState: ServerModel -> ServerModel option -> unit) =
 
     let agent = MailboxProcessor.Start(fun inbox ->
 
-        let rec messageLoop state = async {
+        let rec messageLoop state savedState = async {
             let! msg = inbox.Receive()
 
-            let updatedState =
+            let updatedState, updatedSavedState =
                 match msg with
                 | GetState rc ->
                     rc.Reply(dataFromServerState state)
-                    state
+                    state, savedState
                 | GetAverages rc ->
                     rc.Reply(averagesFromServerState state)
-                    state
+                    state, savedState
                 | GetSeries rc ->
                     rc.Reply(seriesFromServerState state)
-                    state
+                    state, savedState
+                | GetCompletedMatch (matchId, rc) ->
+                    rc.Reply(completedMatchFromServerState state matchId)
+                    state, savedState
                 | Update (sessionMsg, rc) ->
                     let updated = MatchRunner.update sessionMsg state
                     rc.Reply(updated)
-                    updated
+                    updated, savedState
                 | SaveIfNotUpdated oldState ->
                     if oldState = state then
-                        saveState state
                         printfn "Saving..."
-                    state
+                        saveState state savedState
+                        state, Some state
+                    else
+                        state, savedState
             
-            return! messageLoop updatedState
+            return! messageLoop updatedState updatedSavedState
             }
 
         // start the loop
-        messageLoop initialState
+        messageLoop initialState None
         )
 
     let delayedSave state =
@@ -67,6 +78,7 @@ type Session(initialState: ServerModel, saveState: ServerModel -> unit) =
     member this.GetData() = agent.PostAndReply(fun rc -> GetState rc)
     member this.GetAverages() = agent.PostAndReply(fun rc -> GetAverages rc)
     member this.GetSeries() = agent.PostAndReply(fun rc -> GetSeries rc)
+    member this.GetCompletedMatch(matchId) = agent.PostAndReply(fun rc -> GetCompletedMatch (matchId, rc))
     member this.Update(serverMsg) =
         let state = agent.PostAndReply(fun rc -> Update (serverMsg, rc))
         Async.Start(delayedSave state)

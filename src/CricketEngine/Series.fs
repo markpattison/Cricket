@@ -2,6 +2,7 @@ namespace Cricket.CricketEngine
 
 type MatchRecord =
     {
+        MatchId: int
         Index: int
         Summary: string
     }
@@ -35,11 +36,11 @@ module Series =
     let totalMatches series =
         series.Team1Wins + series.Team2Wins + series.Draws + series.Ties    
 
-    let update series mtch batFirst =
+    let update series mtch matchId batFirst =
         let summary = Match.summaryStatus mtch
         let index = 1 + totalMatches series
 
-        let completed = List.append series.CompletedMatches [ { Index = index; Summary = summary } ]
+        let completed = List.append series.CompletedMatches [ { MatchId = matchId; Index = index; Summary = summary } ]
 
         let result =
             match MatchState.summaryState mtch.State with

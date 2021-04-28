@@ -20,6 +20,7 @@ type SessionManagerMsg =
     | Update of SessionId * ServerMsg * AsyncReplyChannel<Result<DataFromServer, string>>
     | GetAverages of SessionId * AsyncReplyChannel<Result<Averages, string>>
     | GetSeries of SessionId * AsyncReplyChannel<Result<Series, string>>
+    | GetCompletedMatch of SessionId * int * AsyncReplyChannel<Result<CompletedMatch, string>>
 
 let getStorageTable config =
     let storageAccount = CloudStorageAccount.Parse(config.StorageConnectionString)
@@ -42,6 +43,8 @@ let initialSessionState =
                     |> Map.ofList
             }
         Series = Series.create "England" "India"
+        CompletedMatches = Map.empty
+        CurrentMatchId = 0
     }
 
 type SessionManager () =
@@ -129,7 +132,19 @@ type SessionManager () =
                         printfn "Session not found: %A" sessionId
                         rc.Reply(Error (sprintf "Session not found: %A" sessionId))
                         state
-                            
+                 
+                | GetCompletedMatch (sessionId, matchId, rc) ->
+                    match Map.tryFind sessionId state.Sessions with
+                    | Some session ->
+                        let completedMatch = session.GetCompletedMatch(matchId)
+                        rc.Reply(completedMatch)
+                        state
+                    
+                    | None ->
+                        printfn "Session not found: %A" sessionId
+                        rc.Reply(Error (sprintf "Session not found: %A" sessionId))
+                        state
+                                       
             return! messageLoop updatedState
             }
 
@@ -147,3 +162,4 @@ type SessionManager () =
     member this.Update(sessionId, serverMsg) = agent.PostAndReply(fun rc -> Update (sessionId, serverMsg, rc))
     member this.GetAverages(sessionId) = agent.PostAndReply(fun rc -> GetAverages (sessionId, rc))
     member this.GetSeries(sessionId) = agent.PostAndReply(fun rc -> GetSeries (sessionId, rc))
+    member this.GetCompletedMatch(sessionId, matchId) = agent.PostAndReply(fun rc -> GetCompletedMatch (sessionId, matchId, rc))

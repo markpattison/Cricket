@@ -11,6 +11,7 @@ open Cricket.Client.InPlay.Types
 let serverUpdate sessionId serverMsg = Cmd.OfAsync.perform Server.api.update (sessionId, serverMsg) NewStateReceived
 let getAverages sessionId = Cmd.OfAsync.perform Server.api.getAverages sessionId AveragesReceived
 let getSeries sessionId = Cmd.OfAsync.perform Server.api.getSeries sessionId SeriesReceived
+let getCompletedMatch sessionId matchId = Cmd.OfAsync.perform Server.api.getCompletedMatch (sessionId, matchId) CompletedMatchReceived
 
 let checkForNewInnings model =
     match model.Match with
@@ -31,6 +32,7 @@ let initClient () : Model * Cmd<Msg> =
         Averages = Map.empty |> Resolved
         InningsExpanded = []
         Series = Series.create "England" "India" |> Resolved
+        CompletedMatches = Map.empty
         RunOption = OnClient
             {   
                 Match = MatchData.newMatch
@@ -44,6 +46,8 @@ let initClient () : Model * Cmd<Msg> =
                             |> Map.ofList
                     }
                 Series = Series.create "England" "India"
+                CompletedMatches = Map.empty
+                CurrentMatchId = 0
             }            
     }, []
 
@@ -55,6 +59,7 @@ let initServer (sessionId, mtch) : Model * Cmd<Msg> =
             Averages = HasNotStartedYet
             InningsExpanded = []
             Series = HasNotStartedYet
+            CompletedMatches = Map.empty
             RunOption = OnServer (Resolved sessionId)
         }
     model |> checkForNewInnings, Cmd.none
@@ -68,13 +73,23 @@ let update msg model =
         | _ ->
             { model with CurrentPage = AveragesPage }, Cmd.none
     
-    | _, SwitchPage SeriesPage ->
+    | _, SwitchPage (SeriesPage ListMatches) ->
         match model.RunOption, model.Series with
         | (OnServer (Resolved sessionId)), HasNotStartedYet ->
-            { model with CurrentPage = SeriesPage; Series = InProgress None }, getSeries sessionId
+            { model with CurrentPage = SeriesPage ListMatches; Series = InProgress None }, getSeries sessionId
         | _ ->
-            { model with CurrentPage = SeriesPage }, Cmd.none
-
+            { model with CurrentPage = SeriesPage ListMatches }, Cmd.none
+    
+    | _, SwitchPage (SeriesPage (ShowMatch matchId)) ->
+        match model.RunOption, Map.tryFind matchId model.CompletedMatches with
+        | (OnServer (Resolved sessionId)), None
+        | (OnServer (Resolved sessionId)), Some HasNotStartedYet ->
+            { model with
+                CurrentPage = SeriesPage (ShowMatch matchId)
+                CompletedMatches = Map.add matchId (InProgress None) model.CompletedMatches }, getCompletedMatch sessionId matchId
+        | _ ->
+            { model with CurrentPage = SeriesPage (ShowMatch matchId) }, Cmd.none
+    
     | _, SwitchPage page ->
         { model with CurrentPage = page }, Cmd.none
         
@@ -87,11 +102,13 @@ let update msg model =
                 Match = updatedServerModel.Match |> Resolved
                 Averages = updatedServerModel.LivePlayerRecords |> Resolved
                 Series = updatedServerModel.Series |> Resolved
+                CompletedMatches = updatedServerModel.CompletedMatches |> Map.map (fun _ m -> Resolved m)
             } |> checkForNewInnings
         updatedModel, Cmd.none
 
     | OnClient _, AveragesReceived _
     | OnClient _, SeriesReceived _
+    | OnClient _, CompletedMatchReceived _
     | OnClient _, NewStateReceived _ ->
         model, Cmd.none   
     
@@ -133,10 +150,20 @@ let update msg model =
         printfn "Error: %s" error
         model, Cmd.none
     
+    | OnServer (Resolved _), CompletedMatchReceived (Ok completedMatch) ->
+        let matchId, mtch = completedMatch
+        let updatedModel = { model with CompletedMatches = Map.add matchId (Resolved mtch) model.CompletedMatches }
+        updatedModel, Cmd.none
+    
+    | OnServer (Resolved _), CompletedMatchReceived (Error error) ->
+        printfn "Error: %s" error
+        model, Cmd.none
+
     | OnServer _, ServerMsg _
     | OnServer _, NewStateReceived _
     | OnServer _, AveragesReceived _
-    | OnServer _, SeriesReceived _ ->
+    | OnServer _, SeriesReceived _
+    | OnServer _, CompletedMatchReceived _ ->
         model, Cmd.none
 
     | _, ToggleInningsExpandedMessage index ->

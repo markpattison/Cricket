@@ -12,6 +12,10 @@ open Cricket.MatchRunner
 open Cricket.Client.Extensions
 open Cricket.Client.InPlay.Types
 
+type ExpandersOption =
+  | Expanders of (Msg -> unit)
+  | NoExpanders
+
 let simpleButton dispatch isDisabled (txt, action)  =
   Control.div []
     [ Button.button
@@ -126,16 +130,19 @@ let showBowling innings =
     [ headerRow
       allBowling ]
 
-let showInnings ((team, inningsNumber, innings), expanded) index dispatch =
+let showInningsBox ((team, inningsNumber, innings), expanded) index expandersOption =
   let teamInnings = sprintf "%s %s" team.TeamName (formatInningsNumber inningsNumber)
   let score = Innings.summary innings
   Box.box' []
     [ yield Level.level
-        [ Level.Level.Props [ OnClick (fun _ -> (ToggleInningsExpandedMessage index) |> dispatch) ] ]
+        [ match expandersOption with
+            | Expanders dispatch -> Level.Level.Props [ OnClick (fun _ -> (ToggleInningsExpandedMessage index) |> dispatch) ]
+            | NoExpanders -> () ]
         [ Level.left []
             [ Level.item []
-                [ Icon.icon []
-                    [ Fa.i [ (if expanded then Fa.Solid.CaretDown else Fa.Solid.CaretRight) ] [] ]
+                [ match expandersOption with
+                    | Expanders _ -> Icon.icon [] [ Fa.i [ (if expanded then Fa.Solid.CaretDown else Fa.Solid.CaretRight) ] [] ]
+                    | NoExpanders -> ()
                   Heading.h5
                     [ Heading.IsSubtitle ]
                     [ str teamInnings ] ] ]
@@ -149,7 +156,7 @@ let showInnings ((team, inningsNumber, innings), expanded) index dispatch =
 let showAllInnings match' inningsExpanded dispatch =
   let allInnings = match' |> Match.inningsList
   let withExpanded = List.zip allInnings inningsExpanded
-  div [] (withExpanded |> List.mapi (fun i innings -> showInnings innings i dispatch))
+  div [] (withExpanded |> List.mapi (fun i innings -> showInningsBox innings i dispatch))
 
 let showOption (option: UpdateOptionsForUI) =
   match option with
@@ -172,7 +179,7 @@ let showMatch mtch isUpdateInProgress inningsExpanded dispatch =
     div []
       [ showOptions (ServerMsg >> dispatch) mtch isUpdateInProgress
         showSummaryStatus mtch
-        showAllInnings mtch inningsExpanded dispatch ]
+        showAllInnings mtch inningsExpanded (Expanders dispatch) ]
 
 // main render method
 let root (model: Model) dispatch =
