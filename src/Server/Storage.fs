@@ -11,7 +11,6 @@ type ServerModelStorage =
     {
         Match: Match
         PlayerRecords: Map<Player, PlayerRecord>
-        LivePlayerRecords: Map<Player, PlayerRecord>
         PlayerAttributes: PlayerAttributes
         Series: Series
         CompletedMatches: int list
@@ -37,7 +36,6 @@ let toServerModelStorage (state: ServerModel) =
     {
         ServerModelStorage.Match = state.Match
         PlayerRecords = state.PlayerRecords
-        LivePlayerRecords = state.LivePlayerRecords
         PlayerAttributes = state.PlayerAttributes
         Series = state.Series
         CompletedMatches = state.CompletedMatches |> Seq.map (fun kvp -> kvp.Key) |> Seq.toList
@@ -48,7 +46,7 @@ let fromServerModelStorage (storage: ServerModelStorage) (completedMatches: Map<
     {
         ServerModel.Match = storage.Match
         PlayerRecords = storage.PlayerRecords
-        LivePlayerRecords = storage.LivePlayerRecords
+        LivePlayerRecords = Averages.updatePlayersForMatch storage.PlayerRecords storage.Match
         PlayerAttributes = storage.PlayerAttributes
         Series = storage.Series
         CompletedMatches = completedMatches
@@ -74,6 +72,8 @@ let loadCompletedMatch (table: CloudTable) (sessionId: SessionId) (matchId: int)
 let save (table: CloudTable) (sessionId: SessionId) (state: ServerModel) (previouslySavedState: ServerModel) =
     let stateToStore = toServerModelStorage state
     let stateJson = Encode.Auto.toString(0, stateToStore)
+
+    printfn "JSON length: %i" stateJson.Length // DEBUG
 
     let cricketStore = CricketStore(sessionId.ToString(), State, stateJson)
     let op = TableOperation.InsertOrReplace(cricketStore)
