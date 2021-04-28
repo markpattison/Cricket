@@ -18,7 +18,7 @@ let simpleButton dispatch (txt, action)  =
 let showCompletedMatchSummary dispatch mtch =
   let text = sprintf "Test %i: %s" mtch.Index mtch.Summary
   p []
-    [ a [ Props.OnClick (fun _ -> dispatch (SwitchPage (SeriesPage (ShowMatch mtch.Index)))) ] [ str text ] ]
+    [ a [ Props.OnClick (fun _ -> dispatch (SwitchPage (SeriesPage (ShowMatch mtch.MatchId)))) ] [ str text ] ]
 
 let showCompletedMatchSummaries dispatch matches =
   div [] (matches |> List.map (showCompletedMatchSummary dispatch))

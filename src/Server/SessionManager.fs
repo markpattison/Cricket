@@ -44,6 +44,7 @@ let initialSessionState =
             }
         Series = Series.create "England" "India"
         CompletedMatches = Map.empty
+        CurrentMatchId = 0
     }
 
 type SessionManager () =

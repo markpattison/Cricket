@@ -28,42 +28,44 @@ let completedMatchFromServerState state matchId : Result<CompletedMatch, string>
     | Some mtch -> Ok (matchId, mtch)
     | None -> Error "match not found"
 
-type Session(initialState: ServerModel, saveState: ServerModel -> unit) =
+type Session(initialState: ServerModel, saveState: ServerModel -> ServerModel -> unit) =
 
     let agent = MailboxProcessor.Start(fun inbox ->
 
-        let rec messageLoop state = async {
+        let rec messageLoop state savedState = async {
             let! msg = inbox.Receive()
 
-            let updatedState =
+            let updatedState, updatedSavedState =
                 match msg with
                 | GetState rc ->
                     rc.Reply(dataFromServerState state)
-                    state
+                    state, savedState
                 | GetAverages rc ->
                     rc.Reply(averagesFromServerState state)
-                    state
+                    state, savedState
                 | GetSeries rc ->
                     rc.Reply(seriesFromServerState state)
-                    state
+                    state, savedState
                 | GetCompletedMatch (matchId, rc) ->
                     rc.Reply(completedMatchFromServerState state matchId)
-                    state
+                    state, savedState
                 | Update (sessionMsg, rc) ->
                     let updated = MatchRunner.update sessionMsg state
                     rc.Reply(updated)
-                    updated
+                    updated, savedState
                 | SaveIfNotUpdated oldState ->
                     if oldState = state then
-                        saveState state
                         printfn "Saving..."
-                    state
+                        saveState state savedState
+                        state, state
+                    else
+                        state, savedState
             
-            return! messageLoop updatedState
+            return! messageLoop updatedState updatedSavedState
             }
 
         // start the loop
-        messageLoop initialState
+        messageLoop initialState initialState
         )
 
     let delayedSave state =

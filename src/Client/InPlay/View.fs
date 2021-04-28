@@ -30,7 +30,7 @@ let menu (seriesDef: Deferred<Series>) currentPage dispatch =
           menuItem "Averages" AveragesPage
           match currentPage, seriesDef with
             | SeriesPage _, Resolved series when not series.CompletedMatches.IsEmpty ->
-                let subMenuItems = (series.CompletedMatches |> Seq.map (fun matchRecord -> menuItem (sprintf "  Test %i" matchRecord.Index) (SeriesPage (ShowMatch matchRecord.Index))) |> Seq.toList)
+                let subMenuItems = (series.CompletedMatches |> Seq.map (fun matchRecord -> menuItem (sprintf "  Test %i" matchRecord.Index) (SeriesPage (ShowMatch matchRecord.MatchId))) |> Seq.toList)
                 subMenu "Series" (SeriesPage ListMatches) subMenuItems
             | _ -> menuItem "Series" (SeriesPage ListMatches)
           menuItem "About" AboutPage ] ]

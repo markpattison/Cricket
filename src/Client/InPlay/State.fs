@@ -47,6 +47,7 @@ let initClient () : Model * Cmd<Msg> =
                     }
                 Series = Series.create "England" "India"
                 CompletedMatches = Map.empty
+                CurrentMatchId = 0
             }            
     }, []
 
@@ -117,7 +118,6 @@ let update msg model =
                 Match = updateInProgress model.Match
                 Averages = updateInProgress model.Averages
                 Series = updateInProgress model.Series
-                CompletedMatches = model.CompletedMatches |> Map.map (fun _ m -> updateInProgress m)
             }
         updatedModel, serverUpdate sessionId serverMsg
 

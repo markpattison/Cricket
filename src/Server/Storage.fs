@@ -15,6 +15,7 @@ type ServerModelStorage =
         PlayerAttributes: PlayerAttributes
         Series: Series
         CompletedMatches: int list
+        CurrentMatchId: int
     }
 
 type CricketStoreType =
@@ -40,6 +41,7 @@ let toServerModelStorage (state: ServerModel) =
         PlayerAttributes = state.PlayerAttributes
         Series = state.Series
         CompletedMatches = state.CompletedMatches |> Seq.map (fun kvp -> kvp.Key) |> Seq.toList
+        CurrentMatchId = state.CurrentMatchId
     }
 
 let fromServerModelStorage (storage: ServerModelStorage) (completedMatches: Map<int, Match>) =
@@ -50,6 +52,7 @@ let fromServerModelStorage (storage: ServerModelStorage) (completedMatches: Map<
         PlayerAttributes = storage.PlayerAttributes
         Series = storage.Series
         CompletedMatches = completedMatches
+        CurrentMatchId = storage.CurrentMatchId
     }
 
 let saveCompletedMatch (table: CloudTable) (sessionId: SessionId) (matchId: int) (mtch: Match) =
@@ -68,15 +71,21 @@ let loadCompletedMatch (table: CloudTable) (sessionId: SessionId) (matchId: int)
         Decode.Auto.fromString<Match>(cricketStore.Data)
     | _ -> Error (sprintf "Error reading match %i" matchId)
 
-let save (table: CloudTable) (sessionId: SessionId) (state: ServerModel) =
+let save (table: CloudTable) (sessionId: SessionId) (state: ServerModel) (previouslySavedState: ServerModel) =
     let stateToStore = toServerModelStorage state
     let stateJson = Encode.Auto.toString(0, stateToStore)
+
     let cricketStore = CricketStore(sessionId.ToString(), State, stateJson)
     let op = TableOperation.InsertOrReplace(cricketStore)
     table.Execute(op) |> ignore
 
-    state.CompletedMatches
-    |> Seq.iter (fun kvp -> saveCompletedMatch table sessionId kvp.Key kvp.Value)
+    let completedMatchesToSave =
+        state.CompletedMatches
+        |> Map.toSeq
+        |> Seq.filter (fun (matchId, _) -> Map.containsKey matchId previouslySavedState.CompletedMatches |> not)
+
+    completedMatchesToSave
+    |> Seq.iter (fun (matchId, mtch) -> saveCompletedMatch table sessionId matchId mtch)
 
 let load (table: CloudTable) (sessionId: SessionId) =
     let op = TableOperation.Retrieve<CricketStore>(sessionId.ToString(), State.ToRowKey())

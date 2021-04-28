@@ -10,6 +10,7 @@ type ServerModel =
         PlayerAttributes: PlayerAttributes
         Series: Series
         CompletedMatches: Map<int, Match>
+        CurrentMatchId: int
     }
 
 type ServerMsg =
@@ -122,9 +123,8 @@ module MatchRunner =
         let updatedRecords = Averages.updatePlayersForMatch model.PlayerRecords updatedMatch
 
         if justCompleted then
-            let updatedSeries = Series.update model.Series updatedMatch BatFirst.Team1 // TODO change this if not always Team1 batting first
-            let nextMatchId = 1 + Map.count model.CompletedMatches
-            let updatedCompletedMatches = Map.add nextMatchId updatedMatch model.CompletedMatches
+            let updatedSeries = Series.update model.Series updatedMatch model.CurrentMatchId BatFirst.Team1 // TODO change this if not always Team1 batting first
+            let updatedCompletedMatches = Map.add model.CurrentMatchId updatedMatch model.CompletedMatches
             {
                 model with
                     Match = updatedMatch
@@ -132,6 +132,7 @@ module MatchRunner =
                     CompletedMatches = updatedCompletedMatches
                     PlayerRecords = updatedRecords
                     LivePlayerRecords = updatedRecords
+                    CurrentMatchId = model.CurrentMatchId + 1
             }
         else
             {
