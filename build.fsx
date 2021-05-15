@@ -108,7 +108,7 @@ Target.create "Build" (fun _ ->
     serverReferences
     |> Seq.iter (fun proj -> DotNet.build (withCustomParams "--no-dependencies --no-restore") proj)
 
-    runTool npxTool "webpack-cli -p" fableDirectory)
+    DotNet.exec id "fable" "src/Client --outDir src/Client/deploy --run webpack" |> ignore)
 
 Target.create "Bundle" (fun _ ->
     let publicDir = Path.combine deployDir "public"
@@ -130,7 +130,7 @@ Target.create "Run" (fun _ ->
     }
 
     let client = async {
-        runTool npxTool "webpack-dev-server" fableDirectory
+        DotNet.exec id "fable" "watch src/Client --outDir src/Client/deploy --sourceMaps --run webpack serve" |> ignore
     }
 
     let safeClientOnly = Environment.hasEnvironVar "safeClientOnly"
@@ -145,7 +145,7 @@ Target.create "Run" (fun _ ->
     |> ignore)
 
 Target.create "RunClientOnly" (fun _ ->
-    runTool npxTool "webpack-dev-server" fableDirectory
+    DotNet.exec id "fable" "watch src/Client --outDir src/Client/deploy --sourceMaps --run webpack serve" |> ignore
     )
 
 // Build order

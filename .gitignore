@@ -385,6 +385,8 @@ paket-files/
 **/bundle.js*
 deploy
 .fable
+*.fs.js
+*.fs.js.map
 
 # Ionide
 .fake
