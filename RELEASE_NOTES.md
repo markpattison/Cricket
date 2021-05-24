@@ -11,7 +11,7 @@
 * Show players who haven't bowled last in averages
 
 ## New in 0.4.7 (Released 2019/07/14)
-* Upgrade to Fable 3.0
+* Upgrade to Fable.Core 3.0
 
 ## New in 0.4.6 (Released 2019/02/11)
 * Upgrade to Fable 2.1
